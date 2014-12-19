@@ -1,0 +1,79 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".QuestionActivity" >
+
+        <ImageView
+            android:id="@+id/q_main_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#418"
+            android:minHeight="200dp" />
+
+        <Button
+            android:id="@+id/q_c_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/q_main_image"
+            android:text="first choice" />
+
+        <Button
+            android:id="@+id/q_c_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/q_main_image"
+            android:layout_toRightOf="@id/q_c_1"
+            android:text="first choice" />
+
+        <Button
+            android:id="@+id/q_c_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/q_c_1"
+            android:text="first choice" />
+
+        <Button
+            android:id="@+id/q_c_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/q_c_1"
+            android:layout_toRightOf="@id/q_c_3"
+            android:text="first choice" />
+
+        <Button
+            android:id="@+id/q_c_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/q_c_3"
+            android:text="first choice" />
+
+        <Button
+            android:id="@+id/q_c_6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/q_c_3"
+            android:layout_toRightOf="@id/q_c_5"
+            android:text="first choice" />
+
+        <Button
+            android:id="@+id/q_c_7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/q_c_5"
+            android:text="first choice" />
+
+        <Button
+            android:id="@+id/q_c_8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/q_c_5"
+            android:layout_toRightOf="@id/q_c_7"
+            android:text="first choice" />
+    </RelativeLayout>
+
+</ScrollView>
