@@ -144,7 +144,7 @@ public abstract class TransformFilter {
 	protected void transformSpace(Rect rect) {
 	}
 
-	public int[] filter(int[] src, int w, int h) {
+	public int[] filter(int[] src, int w, int h, boolean[] filters) {
 		int width = w;
 		int height = h;
 

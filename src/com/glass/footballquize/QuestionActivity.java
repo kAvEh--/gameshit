@@ -20,6 +20,8 @@ public class QuestionActivity extends Activity {
 	protected Bitmap mFilterBitmap;
 	
 	private int[] mColors;
+	
+	boolean[] filters;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +29,7 @@ public class QuestionActivity extends Activity {
 		setContentView(R.layout.activity_question);
 		Intent intent = getIntent();
 		int level = intent.getIntExtra("num", 0);
+		filters = new boolean[6];
 		
 		mOriginalImageView = (ImageView) findViewById(R.id.q_main_image_null);
 		mModifyImageView = (ImageView) findViewById(R.id.q_main_image);
@@ -44,7 +47,10 @@ public class QuestionActivity extends Activity {
 			public void run() {
 				DiffuseFilter filter = new DiffuseFilter();
 				filter.setScale(16);
-				mColors = filter.filter(mColors, width, height);
+				filters[0] = true;
+				filters[3] = true;
+				filters[5] = true;
+				mColors = filter.filter(mColors, width, height, filters);
 
 				QuestionActivity.this.runOnUiThread(new Runnable() {
 					@Override
