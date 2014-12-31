@@ -14,4 +14,20 @@
         android:layout_margin="20dp"
         android:background="#ddd" />
 
+    <TextView
+        android:id="@+id/tt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="kajhskjfahdjkahkdljf" />
+
+    <TextView
+        android:id="@+id/jj"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tt"
+        android:background="#000"
+        android:layout_centerHorizontal="true"
+        android:text="#$#$#$#$#$#$#$#$#$" />
+
 </RelativeLayout>

@@ -10,6 +10,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.View;
+import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity {
 
@@ -28,13 +29,19 @@ public class MainActivity extends FragmentActivity {
 	 */
 	private PagerAdapter mPagerAdapter;
 
+	TextView tt;
+	TextView jj;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		tt = (TextView) findViewById(R.id.tt);
+		jj = (TextView) findViewById(R.id.jj);
+
 		mPager = (ViewPager) findViewById(R.id.pager);
-		mPager.setPageTransformer(true, new DepthPageTransformer());
+		mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 		mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
 		mPager.setAdapter(mPagerAdapter);
 	}
@@ -115,12 +122,64 @@ public class MainActivity extends FragmentActivity {
 				view.setAlpha(MIN_ALPHA + (scaleFactor - MIN_SCALE)
 						/ (1 - MIN_SCALE) * (1 - MIN_ALPHA));
 
+				tt.setTranslationX((position) * (pageWidth / 4));
+
+				jj.setTranslationX((position) * (pageWidth / 1));
+
 			} else { // (1,+Infinity]
 				// This page is way off-screen to the right.
 				view.setAlpha(0);
 			}
 		}
 	}
+
+	// public class kkTransformer implements ViewPager.PageTransformer {
+	// private static final float MIN_SCALE = 0.85f;
+	// private static final float MIN_ALPHA = 0.5f;
+	//
+	// @SuppressLint("NewApi")
+	// public void transformPage(View view, float position) {
+	// int pageWidth = view.getWidth();
+	//
+	// if (position < -1) { // [-Infinity,-1)
+	// // This page is way off-screen to the left.
+	// view.setAlpha(0);
+	//
+	// } else if (position <= 1) { // [-1,1]
+	//
+	//
+	// mBlur.setTranslationX((float) (-(1 - position) * 0.5 * pageWidth));
+	// mBlurLabel.setTranslationX((float) (-(1 - position) * 0.5 *
+	// pageWidth));
+	//
+	// mDim.setTranslationX((float) (-(1 - position) * pageWidth));
+	// mDimLabel.setTranslationX((float) (-(1 - position) * pageWidth));
+	//
+	// mCheck.setTranslationX((float) (-(1 - position) * 1.5 * pageWidth));
+	// mDoneButton.setTranslationX((float) (-(1 - position) * 1.7 *
+	// pageWidth));
+	// // The 0.5, 1.5, 1.7 values you see here are what makes the view move
+	// in a different speed.
+	// // The bigger the number, the faster the view will translate.
+	// // The result float is preceded by a minus because the views travel
+	// in the opposite direction of the movement.
+	//
+	// mFirstColor.setTranslationX((position) * (pageWidth / 4));
+	//
+	// mSecondColor.setTranslationX((position) * (pageWidth / 1));
+	//
+	// mTint.setTranslationX((position) * (pageWidth / 2));
+	//
+	// mDesaturate.setTranslationX((position) * (pageWidth / 1));
+	// // This is another way to do it
+	//
+	//
+	// } else { // (1,+Infinity]
+	// // This page is way off-screen to the right.
+	// view.setAlpha(0);
+	// }
+	// }
+	// }
 
 	public class DepthPageTransformer implements ViewPager.PageTransformer {
 		private static final float MIN_SCALE = 0.75f;
