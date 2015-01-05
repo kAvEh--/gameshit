@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="NOT_GENERATED">0</integer>
+    <integer name="IS_GENERATED">1</integer>
+    <integer name="TYPE_LOGO">1</integer>
+    <integer name="STATE_NONE">1</integer>
+    <integer name="STATE_FALSE">2</integer>
+    <integer name="STATE_CORRECT">3</integer>
+</resources>

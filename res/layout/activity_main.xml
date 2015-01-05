@@ -2,17 +2,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
     android:background="#FFF"
+    android:gravity="center_horizontal"
     tools:context=".MainActivity" >
 
-    <android.support.v4.view.ViewPager
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/pager"
+    <com.glass.footballquize.PagerContainer
+        android:id="@+id/pager_container"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_centerInParent="true"
-        android:layout_margin="20dp"
-        android:background="#ddd" />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" >
+
+        <android.support.v4.view.ViewPager
+            android:layout_width="450dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center_horizontal" />
+    </com.glass.footballquize.PagerContainer>
 
     <TextView
         android:id="@+id/tt"
@@ -26,8 +31,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tt"
-        android:background="#000"
         android:layout_centerHorizontal="true"
+        android:background="#000"
         android:text="#$#$#$#$#$#$#$#$#$" />
 
 </RelativeLayout>

@@ -1,16 +1,22 @@
 package com.glass.footballquize;
 
+import java.util.HashMap;
+
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.glass.utils.DatabasHandler;
 
 public class MainActivity extends FragmentActivity {
 
@@ -29,9 +35,12 @@ public class MainActivity extends FragmentActivity {
 	 */
 	private PagerAdapter mPagerAdapter;
 
+	PagerContainer mContainer;
+
 	TextView tt;
 	TextView jj;
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,10 +49,33 @@ public class MainActivity extends FragmentActivity {
 		tt = (TextView) findViewById(R.id.tt);
 		jj = (TextView) findViewById(R.id.jj);
 
-		mPager = (ViewPager) findViewById(R.id.pager);
-		mPager.setPageTransformer(true, new ZoomOutPageTransformer());
-		mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-		mPager.setAdapter(mPagerAdapter);
+		mContainer = (PagerContainer) findViewById(R.id.pager_container);
+
+		ViewPager pager = mContainer.getViewPager();
+		PagerAdapter adapter = new MyPagerAdapter();
+		pager.setAdapter(adapter);
+		pager.setPageTransformer(true, new ZoomOutPageTransformer());
+		// pager.setCurrentItem(2);
+		// Necessary or the pager will only have one extra page to show
+		// make this at least however many pages you can see
+		pager.setOffscreenPageLimit(adapter.getCount());
+		// A little space between pages
+		pager.setPageMargin(15);
+
+		// If hardware acceleration is enabled, you should also remove
+		// clipping on the pager for its children.
+		pager.setClipChildren(false);
+
+		initialChecks();
+	}
+
+	private void initialChecks() {
+		DatabasHandler db = new DatabasHandler(getApplicationContext());
+		HashMap<String, Integer> data = db.getGameData();
+		if (data.get(getResources().getString(R.string.KEY_IS_GENERATED)) != getResources().getInteger(R.integer.IS_GENERATED)) {
+			db.generateDatabase();
+		}
+		db.close();
 	}
 
 	@Override
@@ -67,30 +99,8 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
-	/**
-	 * A simple pager adapter that represents 5 ScreenSlidePageFragment objects,
-	 * in sequence.
-	 */
-	private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-		public ScreenSlidePagerAdapter(FragmentManager fm) {
-			super(fm);
-		}
-
-		@Override
-		public Fragment getItem(int position) {
-			LevelFragment lv = new LevelFragment();
-			lv.setPage(position);
-			return lv;
-		}
-
-		@Override
-		public int getCount() {
-			return NUM_PAGES;
-		}
-	}
-
 	public class ZoomOutPageTransformer implements ViewPager.PageTransformer {
-		private static final float MIN_SCALE = 0.85f;
+		private static final float MIN_SCALE = 0.8f;
 		private static final float MIN_ALPHA = 0.5f;
 
 		@SuppressLint("NewApi")
@@ -100,7 +110,8 @@ public class MainActivity extends FragmentActivity {
 
 			if (position < -1) { // [-Infinity,-1)
 				// This page is way off-screen to the left.
-				view.setAlpha(0);
+				view.setAlpha(MIN_ALPHA);
+				view.setScaleY(MIN_SCALE);
 
 			} else if (position <= 1) { // [-1,1]
 				// Modify the default slide transition to shrink the page as
@@ -109,113 +120,74 @@ public class MainActivity extends FragmentActivity {
 				float vertMargin = pageHeight * (1 - scaleFactor) / 2;
 				float horzMargin = pageWidth * (1 - scaleFactor) / 2;
 				if (position < 0) {
-					view.setTranslationX(horzMargin - vertMargin / 2);
+					// view.setTranslationX(horzMargin - vertMargin / 3);
 				} else {
-					view.setTranslationX(-horzMargin + vertMargin / 2);
+					// view.setTranslationX(-horzMargin + vertMargin / 3);
 				}
 
 				// Scale the page down (between MIN_SCALE and 1)
-				view.setScaleX(scaleFactor);
+				// view.setScaleX(scaleFactor);
 				view.setScaleY(scaleFactor);
 
 				// Fade the page relative to its size.
 				view.setAlpha(MIN_ALPHA + (scaleFactor - MIN_SCALE)
 						/ (1 - MIN_SCALE) * (1 - MIN_ALPHA));
 
-				tt.setTranslationX((position) * (pageWidth / 4));
-
-				jj.setTranslationX((position) * (pageWidth / 1));
+				// tt.setTranslationX((position) * (pageWidth / 4));
+				//
+				// jj.setTranslationX((position) * (pageWidth / 1));
 
 			} else { // (1,+Infinity]
 				// This page is way off-screen to the right.
-				view.setAlpha(0);
+				view.setAlpha(MIN_ALPHA);
+				view.setScaleY(MIN_SCALE);
 			}
 		}
 	}
 
-	// public class kkTransformer implements ViewPager.PageTransformer {
-	// private static final float MIN_SCALE = 0.85f;
-	// private static final float MIN_ALPHA = 0.5f;
-	//
-	// @SuppressLint("NewApi")
-	// public void transformPage(View view, float position) {
-	// int pageWidth = view.getWidth();
-	//
-	// if (position < -1) { // [-Infinity,-1)
-	// // This page is way off-screen to the left.
-	// view.setAlpha(0);
-	//
-	// } else if (position <= 1) { // [-1,1]
-	//
-	//
-	// mBlur.setTranslationX((float) (-(1 - position) * 0.5 * pageWidth));
-	// mBlurLabel.setTranslationX((float) (-(1 - position) * 0.5 *
-	// pageWidth));
-	//
-	// mDim.setTranslationX((float) (-(1 - position) * pageWidth));
-	// mDimLabel.setTranslationX((float) (-(1 - position) * pageWidth));
-	//
-	// mCheck.setTranslationX((float) (-(1 - position) * 1.5 * pageWidth));
-	// mDoneButton.setTranslationX((float) (-(1 - position) * 1.7 *
-	// pageWidth));
-	// // The 0.5, 1.5, 1.7 values you see here are what makes the view move
-	// in a different speed.
-	// // The bigger the number, the faster the view will translate.
-	// // The result float is preceded by a minus because the views travel
-	// in the opposite direction of the movement.
-	//
-	// mFirstColor.setTranslationX((position) * (pageWidth / 4));
-	//
-	// mSecondColor.setTranslationX((position) * (pageWidth / 1));
-	//
-	// mTint.setTranslationX((position) * (pageWidth / 2));
-	//
-	// mDesaturate.setTranslationX((position) * (pageWidth / 1));
-	// // This is another way to do it
-	//
-	//
-	// } else { // (1,+Infinity]
-	// // This page is way off-screen to the right.
-	// view.setAlpha(0);
-	// }
-	// }
-	// }
+	private class MyPagerAdapter extends PagerAdapter {
 
-	public class DepthPageTransformer implements ViewPager.PageTransformer {
-		private static final float MIN_SCALE = 0.75f;
+		@SuppressLint({ "NewApi", "InflateParams" })
+		@Override
+		public Object instantiateItem(View pager, int position) {
 
-		@SuppressLint("NewApi")
-		public void transformPage(View view, float position) {
-			int pageWidth = view.getWidth();
+			View view;
+			LayoutInflater inflater = (LayoutInflater) getApplicationContext()
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			view = inflater.inflate(R.layout.level_layout, null);
+			
+			TextView tv = (TextView) view.findViewById(R.id.level_title);
+			tv.setTextSize(50);
+			tv.setText("Level " + position);
 
-			if (position < -1) { // [-Infinity,-1)
-				// This page is way off-screen to the left.
-				view.setAlpha(0);
+			view.setTag(position);
+			view.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					int stage = (Integer) v.getTag();
+					Intent i = new Intent(MainActivity.this, LevelActivity.class);
+					i.putExtra("level", (stage + 1));
+					startActivity(i);
+				}
+			});
+			((ViewPager) pager).addView(view);
+			return view;
+		}
 
-			} else if (position <= 0) { // [-1,0]
-				// Use the default slide transition when moving to the left page
-				view.setAlpha(1);
-				view.setTranslationX(0);
-				view.setScaleX(1);
-				view.setScaleY(1);
+		@Override
+		public void destroyItem(ViewGroup container, int position, Object object) {
+			container.removeView((View) object);
+		}
 
-			} else if (position <= 1) { // (0,1]
-				// Fade the page out.
-				view.setAlpha(1 - position);
+		@Override
+		public int getCount() {
+			return NUM_PAGES;
+		}
 
-				// Counteract the default slide transition
-				view.setTranslationX(pageWidth * -position);
-
-				// Scale the page down (between MIN_SCALE and 1)
-				float scaleFactor = MIN_SCALE + (1 - MIN_SCALE)
-						* (1 - Math.abs(position));
-				view.setScaleX(scaleFactor);
-				view.setScaleY(scaleFactor);
-
-			} else { // (1,+Infinity]
-				// This page is way off-screen to the right.
-				view.setAlpha(0);
-			}
+		@Override
+		public boolean isViewFromObject(View view, Object object) {
+			return (view == object);
 		}
 	}
 
