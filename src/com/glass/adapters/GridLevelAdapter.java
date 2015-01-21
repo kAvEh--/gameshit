@@ -5,14 +5,17 @@ import java.util.HashMap;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.sax.StartElementListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.glass.footballquize.QuestionActivity;
 import com.glass.footballquize.R;
 
 public class GridLevelAdapter extends BaseAdapter {
@@ -38,6 +41,7 @@ public class GridLevelAdapter extends BaseAdapter {
 	}
 
 	static class ViewHolder {
+		RelativeLayout main_layout;
 		TextView levelTitle;
 	}
 
@@ -52,6 +56,9 @@ public class GridLevelAdapter extends BaseAdapter {
 			viewHolder = new ViewHolder();
 			viewHolder.levelTitle = (TextView) vi
 					.findViewById(R.id.grid_level_title);
+			viewHolder.main_layout = (RelativeLayout) vi
+					.findViewById(R.id.grid_level_main);
+			viewHolder.main_layout.setOnClickListener(mClickListener);
 
 			// viewHolder.levelTitle.setOnClickListener(moreClickListener);
 			vi.setTag(viewHolder);
@@ -63,15 +70,35 @@ public class GridLevelAdapter extends BaseAdapter {
 				mActivity.getResources().getString(R.string.KEY_STATE)) == mActivity
 				.getResources().getInteger(R.integer.STATE_CORRECT)) {
 			viewHolder.levelTitle.setBackgroundColor(Color.GREEN);
-		} else if(data.get(position).get(
+		} else if (data.get(position).get(
 				mActivity.getResources().getString(R.string.KEY_STATE)) == mActivity
 				.getResources().getInteger(R.integer.STATE_FALSE)) {
 			viewHolder.levelTitle.setBackgroundColor(Color.RED);
 		}
 
 		viewHolder.levelTitle.setTag(position);
+		int[] tags = new int[3];
+		tags[0] = data.get(position).get(
+				mActivity.getResources().getString(R.string.KEY_RELATED));
+		tags[1] = data.get(position).get(
+				mActivity.getResources().getString(R.string.KEY_TYPE));
+		tags[2] = data.get(position).get(
+				mActivity.getResources().getString(R.string.KEY_ID));
+		viewHolder.main_layout.setTag(tags);
 
 		return vi;
 	}
+
+	private View.OnClickListener mClickListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			int[] tag = (int[]) v.getTag();
+			Intent i = new Intent(mActivity, QuestionActivity.class);
+			i.putExtra(mActivity.getResources().getString(R.string.KEY_RELATED), tag[0]);
+			i.putExtra(mActivity.getResources().getString(R.string.KEY_TYPE), tag[1]);
+			i.putExtra(mActivity.getResources().getString(R.string.KEY_ID), tag[2]);
+			mActivity.startActivity(i);
+		}
+	};
 
 }

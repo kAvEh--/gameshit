@@ -1,21 +1,23 @@
 package com.glass.footballquize;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import com.glass.adapters.GridLevelAdapter;
-import com.glass.utils.DatabasHandler;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.GridView;
 
+import com.glass.adapters.GridLevelAdapter;
+import com.glass.objects.Manager;
+import com.glass.utils.DatabasHandler;
+
 public class LevelActivity extends Activity {
 
 	int _level;
 	GridView _grid;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -23,13 +25,27 @@ public class LevelActivity extends Activity {
 
 		Intent i = getIntent();
 		_level = i.getIntExtra("level", 1);
-		
+
 		_grid = (GridView) findViewById(R.id.level_grid);
 		DatabasHandler db = new DatabasHandler(getApplicationContext());
 		ArrayList<HashMap<String, Integer>> data = db.getLevelData(_level);
-		GridLevelAdapter adapter = new GridLevelAdapter(LevelActivity.this, data);
+		db.close();
+		GridLevelAdapter adapter = new GridLevelAdapter(LevelActivity.this,
+				data);
 		_grid.setAdapter(adapter);
 		_grid.setDrawSelectorOnTop(true);
+
+//		db = new DatabasHandler(getApplicationContext());
+//		for (int j = 0; j < 52; j++) {
+//			Manager l = db.getManager(j + 1);
+//			try {
+//				getAssets().open("Manager/" + l.get_imagePath());
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				// e.printStackTrace();
+//				System.err.println(l.get_imagePath());
+//			}
+//		}
 	}
 
 }

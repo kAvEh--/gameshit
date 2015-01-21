@@ -5,83 +5,144 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".QuestionActivity" >
-        
-        <ImageView
-            android:id="@+id/q_main_image_null"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
+        android:layout_height="wrap_content" >
+
+        <RelativeLayout
+            android:id="@+id/q_header"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#bbb" >
+
+            <RelativeLayout
+                android:id="@+id/q_tima_bar"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:background="#515" >
+            </RelativeLayout>
+        </RelativeLayout>
 
         <ImageView
             android:id="@+id/q_main_image"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#418"
+            android:layout_height="200dp"
+            android:layout_below="@id/q_header"
             android:layout_centerHorizontal="true"
-            android:minHeight="200dp"
-            android:minWidth="200dp" />
+            android:scaleType="centerInside" />
+
+        <ImageView
+            android:id="@+id/q_seprator"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_below="@id/q_header"
+            android:layout_centerHorizontal="true"
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/q_c_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/q_main_image"
-            android:text="first choice" />
+            android:layout_marginBottom="16dp"
+            android:layout_toLeftOf="@id/q_seprator"
+            android:background="#ccc"
+            android:minWidth="200dp"
+            android:onClick="selectChoice"
+            android:padding="7dp" />
 
         <Button
             android:id="@+id/q_c_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/q_main_image"
-            android:layout_toRightOf="@id/q_c_1"
-            android:text="first choice" />
+            android:layout_marginBottom="16dp"
+            android:layout_toRightOf="@id/q_seprator"
+            android:background="#ccc"
+            android:minWidth="200dp"
+            android:onClick="selectChoice"
+            android:padding="7dp" />
 
         <Button
             android:id="@+id/q_c_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/q_c_1"
-            android:text="first choice" />
+            android:layout_marginBottom="16dp"
+            android:layout_toLeftOf="@id/q_seprator"
+            android:background="#ccc"
+            android:minWidth="200dp"
+            android:onClick="selectChoice"
+            android:padding="7dp" />
 
         <Button
             android:id="@+id/q_c_4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/q_c_1"
-            android:layout_toRightOf="@id/q_c_3"
-            android:text="first choice" />
+            android:layout_marginBottom="16dp"
+            android:layout_toRightOf="@id/q_seprator"
+            android:background="#ccc"
+            android:minWidth="200dp"
+            android:onClick="selectChoice"
+            android:padding="7dp" />
 
         <Button
             android:id="@+id/q_c_5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/q_c_3"
-            android:text="first choice" />
+            android:layout_marginBottom="16dp"
+            android:layout_toLeftOf="@id/q_seprator"
+            android:background="#ccc"
+            android:minWidth="200dp"
+            android:onClick="selectChoice"
+            android:padding="7dp" />
 
         <Button
             android:id="@+id/q_c_6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/q_c_3"
-            android:layout_toRightOf="@id/q_c_5"
-            android:text="first choice" />
+            android:layout_marginBottom="16dp"
+            android:layout_toRightOf="@id/q_seprator"
+            android:background="#ccc"
+            android:minWidth="200dp"
+            android:onClick="selectChoice"
+            android:padding="7dp" />
 
         <Button
             android:id="@+id/q_c_7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/q_c_5"
-            android:text="first choice" />
+            android:layout_marginBottom="16dp"
+            android:layout_toLeftOf="@id/q_seprator"
+            android:background="#ccc"
+            android:minWidth="200dp"
+            android:onClick="selectChoice"
+            android:padding="7dp" />
 
         <Button
             android:id="@+id/q_c_8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/q_c_5"
-            android:layout_toRightOf="@id/q_c_7"
-            android:text="first choice" />
+            android:layout_marginBottom="16dp"
+            android:layout_toRightOf="@id/q_seprator"
+            android:background="#ccc"
+            android:minWidth="200dp"
+            android:onClick="selectChoice"
+            android:padding="7dp" />
+
+        <ImageView
+            android:id="@+id/question_expanded_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/q_header"
+            android:layout_centerInParent="true"
+            android:scaleType="centerInside"
+            android:visibility="invisible" />
     </RelativeLayout>
 
 </ScrollView>

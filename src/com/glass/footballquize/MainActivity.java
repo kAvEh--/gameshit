@@ -23,7 +23,7 @@ public class MainActivity extends FragmentActivity {
 	/**
 	 * The number of pages (wizard steps) to show in this demo.
 	 */
-	private static final int NUM_PAGES = 5;
+	private static final int NUM_PAGES = 35;
 	/**
 	 * The pager widget, which handles animation and allows swiping horizontally
 	 * to access previous and next wizard steps.
@@ -51,31 +51,24 @@ public class MainActivity extends FragmentActivity {
 
 		mContainer = (PagerContainer) findViewById(R.id.pager_container);
 
-		ViewPager pager = mContainer.getViewPager();
+		mPager = mContainer.getViewPager();
 		PagerAdapter adapter = new MyPagerAdapter();
-		pager.setAdapter(adapter);
-		pager.setPageTransformer(true, new ZoomOutPageTransformer());
+		mPager.setAdapter(adapter);
+		mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 		// pager.setCurrentItem(2);
 		// Necessary or the pager will only have one extra page to show
 		// make this at least however many pages you can see
-		pager.setOffscreenPageLimit(adapter.getCount());
+		mPager.setOffscreenPageLimit(adapter.getCount());
 		// A little space between pages
-		pager.setPageMargin(15);
+		mPager.setPageMargin(15);
 
 		// If hardware acceleration is enabled, you should also remove
 		// clipping on the pager for its children.
-		pager.setClipChildren(false);
+		mPager.setClipChildren(false);
+		
+		mPager.setCurrentItem(15);
 
-		initialChecks();
-	}
-
-	private void initialChecks() {
-		DatabasHandler db = new DatabasHandler(getApplicationContext());
-		HashMap<String, Integer> data = db.getGameData();
-		if (data.get(getResources().getString(R.string.KEY_IS_GENERATED)) != getResources().getInteger(R.integer.IS_GENERATED)) {
-			db.generateDatabase();
-		}
-		db.close();
+//		initialChecks();
 	}
 
 	@Override
