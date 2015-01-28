@@ -7,7 +7,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.sax.StartElementListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,14 +76,9 @@ public class GridLevelAdapter extends BaseAdapter {
 		}
 
 		viewHolder.levelTitle.setTag(position);
-		int[] tags = new int[3];
-		tags[0] = data.get(position).get(
-				mActivity.getResources().getString(R.string.KEY_RELATED));
-		tags[1] = data.get(position).get(
-				mActivity.getResources().getString(R.string.KEY_TYPE));
-		tags[2] = data.get(position).get(
-				mActivity.getResources().getString(R.string.KEY_ID));
-		viewHolder.main_layout.setTag(tags);
+
+		viewHolder.main_layout.setTag(data.get(position).get(
+				mActivity.getResources().getString(R.string.KEY_ID)));
 
 		return vi;
 	}
@@ -92,11 +86,9 @@ public class GridLevelAdapter extends BaseAdapter {
 	private View.OnClickListener mClickListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			int[] tag = (int[]) v.getTag();
+			int tag = (Integer) v.getTag();
 			Intent i = new Intent(mActivity, QuestionActivity.class);
-			i.putExtra(mActivity.getResources().getString(R.string.KEY_RELATED), tag[0]);
-			i.putExtra(mActivity.getResources().getString(R.string.KEY_TYPE), tag[1]);
-			i.putExtra(mActivity.getResources().getString(R.string.KEY_ID), tag[2]);
+			i.putExtra(mActivity.getResources().getString(R.string.KEY_ID), tag);
 			mActivity.startActivity(i);
 		}
 	};

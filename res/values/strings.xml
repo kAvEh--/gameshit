@@ -7,13 +7,17 @@
     <string name="title_activity_question">QuestionActivity</string>
     <string name="title_activity_level">LevelActivity</string>
     
-    <string name="KEY_COINS">coins</string>
+    <string name="KEY_COINS">Coins</string>
+    <string name="KEY_POINT">Point</string>
     <string name="KEY_TYPE">Type</string>
     <string name="KEY_LEVEL">level</string>
     <string name="KEY_STATE">state</string>
     <string name="KEY_RELATED">relatedId</string>
     <string name="KEY_START_TIME">startTime</string>
     <string name="KEY_FALSE_ANSWERS">falseAnswers</string>
+    <string name="KEY_LEVEL_STATE">levelState</string>
+    <string name="KEY_USED_FREEZ">usedFreez</string>
+    <string name="KEY_USED_HINTS">usedHints</string>
     <string name="KEY_ID">Id</string>
     
 </resources>

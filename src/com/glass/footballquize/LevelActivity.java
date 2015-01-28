@@ -10,7 +10,8 @@ import android.os.Bundle;
 import android.widget.GridView;
 
 import com.glass.adapters.GridLevelAdapter;
-import com.glass.objects.Manager;
+import com.glass.objects.Logo;
+import com.glass.objects.Shirt;
 import com.glass.utils.DatabasHandler;
 
 public class LevelActivity extends Activity {
@@ -35,17 +36,17 @@ public class LevelActivity extends Activity {
 		_grid.setAdapter(adapter);
 		_grid.setDrawSelectorOnTop(true);
 
-//		db = new DatabasHandler(getApplicationContext());
-//		for (int j = 0; j < 52; j++) {
-//			Manager l = db.getManager(j + 1);
-//			try {
-//				getAssets().open("Manager/" + l.get_imagePath());
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				// e.printStackTrace();
-//				System.err.println(l.get_imagePath());
-//			}
-//		}
+		db = new DatabasHandler(getApplicationContext());
+		for (int j = 0; j < 120; j++) {
+			Shirt l = db.getShirt(j + 1);
+			try {
+				getAssets().open("Shirt/" + l.get_imagePath());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				// e.printStackTrace();
+				System.err.println(l.get_imagePath());
+			}
+		}
 	}
 
 }
