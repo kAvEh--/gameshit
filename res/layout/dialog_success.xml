@@ -24,16 +24,16 @@
         android:id="@+id/dialog_success_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_below="@id/dialog_success_main"
-        android:text="Next"
         android:padding="7dp"
+        android:text="Next"
         android:textSize="25sp" />
 
     <Button
-        android:id="@+id/dialog_success_list"
+        android:id="@+id/dialog_success_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_below="@id/dialog_success_main"
         android:text="Back"
         android:padding="7dp"

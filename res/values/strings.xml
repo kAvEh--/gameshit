@@ -9,6 +9,7 @@
     
     <string name="KEY_COINS">Coins</string>
     <string name="KEY_POINT">Point</string>
+    <string name="KEY_LAST_P_UNLOCK">lastPackageUnlock</string>
     <string name="KEY_TYPE">Type</string>
     <string name="KEY_LEVEL">level</string>
     <string name="KEY_STATE">state</string>

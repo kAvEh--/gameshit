@@ -23,12 +23,12 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.text.format.Time;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
@@ -37,6 +37,7 @@ import android.widget.Toast;
 
 import com.glass.objects.Logo;
 import com.glass.objects.Manager;
+import com.glass.objects.Question;
 import com.glass.objects.Shirt;
 import com.glass.objects.Stadium;
 import com.glass.utils.AndroidUtils;
@@ -55,10 +56,9 @@ public class QuestionActivity extends FragmentActivity {
 	// very frequently.
 	private int mShortAnimationDuration;
 
-	protected static final int TITLE_TEXT_SIZE = 22;
-
 	protected ImageView mOriginalImageView;
-	protected ImageView mModifyImageView;
+	protected ImageView mainImageQuestion;
+	protected TextView mainTextQuestion;
 	protected Bitmap mFilterBitmap;
 
 	private int[] mColors;
@@ -78,6 +78,7 @@ public class QuestionActivity extends FragmentActivity {
 	String _falseAnswers;
 	int _used_freez = 0;
 	int _used_hint = 0;
+	long _start_time = 0;
 
 	Button _ch1;
 	Button _ch2;
@@ -92,6 +93,7 @@ public class QuestionActivity extends FragmentActivity {
 	Stadium _stadium;
 	Manager _manager;
 	Shirt _shirt;
+	Question _question;
 
 	RelativeLayout time_bar;
 	int time_bar_width;
@@ -113,12 +115,19 @@ public class QuestionActivity extends FragmentActivity {
 	final int _SCORE_SKIP = 90;
 	final int _SCORE_FULL = 100;
 
+	private ArrayList<HashMap<String, Integer>> __levelData;
+	private int __position;
+
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
 		_levelId = intent.getIntExtra(
 				getResources().getString(R.string.KEY_ID), 0);
+		__levelData = (ArrayList<HashMap<String, Integer>>) intent
+				.getSerializableExtra("test");
+		__position = intent.getIntExtra("position", 0);
 
 		HashMap<String, String> tempData;
 		HashMap<String, Integer> gameData;
@@ -145,6 +154,8 @@ public class QuestionActivity extends FragmentActivity {
 					.getString(R.string.KEY_USED_FREEZ)));
 			_used_hint = Integer.parseInt(tempData.get(getResources()
 					.getString(R.string.KEY_USED_HINTS)));
+			_start_time = Long.parseLong(tempData.get(getResources().getString(
+					R.string.KEY_START_TIME)));
 
 		}
 
@@ -177,12 +188,6 @@ public class QuestionActivity extends FragmentActivity {
 
 		mShortAnimationDuration = getResources().getInteger(
 				android.R.integer.config_longAnimTime);
-
-		Time now = new Time();
-		long time = now.toMillis(true);
-		db = new DatabasHandler(getApplicationContext());
-		db.setStartTime(_levelId, time);
-		db.close();
 	}
 
 	private void setStadium() {
@@ -204,15 +209,15 @@ public class QuestionActivity extends FragmentActivity {
 		tmp.add(_correct_answer);
 		setInitialSettings(tmp);
 
-		mModifyImageView = (ImageView) findViewById(R.id.q_main_image);
+		mainImageQuestion = (ImageView) findViewById(R.id.q_main_image);
 		try {
 			final Bitmap bitmap = BitmapFactory.decodeStream(getAssets().open(
 					"Stadium/" + _stadium.get_imagePath()));
-			mModifyImageView.setImageBitmap(bitmap);
-			mModifyImageView.setOnClickListener(new View.OnClickListener() {
+			mainImageQuestion.setImageBitmap(bitmap);
+			mainImageQuestion.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
-					zoomImageFromThumb(mModifyImageView, bitmap);
+					zoomImageFromThumb(mainImageQuestion, bitmap);
 				}
 			});
 		} catch (IOException e) {
@@ -246,15 +251,15 @@ public class QuestionActivity extends FragmentActivity {
 		tmp.add(_correct_answer);
 		setInitialSettings(tmp);
 
-		mModifyImageView = (ImageView) findViewById(R.id.q_main_image);
+		mainImageQuestion = (ImageView) findViewById(R.id.q_main_image);
 		try {
 			final Bitmap bitmap = BitmapFactory.decodeStream(getAssets().open(
 					"Shirt/" + _shirt.get_imagePath()));
-			mModifyImageView.setImageBitmap(bitmap);
-			mModifyImageView.setOnClickListener(new View.OnClickListener() {
+			mainImageQuestion.setImageBitmap(bitmap);
+			mainImageQuestion.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
-					zoomImageFromThumb(mModifyImageView, bitmap);
+					zoomImageFromThumb(mainImageQuestion, bitmap);
 				}
 			});
 		} catch (IOException e) {
@@ -269,7 +274,36 @@ public class QuestionActivity extends FragmentActivity {
 	}
 
 	private void setQuestion() {
-		// TODO Auto-generated method stub
+		DatabasHandler db = new DatabasHandler(getApplicationContext());
+		_question = db.getQuestion(_relatedId);
+		if (_question == null)
+			finish();
+
+		_correct_answer = _question.get_answer();
+
+		List<String> tmp = new ArrayList<String>();
+		tmp.add(_question.get_ch1());
+		tmp.add(_question.get_ch2());
+		tmp.add(_question.get_ch3());
+		tmp.add(_question.get_ch4());
+		tmp.add(_question.get_ch5());
+		tmp.add(_question.get_ch6());
+		tmp.add(_question.get_ch7());
+		tmp.add(_correct_answer);
+		setInitialSettings(tmp);
+
+		mainImageQuestion = (ImageView) findViewById(R.id.q_main_image);
+		mainTextQuestion = (TextView) findViewById(R.id.q_main_question);
+		mainImageQuestion.setVisibility(View.INVISIBLE);
+		mainTextQuestion.setVisibility(View.VISIBLE);
+
+		mainTextQuestion.setText(_question.get_body());
+
+		setChoicesHistory();
+
+		// hiding hint
+		ImageButton hint = (ImageButton) findViewById(R.id.q_bar_hint);
+		hint.setVisibility(View.GONE);
 	}
 
 	private void setPlayer() {
@@ -295,11 +329,11 @@ public class QuestionActivity extends FragmentActivity {
 		tmp.add(_correct_answer);
 		setInitialSettings(tmp);
 
-		mModifyImageView = (ImageView) findViewById(R.id.q_main_image);
+		mainImageQuestion = (ImageView) findViewById(R.id.q_main_image);
 		try {
 			final Bitmap bitmap = BitmapFactory.decodeStream(getAssets().open(
 					"Manager/" + _manager.get_imagePath()));
-			mModifyImageView.setImageBitmap(bitmap);
+			mainImageQuestion.setImageBitmap(bitmap);
 		} catch (IOException e) {
 			e.printStackTrace();
 			finish();
@@ -330,15 +364,15 @@ public class QuestionActivity extends FragmentActivity {
 		tmp.add(_correct_answer);
 		setInitialSettings(tmp);
 
-		mModifyImageView = (ImageView) findViewById(R.id.q_main_image);
+		mainImageQuestion = (ImageView) findViewById(R.id.q_main_image);
 		try {
 			final Bitmap bitmap = BitmapFactory.decodeStream(getAssets().open(
 					"Logo/" + _logo.get_imagePath()));
-			mModifyImageView.setImageBitmap(bitmap);
-			mModifyImageView.setOnClickListener(new View.OnClickListener() {
+			mainImageQuestion.setImageBitmap(bitmap);
+			mainImageQuestion.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
-					zoomImageFromThumb(mModifyImageView, bitmap);
+					zoomImageFromThumb(mainImageQuestion, bitmap);
 				}
 			});
 		} catch (IOException e) {
@@ -411,6 +445,7 @@ public class QuestionActivity extends FragmentActivity {
 			}
 		}
 		if (_state == getResources().getInteger(R.integer.STATE_CORRECT)) {
+			game_flag = false;
 			_ch1.setTag(false);
 			_ch2.setTag(false);
 			_ch3.setTag(false);
@@ -446,8 +481,27 @@ public class QuestionActivity extends FragmentActivity {
 				time_bar.setLayoutParams(l);
 				time_bar.setBackgroundColor(Color.BLUE);
 
-			} else
-				runTimer(_TOTAL_TIME);
+			} else {
+				long now_time = System.currentTimeMillis();
+				if (_start_time > 0) {
+					if (now_time - _start_time < _TOTAL_TIME) {
+						currentTime = _TOTAL_TIME - (now_time - _start_time);
+						runTimer(currentTime);
+					} else {
+						LayoutParams l = (LayoutParams) time_bar
+								.getLayoutParams();
+						l.width = 0;
+						time_bar.setLayoutParams(l);
+						currentTime = 0;
+					}
+				} else {
+					DatabasHandler db = new DatabasHandler(
+							getApplicationContext());
+					db.setStartTime(_levelId, now_time);
+					db.close();
+					runTimer(_TOTAL_TIME);
+				}
+			}
 		}
 	}
 
@@ -497,12 +551,19 @@ public class QuestionActivity extends FragmentActivity {
 		counter.cancel();
 		game_flag = false;
 		v.setBackgroundColor(Color.GREEN);
+		// TODO set real score
+		int tmpScore = (int) Math.round((double) currentTime / (double) 100) + 20;
+		_points += tmpScore;
+		_points_view.setText(String.valueOf(_points));
+
 		SuccessDialog fr = new SuccessDialog();
 		fr.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
-		fr.setScore((int) Math.round((double) currentTime / (double) 100));
+		fr.setScore(tmpScore);
 		fr.show(getSupportFragmentManager(), "Hello");
+
 		DatabasHandler db = new DatabasHandler(getApplicationContext());
 		db.setCorrectAnswer(_levelId);
+		db.addScore(tmpScore);
 		db.close();
 	}
 
@@ -524,7 +585,7 @@ public class QuestionActivity extends FragmentActivity {
 
 		// mOriginalImageView = (ImageView)
 		// findViewById(R.id.q_main_image_null);
-		mModifyImageView = (ImageView) findViewById(R.id.q_main_image);
+		mainImageQuestion = (ImageView) findViewById(R.id.q_main_image);
 
 		mOriginalImageView.setImageResource(R.drawable.button);
 
@@ -567,7 +628,7 @@ public class QuestionActivity extends FragmentActivity {
 	 * ModifyView set
 	 */
 	protected void setModifyView(int[] colors, int width, int height) {
-		mModifyImageView.setWillNotDraw(true);
+		mainImageQuestion.setWillNotDraw(true);
 
 		if (mFilterBitmap != null) {
 			mFilterBitmap.recycle();
@@ -576,10 +637,10 @@ public class QuestionActivity extends FragmentActivity {
 
 		mFilterBitmap = Bitmap.createBitmap(colors, 0, width, width, height,
 				Bitmap.Config.ARGB_8888);
-		mModifyImageView.setImageBitmap(mFilterBitmap);
+		mainImageQuestion.setImageBitmap(mFilterBitmap);
 
-		mModifyImageView.setWillNotDraw(false);
-		mModifyImageView.postInvalidate();
+		mainImageQuestion.setWillNotDraw(false);
+		mainImageQuestion.postInvalidate();
 	}
 
 	@Override
@@ -756,7 +817,7 @@ public class QuestionActivity extends FragmentActivity {
 				_ch8.setBackgroundColor(Color.GREEN);
 			DatabasHandler db = new DatabasHandler(getApplicationContext());
 			db.minusCoins(_levelId, _COIN_SKIP);
-			db.addScore(_levelId, _SCORE_SKIP);
+			db.addScore(_SCORE_SKIP);
 			db.close();
 			_coins -= _COIN_SKIP;
 			_coins_view.setText(String.valueOf(_coins));
@@ -771,74 +832,83 @@ public class QuestionActivity extends FragmentActivity {
 	}
 
 	public void onRemoveClick(View v) {
-		if (_coins > _COIN_REMOVE) {
-			List<Button> choicetmp = new ArrayList<Button>();
-			choicetmp.add(_ch1);
-			choicetmp.add(_ch2);
-			choicetmp.add(_ch3);
-			choicetmp.add(_ch4);
-			choicetmp.add(_ch5);
-			choicetmp.add(_ch6);
-			choicetmp.add(_ch7);
-			choicetmp.add(_ch8);
-			Collections.shuffle(choicetmp);
+		if (game_flag) {
+			if (_coins > _COIN_REMOVE) {
+				List<Button> choicetmp = new ArrayList<Button>();
+				choicetmp.add(_ch1);
+				choicetmp.add(_ch2);
+				choicetmp.add(_ch3);
+				choicetmp.add(_ch4);
+				choicetmp.add(_ch5);
+				choicetmp.add(_ch6);
+				choicetmp.add(_ch7);
+				choicetmp.add(_ch8);
+				Collections.shuffle(choicetmp);
 
-			for (int i = 0; i < 8; i++) {
-				if ((Boolean) choicetmp.get(i).getTag()
-						&& !choicetmp.get(i).getText().toString()
-								.equals(_correct_answer)) {
+				for (int i = 0; i < 8; i++) {
+					if ((Boolean) choicetmp.get(i).getTag()
+							&& !choicetmp.get(i).getText().toString()
+									.equals(_correct_answer)) {
 
-					choicetmp.get(i).setTag(false);
-					choicetmp.get(i).setBackgroundColor(Color.RED);
+						choicetmp.get(i).setTag(false);
+						choicetmp.get(i).setBackgroundColor(Color.RED);
 
-					if (_falseAnswers == null)
-						_falseAnswers = choicetmp.get(i).getText().toString();
-					else
-						_falseAnswers = _falseAnswers + ","
-								+ choicetmp.get(i).getText().toString();
+						if (_falseAnswers == null)
+							_falseAnswers = choicetmp.get(i).getText()
+									.toString();
+						else
+							_falseAnswers = _falseAnswers + ","
+									+ choicetmp.get(i).getText().toString();
 
-					DatabasHandler db = new DatabasHandler(
-							getApplicationContext());
-					db.minusCoins(_levelId, _COIN_REMOVE);
-					db.setFalseAnswer(_levelId, _falseAnswers);
-					db.close();
-					_coins -= _COIN_REMOVE;
-					_coins_view.setText(String.valueOf(_coins));
+						DatabasHandler db = new DatabasHandler(
+								getApplicationContext());
+						db.minusCoins(_levelId, _COIN_REMOVE);
+						db.setFalseAnswer(_levelId, _falseAnswers);
+						db.close();
+						_coins -= _COIN_REMOVE;
+						_coins_view.setText(String.valueOf(_coins));
 
-					return;
+						return;
+					}
 				}
-			}
-		} else {
-			Toast.makeText(getApplicationContext(),
-					"You don`t have enough coins.", Toast.LENGTH_LONG).show();
-		}
+			} else
+				Toast.makeText(getApplicationContext(),
+						"You don`t have enough coins.", Toast.LENGTH_LONG)
+						.show();
+		} else
+			Toast.makeText(getApplicationContext(), "Really needs help??",
+					Toast.LENGTH_LONG).show();
 	}
 
 	public void onFreezClick(View v) {
-		if (_used_freez == 0) {
-			if (currentTime > 0) {
-				if (_coins > _COIN_FREEZ) {
-					counter.cancel();
-					time_bar.setBackgroundColor(Color.BLUE);
-					
-					DatabasHandler db = new DatabasHandler(
-							getApplicationContext());
-					db.minusCoins(_levelId, _COIN_FREEZ);
-					db.usedFreez(_levelId, currentTime);
-					db.close();
-					_used_freez = (int) currentTime;
-					_coins -= _COIN_FREEZ;
-					_coins_view.setText(String.valueOf(_coins));
+		if (game_flag) {
+			if (_used_freez == 0) {
+				if (currentTime > 0) {
+					if (_coins > _COIN_FREEZ) {
+						counter.cancel();
+						time_bar.setBackgroundColor(Color.BLUE);
+
+						DatabasHandler db = new DatabasHandler(
+								getApplicationContext());
+						db.minusCoins(_levelId, _COIN_FREEZ);
+						db.usedFreez(_levelId, currentTime);
+						db.close();
+						_used_freez = (int) currentTime;
+						_coins -= _COIN_FREEZ;
+						_coins_view.setText(String.valueOf(_coins));
+					} else
+						Toast.makeText(getApplicationContext(),
+								"You don`t have enough coins.",
+								Toast.LENGTH_LONG).show();
 				} else
 					Toast.makeText(getApplicationContext(),
-							"You don`t have enough coins.", Toast.LENGTH_LONG)
-							.show();
+							"You are out of time.", Toast.LENGTH_LONG).show();
 			} else
-				Toast.makeText(getApplicationContext(), "You are out of time.",
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(),
+						"You already freezed time.", Toast.LENGTH_LONG).show();
 		} else
-			Toast.makeText(getApplicationContext(),
-					"You already freezed time.", Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), "Really needs help??",
+					Toast.LENGTH_LONG).show();
 	}
 
 	public void onHintClick(View v) {
@@ -860,5 +930,24 @@ public class QuestionActivity extends FragmentActivity {
 		} else
 			Toast.makeText(getApplicationContext(), _hint_toshow,
 					Toast.LENGTH_LONG).show();
+	}
+
+	public void gotoNextAction() {
+		if (__levelData.size() > __position + 1) {
+			Intent i = new Intent(QuestionActivity.this, QuestionActivity.class);
+			i.putExtra(
+					getResources().getString(R.string.KEY_ID),
+					__levelData.get(__position + 1).get(
+							getResources().getString(R.string.KEY_ID)));
+			i.putExtra("position", __position + 1);
+			i.putExtra("test", __levelData);
+			startActivity(i);
+			finish();
+		} else
+			finish();
+	}
+
+	public void backAction() {
+		finish();
 	}
 }

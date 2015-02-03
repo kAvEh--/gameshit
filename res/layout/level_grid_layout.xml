@@ -16,6 +16,13 @@
             android:layout_centerInParent="true"
             android:gravity="center"
             android:textSize="18sp" />
+        
+        <ImageView
+            android:id="@+id/grid_level_icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:scaleType="centerInside" />
     </RelativeLayout>
 
 </RelativeLayout>

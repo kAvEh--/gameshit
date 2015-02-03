@@ -4,20 +4,76 @@
     android:layout_height="match_parent" >
 
     <RelativeLayout
-        android:id="@+id/level_header"
+        android:id="@+id/q_header_score_layout"
         android:layout_width="match_parent"
-        android:layout_height="100dp" >
+        android:layout_height="100dp"
+        android:background="#ccc"
+        android:padding="3dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp" >
+
+        <TextView
+            android:id="@+id/level_title"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:onClick="onCoimClick" >
+
+            <ImageView
+                android:id="@+id/question_header_coins_ic"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_cups" />
+
+            <TextView
+                android:id="@+id/question_header_coins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/question_header_coins_ic"
+                android:textSize="22sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:onClick="onCoinClick" >
+
+            <TextView
+                android:id="@+id/question_header_points"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:textSize="22sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/question_header_points"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_points" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <GridView
         android:id="@+id/level_grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/level_header"
-        android:columnWidth="150dp"
+        android:layout_below="@id/q_header_score_layout"
         android:gravity="center"
         android:horizontalSpacing="10dp"
-        android:numColumns="auto_fit"
+        android:numColumns="3"
         android:stretchMode="columnWidth"
         android:verticalSpacing="10dp" />
 

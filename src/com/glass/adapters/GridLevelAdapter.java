@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -42,6 +43,7 @@ public class GridLevelAdapter extends BaseAdapter {
 	static class ViewHolder {
 		RelativeLayout main_layout;
 		TextView levelTitle;
+		ImageView levelIcon;
 	}
 
 	// create a new ImageView for each item referenced by the Adapter
@@ -57,6 +59,8 @@ public class GridLevelAdapter extends BaseAdapter {
 					.findViewById(R.id.grid_level_title);
 			viewHolder.main_layout = (RelativeLayout) vi
 					.findViewById(R.id.grid_level_main);
+			viewHolder.levelIcon = (ImageView) vi
+					.findViewById(R.id.grid_level_icon);
 			viewHolder.main_layout.setOnClickListener(mClickListener);
 
 			// viewHolder.levelTitle.setOnClickListener(moreClickListener);
@@ -74,11 +78,32 @@ public class GridLevelAdapter extends BaseAdapter {
 				.getResources().getInteger(R.integer.STATE_FALSE)) {
 			viewHolder.levelTitle.setBackgroundColor(Color.RED);
 		}
+		switch (data.get(position).get(
+				mActivity.getResources().getString(R.string.KEY_TYPE))) {
+		case 1:
+			viewHolder.levelIcon.setImageResource(R.drawable.ic_logo);
+			break;
+			
+		case 2:
+			viewHolder.levelIcon.setImageResource(R.drawable.ic_shirt);
+			break;
+			
+		case 3:
+			viewHolder.levelIcon.setImageResource(R.drawable.ic_manager);
+			break;
+			
+		case 5:
+			viewHolder.levelIcon.setImageResource(R.drawable.ic_player);
+			break;
+
+		default:
+			viewHolder.levelIcon.setImageResource(R.drawable.ic_question);
+			break;
+		}
 
 		viewHolder.levelTitle.setTag(position);
 
-		viewHolder.main_layout.setTag(data.get(position).get(
-				mActivity.getResources().getString(R.string.KEY_ID)));
+		viewHolder.main_layout.setTag(position);
 
 		return vi;
 	}
@@ -88,7 +113,13 @@ public class GridLevelAdapter extends BaseAdapter {
 		public void onClick(View v) {
 			int tag = (Integer) v.getTag();
 			Intent i = new Intent(mActivity, QuestionActivity.class);
-			i.putExtra(mActivity.getResources().getString(R.string.KEY_ID), tag);
+			i.putExtra(
+					mActivity.getResources().getString(R.string.KEY_ID),
+					data.get(tag)
+							.get(mActivity.getResources().getString(
+									R.string.KEY_ID)));
+			i.putExtra("position", tag);
+			i.putExtra("test", data);
 			mActivity.startActivity(i);
 		}
 	};

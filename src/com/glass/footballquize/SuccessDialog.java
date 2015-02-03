@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class SuccessDialog extends DialogFragment {
@@ -23,11 +25,28 @@ public class SuccessDialog extends DialogFragment {
 		TextView score = (TextView) rootView.findViewById(R.id.dialog_success_score);
 		score.setText(_score + "...");
 		
+		Button next = (Button) rootView.findViewById(R.id.dialog_success_next);
+		next.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				((QuestionActivity) getActivity()).gotoNextAction();
+			}
+		});
+		
+		Button back = (Button) rootView.findViewById(R.id.dialog_success_back);
+		back.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				((QuestionActivity) getActivity()).backAction();
+			}
+		});
+		
 		return rootView;
 	}
 	
 	public void setScore(int s) {
 		this._score = s;
 	}
-
 }

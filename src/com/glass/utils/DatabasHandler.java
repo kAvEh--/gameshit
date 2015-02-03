@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.glass.footballquize.R;
 import com.glass.objects.Logo;
 import com.glass.objects.Manager;
+import com.glass.objects.Question;
 import com.glass.objects.Shirt;
 import com.glass.objects.Stadium;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
@@ -46,6 +47,7 @@ public class DatabasHandler extends SQLiteAssetHelper {
 	private static final String KEY_CHOICE_7 = "ch7";
 	private static final String KEY_LOGO_ID = "logoId";
 	private static final String KEY_ANSWER = "answer";
+	private static final String KEY_BODY = "body";
 	private static final String KEY_TEAM = "team";
 	private static final String KEY_YEAR = "year";
 	private static final String KEY_NATIONALITY = "nationality";
@@ -60,6 +62,7 @@ public class DatabasHandler extends SQLiteAssetHelper {
 	private static final String KEY_LEVEL = "level";
 	private static final String KEY_STATE = "state";
 	private static final String KEY_START_TIME = "startTime";
+	private static final String KEY_LAST_P_UNLOCK = "lastPackageUnlock";
 
 	private Context myContex;
 
@@ -78,6 +81,7 @@ public class DatabasHandler extends SQLiteAssetHelper {
 		if (cursor.moveToFirst()) {
 			ret.put(KEY_COINS, cursor.getInt(cursor.getColumnIndex(KEY_COINS)));
 			ret.put(KEY_POINT, cursor.getInt(cursor.getColumnIndex(KEY_POINT)));
+			ret.put(KEY_LAST_P_UNLOCK, cursor.getInt(cursor.getColumnIndex(KEY_LAST_P_UNLOCK)));
 		}
 		cursor.close();
 		db.close();
@@ -120,6 +124,14 @@ public class DatabasHandler extends SQLiteAssetHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 		String sql = "UPDATE " + TABLE_LEVELS + " SET " + KEY_START_TIME
 				+ " = " + time + " WHERE " + KEY_ID + " = " + id + ";";
+		db.execSQL(sql);
+		db.close();
+	}
+	
+	public void setLastUnlock(int _level) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "UPDATE " + TABLE_GAME_DATA + " SET " + KEY_LAST_P_UNLOCK
+				+ " = " + _level + ";";
 		db.execSQL(sql);
 		db.close();
 	}
@@ -224,6 +236,31 @@ public class DatabasHandler extends SQLiteAssetHelper {
 		db.close();
 		return ret;
 	}
+	
+	public Question getQuestion(int id) {
+		String selectQuery = "SELECT * FROM " + TABLE_QUESTION + " WHERE "
+				+ KEY_ID + " = " + id + ";";
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+
+		Question ret = null;
+		if (cursor.moveToFirst()) {
+			ret = new Question(cursor.getInt(cursor.getColumnIndex(KEY_ID)),
+					cursor.getString(cursor.getColumnIndex(KEY_BODY)),
+					cursor.getString(cursor.getColumnIndex(KEY_ANSWER)),
+					cursor.getString(cursor.getColumnIndex(KEY_CHOICE_1)),
+					cursor.getString(cursor.getColumnIndex(KEY_CHOICE_2)),
+					cursor.getString(cursor.getColumnIndex(KEY_CHOICE_3)),
+					cursor.getString(cursor.getColumnIndex(KEY_CHOICE_4)),
+					cursor.getString(cursor.getColumnIndex(KEY_CHOICE_5)),
+					cursor.getString(cursor.getColumnIndex(KEY_CHOICE_6)),
+					cursor.getString(cursor.getColumnIndex(KEY_CHOICE_7)));
+		}
+		cursor.close();
+		db.close();
+		return ret;
+	}
 
 	public void setFalseAnswer(int levelId, String falseAnswer) {
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -260,7 +297,7 @@ public class DatabasHandler extends SQLiteAssetHelper {
 					.getColumnIndex(KEY_LEVEL))));
 			ret.put(KEY_STATE, String.valueOf(cursor.getInt(cursor
 					.getColumnIndex(KEY_STATE))));
-			ret.put(KEY_START_TIME, String.valueOf(cursor.getInt(cursor
+			ret.put(KEY_START_TIME, String.valueOf(cursor.getLong(cursor
 					.getColumnIndex(KEY_START_TIME))));
 			ret.put(KEY_STATE, String.valueOf(cursor.getInt(cursor
 					.getColumnIndex(KEY_STATE))));
@@ -284,7 +321,7 @@ public class DatabasHandler extends SQLiteAssetHelper {
 		db.close();
 	}
 
-	public void addScore(int levelId, int _score) {
+	public void addScore(int _score) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		String sql = "UPDATE " + TABLE_GAME_DATA + " SET " + KEY_POINT + " = "
 				+ KEY_POINT + " + " + _score + ";";

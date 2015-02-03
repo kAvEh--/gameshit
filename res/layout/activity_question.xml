@@ -101,8 +101,8 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
-                    android:onClick="onFreezClick"
                     android:background="@null"
+                    android:onClick="onFreezClick"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_image_timer_off" />
 
@@ -130,13 +130,31 @@
             </LinearLayout>
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/q_main_image"
+        <RelativeLayout
+            android:id="@+id/q_main_layout"
             android:layout_width="wrap_content"
             android:layout_height="200dp"
             android:layout_below="@id/q_header"
-            android:layout_centerHorizontal="true"
-            android:scaleType="centerInside" />
+            android:layout_centerHorizontal="true" >
+
+            <ImageView
+                android:id="@+id/q_main_image"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_centerHorizontal="true"
+                android:scaleType="centerInside" />
+
+            <TextView
+                android:id="@+id/q_main_question"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="7dp"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:visibility="gone" />
+        </RelativeLayout>
 
         <ImageView
             android:id="@+id/q_seprator"
@@ -150,7 +168,7 @@
             android:id="@+id/q_c_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/q_main_image"
+            android:layout_below="@id/q_main_layout"
             android:layout_marginBottom="16dp"
             android:layout_toLeftOf="@id/q_seprator"
             android:background="#ccc"
@@ -162,7 +180,7 @@
             android:id="@+id/q_c_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/q_main_image"
+            android:layout_below="@id/q_main_layout"
             android:layout_marginBottom="16dp"
             android:layout_toRightOf="@id/q_seprator"
             android:background="#ccc"

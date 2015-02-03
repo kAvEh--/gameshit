@@ -7,6 +7,60 @@
     android:gravity="center_horizontal"
     tools:context=".MainActivity" >
 
+    <RelativeLayout
+        android:id="@+id/q_header_score_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#ccc"
+        android:padding="3dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:onClick="onCoimClick" >
+
+            <ImageView
+                android:id="@+id/question_header_coins_ic"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_cups" />
+
+            <TextView
+                android:id="@+id/question_header_coins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/question_header_coins_ic"
+                android:textSize="22sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:onClick="onCoinClick" >
+
+            <TextView
+                android:id="@+id/question_header_points"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:textSize="22sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/question_header_points"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_points" />
+        </RelativeLayout>
+    </RelativeLayout>
+
     <com.glass.footballquize.PagerContainer
         android:id="@+id/pager_container"
         android:layout_width="match_parent"
@@ -14,10 +68,21 @@
         android:layout_centerInParent="true" >
 
         <android.support.v4.view.ViewPager
-            android:layout_width="450dp"
-            android:layout_height="300dp"
+            android:layout_width="350dp"
+            android:layout_height="250dp"
             android:layout_gravity="center_horizontal" />
     </com.glass.footballquize.PagerContainer>
+
+    <ImageView
+        android:id="@+id/main_ball"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/aa"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/pager_container"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp" />
 
     <TextView
         android:id="@+id/tt"
