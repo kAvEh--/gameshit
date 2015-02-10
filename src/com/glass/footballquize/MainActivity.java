@@ -145,8 +145,8 @@ public class MainActivity extends FragmentActivity {
 
 		@SuppressLint("NewApi")
 		public void transformPage(View view, float position) {
-			int pageWidth = view.getWidth();
-			int pageHeight = view.getHeight();
+//			int pageWidth = view.getWidth();
+//			int pageHeight = view.getHeight();
 
 			if (position < -1) { // [-Infinity,-1)
 				// This page is way off-screen to the left.
@@ -161,8 +161,8 @@ public class MainActivity extends FragmentActivity {
 				// Modify the default slide transition to shrink the page as
 				// well
 				float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
-				float vertMargin = pageHeight * (1 - scaleFactor) / 2;
-				float horzMargin = pageWidth * (1 - scaleFactor) / 2;
+//				float vertMargin = pageHeight * (1 - scaleFactor) / 2;
+//				float horzMargin = pageWidth * (1 - scaleFactor) / 2;
 				// if (position < 0) {
 				// // view.setTranslationX(horzMargin - vertMargin / 3);
 				// } else {
@@ -237,7 +237,7 @@ public class MainActivity extends FragmentActivity {
 						fr.setStyle(DialogFragment.STYLE_NO_TITLE,
 								R.style.MyDialog);
 						fr.setLevel(stage + 1);
-						fr.setScore(_points);
+						fr.setCoins(_coins);
 						fr.show(getSupportFragmentManager(), "Hello");
 					} else {
 						Toast.makeText(getApplicationContext(),
@@ -277,8 +277,8 @@ public class MainActivity extends FragmentActivity {
 		initialize();
 	}
 	
-	public void updateunlock(int level) {
-		this._last_level = level;
+	public void updateunlock() {
+		initialize();
 		mPager.setAdapter(adapter);
 		mPager.setCurrentItem(_last_level - 1);
 	}

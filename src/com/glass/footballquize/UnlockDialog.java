@@ -1,7 +1,5 @@
 package com.glass.footballquize;
 
-import com.glass.utils.DatabasHandler;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,14 +8,14 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.TextView;
+
+import com.glass.utils.DatabasHandler;
 
 public class UnlockDialog extends DialogFragment {
 
 	int _level = 0;
-	int _score = 0;
+	int _coins = 0;
 	int[] _unlocks;
 
 	@SuppressLint("InflateParams")
@@ -35,15 +33,17 @@ public class UnlockDialog extends DialogFragment {
 
 		TextView score = (TextView) rootView
 				.findViewById(R.id.dialog_unlock_body);
-		System.out.println(_unlocks[_level]);
-		System.out.println(_unlocks[_level + 1]);
-		System.out.println(_unlocks[_level + 2]);
-		if (_score >= _unlocks[_level])
+		if (_coins >= getActivity().getResources().getInteger(
+				R.integer.COINS_TO_UNLOCK_LEVEL))
 			score.setText("Do you wanna unlock it?...");
 		else
-			score.setText("You need " + _unlocks[_level] + " score to unlock....");
+			score.setText("You need "
+					+ getActivity().getResources().getInteger(
+							R.integer.COINS_TO_UNLOCK_LEVEL)
+					+ " cups to unlock....");
 
-		if (_score >= _unlocks[_level]) {
+		if (_coins >= getActivity().getResources().getInteger(
+				R.integer.COINS_TO_UNLOCK_LEVEL)) {
 			// Inflate and set the layout for the dialog
 			// Pass null as the parent view because its going in the dialog
 			// layout
@@ -57,9 +57,13 @@ public class UnlockDialog extends DialogFragment {
 									DatabasHandler db = new DatabasHandler(
 											getActivity());
 									db.setLastUnlock(_level);
+									db.minusCoins(getActivity()
+											.getResources()
+											.getInteger(
+													R.integer.COINS_TO_UNLOCK_LEVEL));
 									db.close();
 									((MainActivity) getActivity())
-											.updateunlock(_level);
+											.updateunlock();
 									UnlockDialog.this.getDialog().cancel();
 								}
 							})
@@ -88,7 +92,7 @@ public class UnlockDialog extends DialogFragment {
 		this._level = s;
 	}
 
-	public void setScore(int s) {
-		this._score = s;
+	public void setCoins(int c) {
+		this._coins = c;
 	}
 }

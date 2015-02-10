@@ -12,12 +12,21 @@
         android:textSize="25sp" />
 
     <TextView
-        android:id="@+id/dialog_success_main"
+        android:id="@+id/dialog_success_coins"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/dialog_success_score"
-        android:layout_margin="25dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/dialog_success_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_success_coins"
         android:layout_centerInParent="true"
+        android:layout_margin="25dp"
         android:textSize="30sp" />
 
     <Button
@@ -35,8 +44,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/dialog_success_main"
-        android:text="Back"
         android:padding="7dp"
+        android:text="Back"
         android:textSize="25sp" />
 
 </RelativeLayout>

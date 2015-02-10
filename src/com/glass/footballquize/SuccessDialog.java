@@ -12,6 +12,7 @@ import android.widget.TextView;
 public class SuccessDialog extends DialogFragment {
 	
 	int _score = 0;
+	int _coins = 0;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -23,7 +24,10 @@ public class SuccessDialog extends DialogFragment {
 		title.setText("Success !!!");
 		
 		TextView score = (TextView) rootView.findViewById(R.id.dialog_success_score);
-		score.setText(_score + "...");
+		score.setText("You get " + _score + " balls...");
+		
+		TextView coins = (TextView) rootView.findViewById(R.id.dialog_success_coins);
+		coins.setText("You get " + _coins + " cups...");
 		
 		Button next = (Button) rootView.findViewById(R.id.dialog_success_next);
 		next.setOnClickListener(new OnClickListener() {
@@ -48,5 +52,9 @@ public class SuccessDialog extends DialogFragment {
 	
 	public void setScore(int s) {
 		this._score = s;
+	}
+	
+	public void setCoins(int c) {
+		this._coins = c;
 	}
 }

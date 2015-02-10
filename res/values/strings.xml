@@ -16,6 +16,7 @@
     <string name="KEY_RELATED">relatedId</string>
     <string name="KEY_START_TIME">startTime</string>
     <string name="KEY_FALSE_ANSWERS">falseAnswers</string>
+    <string name="KEY_REMOVED_CHOICES">removedChoices</string>
     <string name="KEY_LEVEL_STATE">levelState</string>
     <string name="KEY_USED_FREEZ">usedFreez</string>
     <string name="KEY_USED_HINTS">usedHints</string>

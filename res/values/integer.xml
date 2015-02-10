@@ -14,6 +14,8 @@
     <integer name="STATE_FALSE">2</integer>
     <integer name="STATE_CORRECT">3</integer>
     
+    <integer name="COINS_TO_UNLOCK_LEVEL">500</integer>
+    
     <integer-array name="scores_unlock">
         <item>0</item>
         <item>0</item>
