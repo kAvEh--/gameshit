@@ -69,12 +69,28 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/q_tima_bar"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:layout_gravity="right"
-                android:background="#515"
-                android:gravity="right" >
+                android:layout_gravity="right" >
+
+                <RelativeLayout
+                    android:id="@+id/q_tima_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_gravity="right"
+                    android:background="#00CC00"
+                    android:gravity="right" >
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/q_time_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="#000"
+                    android:textSize="14sp"
+                    android:text="90" />
             </RelativeLayout>
 
             <LinearLayout
@@ -139,10 +155,10 @@
 
             <ImageView
                 android:id="@+id/q_main_image"
-                android:layout_width="wrap_content"
+                android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_centerHorizontal="true"
-                android:scaleType="centerInside" />
+                android:scaleType="fitXY" />
 
             <TextView
                 android:id="@+id/q_main_question"

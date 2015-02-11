@@ -68,6 +68,7 @@
         android:layout_centerInParent="true" >
 
         <android.support.v4.view.ViewPager
+            android:id="@+id/mainViewPager"
             android:layout_width="350dp"
             android:layout_height="250dp"
             android:layout_gravity="center_horizontal" />
@@ -77,27 +78,11 @@
         android:id="@+id/main_ball"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/aa"
-        android:layout_marginTop="10dp"
         android:layout_below="@id/pager_container"
         android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp" />
-
-    <TextView
-        android:id="@+id/tt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="kajhskjfahdjkahkdljf" />
-
-    <TextView
-        android:id="@+id/jj"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tt"
-        android:layout_centerHorizontal="true"
-        android:background="#000"
-        android:text="#$#$#$#$#$#$#$#$#$" />
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/aa" />
 
 </RelativeLayout>

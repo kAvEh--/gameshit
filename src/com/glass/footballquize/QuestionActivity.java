@@ -30,7 +30,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -105,6 +105,7 @@ public class QuestionActivity extends FragmentActivity {
 	Player _player;
 
 	RelativeLayout time_bar;
+	TextView time_text;
 	int time_bar_width;
 
 	CountDownTimer counter;
@@ -188,6 +189,7 @@ public class QuestionActivity extends FragmentActivity {
 		_points_view = (TextView) findViewById(R.id.question_header_points);
 		_coins_view = (TextView) findViewById(R.id.question_header_coins);
 		time_bar = (RelativeLayout) findViewById(R.id.q_tima_bar);
+		time_text = (TextView) findViewById(R.id.q_time_text);
 
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -533,6 +535,10 @@ public class QuestionActivity extends FragmentActivity {
 			}
 		}
 		if (_state == getResources().getInteger(R.integer.STATE_CORRECT)) {
+			_skip_button.setVisibility(View.INVISIBLE);
+			_freez_button.setVisibility(View.INVISIBLE);
+			_remove_button.setVisibility(View.INVISIBLE);
+			_hint_button.setVisibility(View.INVISIBLE);
 			game_flag = false;
 			_ch1.setTag(false);
 			_ch2.setTag(false);
@@ -567,7 +573,7 @@ public class QuestionActivity extends FragmentActivity {
 						.min((int) (((double) tmpTime / (double) _TOTAL_TIME) * time_bar_width),
 								time_bar_width));
 				time_bar.setLayoutParams(l);
-				time_bar.setBackgroundColor(Color.BLUE);
+				time_bar.setBackgroundColor(Color.GREEN);
 
 			} else {
 				long now_time = System.currentTimeMillis();
@@ -605,15 +611,19 @@ public class QuestionActivity extends FragmentActivity {
 							.min((int) (((double) milli / (double) _TOTAL_TIME) * time_bar_width),
 									time_bar_width));
 					time_bar.setLayoutParams(l);
+					time_text.setText((int) (milli / 1000) + "");
+				} else {
+					time_text
+							.setText((int) ((milli - _TOTAL_TIME) / 1000) + "");
 				}
 				if (milli < _TOTAL_TIME / 4)
 					time_bar.setBackgroundColor(Color.RED);
 				else if (milli < _TOTAL_TIME / 4 * 2)
 					time_bar.setBackgroundColor(Color.YELLOW);
 				else if (milli < _TOTAL_TIME / 4 * 3)
-					time_bar.setBackgroundColor(Color.GREEN);
+					time_bar.setBackgroundColor(Color.CYAN);
 				else
-					time_bar.setBackgroundColor(Color.BLUE);
+					time_bar.setBackgroundColor(Color.GREEN);
 			}
 
 			public void onFinish() {
@@ -621,7 +631,6 @@ public class QuestionActivity extends FragmentActivity {
 				l.width = 0;
 				time_bar.setLayoutParams(l);
 				currentTime = 0;
-				_skip_button.setVisibility(View.INVISIBLE);
 				_freez_button.setVisibility(View.INVISIBLE);
 			}
 		};
@@ -644,10 +653,14 @@ public class QuestionActivity extends FragmentActivity {
 		if (counter != null)
 			counter.cancel();
 		game_flag = false;
+		_skip_button.setVisibility(View.INVISIBLE);
+		_freez_button.setVisibility(View.INVISIBLE);
+		_remove_button.setVisibility(View.INVISIBLE);
+		_hint_button.setVisibility(View.INVISIBLE);
 		v.setBackgroundColor(Color.GREEN);
 		// TODO set score
 		int tmpScore = (int) (Math.min(_TOTAL_TIME, currentTime) / 1000);
-		
+
 		if (_false_num < 1)
 			tmpScore += _SCORE_BONUS_FULL;
 		else if (_false_num < 2)
@@ -674,7 +687,7 @@ public class QuestionActivity extends FragmentActivity {
 		db.addScore(tmpScore);
 		db.addCoins(tmpCoins);
 		db.close();
-		
+
 		showSuccessPage(tmpScore, tmpCoins);
 	}
 
@@ -917,90 +930,104 @@ public class QuestionActivity extends FragmentActivity {
 	}
 
 	public void onSkipClick(View v) {
-		if (_coins > _COIN_SKIP) {
-			counter.cancel();
-			if (_ch1.getText().toString().equals(_correct_answer))
-				_ch1.setBackgroundColor(Color.GREEN);
-			else if (_ch2.getText().toString().equals(_correct_answer))
-				_ch2.setBackgroundColor(Color.GREEN);
-			else if (_ch3.getText().toString().equals(_correct_answer))
-				_ch3.setBackgroundColor(Color.GREEN);
-			else if (_ch4.getText().toString().equals(_correct_answer))
-				_ch4.setBackgroundColor(Color.GREEN);
-			else if (_ch5.getText().toString().equals(_correct_answer))
-				_ch5.setBackgroundColor(Color.GREEN);
-			else if (_ch6.getText().toString().equals(_correct_answer))
-				_ch6.setBackgroundColor(Color.GREEN);
-			else if (_ch7.getText().toString().equals(_correct_answer))
-				_ch7.setBackgroundColor(Color.GREEN);
-			else if (_ch8.getText().toString().equals(_correct_answer))
-				_ch8.setBackgroundColor(Color.GREEN);
-			DatabasHandler db = new DatabasHandler(getApplicationContext());
-			db.minusCoins(_COIN_SKIP);
-			db.addScore(_SCORE_SKIP);
-			db.close();
-			_coins -= _COIN_SKIP;
-			int tmpCoins = 0;
-			if (_false_num < 1)
-				tmpCoins = _COINS_FULL;
-			else if (_false_num < 2)
-				tmpCoins = _COINS_HALF;
-			else if (_false_num < 4)
-				tmpCoins = _COINS_LESS;
-			_coins += tmpCoins;
-			_coins_view.setText(String.valueOf(_coins));
-			// TODO
-			showSuccessPage(_SCORE_SKIP, tmpCoins);
-		} else {
-			Toast.makeText(getApplicationContext(),
-					"You don`t have enough coins.", Toast.LENGTH_LONG).show();
-		}
-	}
-
-	public void onRemoveClick(View v) {
 		if (game_flag) {
-			if (_coins > _COIN_REMOVE) {
-				List<Button> choicetmp = new ArrayList<Button>();
-				choicetmp.add(_ch1);
-				choicetmp.add(_ch2);
-				choicetmp.add(_ch3);
-				choicetmp.add(_ch4);
-				choicetmp.add(_ch5);
-				choicetmp.add(_ch6);
-				choicetmp.add(_ch7);
-				choicetmp.add(_ch8);
-
-				for (int j = 0; j < 4; j++) {
-					Collections.shuffle(choicetmp);
-					for (int i = 0; i < 8; i++) {
-						if ((Boolean) choicetmp.get(i).getTag()
-								&& !choicetmp.get(i).getText().toString()
-										.equals(_correct_answer)) {
-
-							choicetmp.get(i).setTag(false);
-							choicetmp.get(i).setVisibility(View.INVISIBLE);
-
-							if (_removedChoices == null)
-								_removedChoices = choicetmp.get(i).getText()
-										.toString();
-							else
-								_removedChoices = _removedChoices + ","
-										+ choicetmp.get(i).getText().toString();
-
-							break;
-						}
-					}
-				}
+			if (_coins > _COIN_SKIP) {
+				counter.cancel();
+				if (_ch1.getText().toString().equals(_correct_answer))
+					_ch1.setBackgroundColor(Color.GREEN);
+				else if (_ch2.getText().toString().equals(_correct_answer))
+					_ch2.setBackgroundColor(Color.GREEN);
+				else if (_ch3.getText().toString().equals(_correct_answer))
+					_ch3.setBackgroundColor(Color.GREEN);
+				else if (_ch4.getText().toString().equals(_correct_answer))
+					_ch4.setBackgroundColor(Color.GREEN);
+				else if (_ch5.getText().toString().equals(_correct_answer))
+					_ch5.setBackgroundColor(Color.GREEN);
+				else if (_ch6.getText().toString().equals(_correct_answer))
+					_ch6.setBackgroundColor(Color.GREEN);
+				else if (_ch7.getText().toString().equals(_correct_answer))
+					_ch7.setBackgroundColor(Color.GREEN);
+				else if (_ch8.getText().toString().equals(_correct_answer))
+					_ch8.setBackgroundColor(Color.GREEN);
 				DatabasHandler db = new DatabasHandler(getApplicationContext());
-				db.minusCoins(_COIN_REMOVE);
-				db.setRemovedChoices(_levelId, _removedChoices);
+				db.minusCoins(_COIN_SKIP);
+				db.addScore(_SCORE_SKIP);
 				db.close();
-				_coins -= _COIN_REMOVE;
+				_coins -= _COIN_SKIP;
+				int tmpCoins = 0;
+				if (_false_num < 1)
+					tmpCoins = _COINS_FULL;
+				else if (_false_num < 2)
+					tmpCoins = _COINS_HALF;
+				else if (_false_num < 4)
+					tmpCoins = _COINS_LESS;
+				_coins += tmpCoins;
 				_coins_view.setText(String.valueOf(_coins));
+				// TODO
+				showSuccessPage(_SCORE_SKIP, tmpCoins);
 			} else
 				Toast.makeText(getApplicationContext(),
 						"You don`t have enough coins.", Toast.LENGTH_LONG)
 						.show();
+		} else
+			Toast.makeText(getApplicationContext(), "Really needs help??",
+					Toast.LENGTH_LONG).show();
+	}
+
+	public void onRemoveClick(View v) {
+		if (game_flag) {
+			if (_removedChoices == null) {
+				if (_coins > _COIN_REMOVE) {
+					_remove_button.setVisibility(View.INVISIBLE);
+					List<Button> choicetmp = new ArrayList<Button>();
+					choicetmp.add(_ch1);
+					choicetmp.add(_ch2);
+					choicetmp.add(_ch3);
+					choicetmp.add(_ch4);
+					choicetmp.add(_ch5);
+					choicetmp.add(_ch6);
+					choicetmp.add(_ch7);
+					choicetmp.add(_ch8);
+
+					for (int j = 0; j < 4; j++) {
+						Collections.shuffle(choicetmp);
+						for (int i = 0; i < 8; i++) {
+							if ((Boolean) choicetmp.get(i).getTag()
+									&& !choicetmp.get(i).getText().toString()
+											.equals(_correct_answer)) {
+
+								choicetmp.get(i).setTag(false);
+								choicetmp.get(i).setVisibility(View.INVISIBLE);
+
+								if (_removedChoices == null)
+									_removedChoices = choicetmp.get(i)
+											.getText().toString();
+								else
+									_removedChoices = _removedChoices
+											+ ","
+											+ choicetmp.get(i).getText()
+													.toString();
+
+								break;
+							}
+						}
+					}
+					DatabasHandler db = new DatabasHandler(
+							getApplicationContext());
+					db.minusCoins(_COIN_REMOVE);
+					db.setRemovedChoices(_levelId, _removedChoices);
+					db.close();
+					_coins -= _COIN_REMOVE;
+					_coins_view.setText(String.valueOf(_coins));
+				} else
+					Toast.makeText(getApplicationContext(),
+							"You don`t have enough coins.", Toast.LENGTH_LONG)
+							.show();
+			} else {
+				Toast.makeText(getApplicationContext(),
+						"You can`t use it twice.", Toast.LENGTH_LONG)
+						.show();
+			}
 		} else
 			Toast.makeText(getApplicationContext(), "Really needs help??",
 					Toast.LENGTH_LONG).show();
@@ -1012,14 +1039,14 @@ public class QuestionActivity extends FragmentActivity {
 				if (currentTime > 0) {
 					if (_coins > _COIN_FREEZ) {
 						counter.cancel();
-						time_bar.setBackgroundColor(Color.BLUE);
+						time_bar.setBackgroundColor(Color.GREEN);
 
 						DatabasHandler db = new DatabasHandler(
 								getApplicationContext());
 						db.minusCoins(_COIN_FREEZ);
 						db.usedFreez(_levelId, currentTime);
 						db.close();
-						_used_freez = (int) currentTime;
+						_used_freez = (int) Math.min(currentTime, _TOTAL_TIME);
 						_coins -= _COIN_FREEZ;
 						_coins_view.setText(String.valueOf(_coins));
 					} else
@@ -1038,23 +1065,28 @@ public class QuestionActivity extends FragmentActivity {
 	}
 
 	public void onHintClick(View v) {
-		if (_used_hint == 0) {
-			if (_coins > _COIN_HELP) {
-				DatabasHandler db = new DatabasHandler(getApplicationContext());
-				db.minusCoins(_COIN_HELP);
-				db.usedHint(_levelId);
-				db.close();
-				_coins -= _COIN_HELP;
-				_used_hint = 1;
-				_coins_view.setText(String.valueOf(_coins));
+		if (game_flag) {
+			if (_used_hint == 0) {
+				if (_coins > _COIN_HELP) {
+					DatabasHandler db = new DatabasHandler(
+							getApplicationContext());
+					db.minusCoins(_COIN_HELP);
+					db.usedHint(_levelId);
+					db.close();
+					_coins -= _COIN_HELP;
+					_used_hint = 1;
+					_coins_view.setText(String.valueOf(_coins));
+					Toast.makeText(getApplicationContext(), _hint_toshow,
+							Toast.LENGTH_LONG).show();
+				} else
+					Toast.makeText(getApplicationContext(),
+							"You don`t have enough coins.", Toast.LENGTH_LONG)
+							.show();
+			} else
 				Toast.makeText(getApplicationContext(), _hint_toshow,
 						Toast.LENGTH_LONG).show();
-			} else
-				Toast.makeText(getApplicationContext(),
-						"You don`t have enough coins.", Toast.LENGTH_LONG)
-						.show();
 		} else
-			Toast.makeText(getApplicationContext(), _hint_toshow,
+			Toast.makeText(getApplicationContext(), "Really needs help??",
 					Toast.LENGTH_LONG).show();
 	}
 

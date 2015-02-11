@@ -13,11 +13,13 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -45,9 +47,6 @@ public class MainActivity extends FragmentActivity {
 
 	PagerContainer mContainer;
 
-	TextView tt;
-	TextView jj;
-
 	TextView _points_view;
 	TextView _coins_view;
 
@@ -60,19 +59,28 @@ public class MainActivity extends FragmentActivity {
 
 	DisplayMetrics metrics;
 	float image_margin_px;
-	
+
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		tt = (TextView) findViewById(R.id.tt);
-		jj = (TextView) findViewById(R.id.jj);
-
 		_points_view = (TextView) findViewById(R.id.question_header_points);
 		_coins_view = (TextView) findViewById(R.id.question_header_coins);
 		_ball_image = (ImageView) findViewById(R.id.main_ball);
+
+		ViewPager myVP = (ViewPager) findViewById(R.id.mainViewPager);
+		metrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		int width = metrics.widthPixels * 70 / 100;
+		int height = metrics.heightPixels * 30 / 100;
+
+		FrameLayout.LayoutParams tmpParams = new FrameLayout.LayoutParams(
+				width, height);
+		tmpParams.gravity = Gravity.CENTER;
+		
+		myVP.setLayoutParams(tmpParams);
 
 		initialize();
 
@@ -95,9 +103,6 @@ public class MainActivity extends FragmentActivity {
 
 		// set page to last page unlocked
 		mPager.setCurrentItem(_last_level - 1);
-
-		metrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
 		// initialChecks();
 	}
@@ -145,8 +150,8 @@ public class MainActivity extends FragmentActivity {
 
 		@SuppressLint("NewApi")
 		public void transformPage(View view, float position) {
-//			int pageWidth = view.getWidth();
-//			int pageHeight = view.getHeight();
+			// int pageWidth = view.getWidth();
+			// int pageHeight = view.getHeight();
 
 			if (position < -1) { // [-Infinity,-1)
 				// This page is way off-screen to the left.
@@ -161,8 +166,8 @@ public class MainActivity extends FragmentActivity {
 				// Modify the default slide transition to shrink the page as
 				// well
 				float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
-//				float vertMargin = pageHeight * (1 - scaleFactor) / 2;
-//				float horzMargin = pageWidth * (1 - scaleFactor) / 2;
+				// float vertMargin = pageHeight * (1 - scaleFactor) / 2;
+				// float horzMargin = pageWidth * (1 - scaleFactor) / 2;
 				// if (position < 0) {
 				// // view.setTranslationX(horzMargin - vertMargin / 3);
 				// } else {
@@ -276,7 +281,7 @@ public class MainActivity extends FragmentActivity {
 		super.onResume();
 		initialize();
 	}
-	
+
 	public void updateunlock() {
 		initialize();
 		mPager.setAdapter(adapter);
