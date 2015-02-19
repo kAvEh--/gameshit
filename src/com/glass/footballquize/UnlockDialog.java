@@ -16,15 +16,12 @@ public class UnlockDialog extends DialogFragment {
 
 	int _level = 0;
 	int _coins = 0;
-	int[] _unlocks;
 
 	@SuppressLint("InflateParams")
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		setRetainInstance(true);
-		_unlocks = getActivity().getResources().getIntArray(
-				R.array.scores_unlock);
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View rootView = inflater.inflate(R.layout.dialog_unlock, null);
 		TextView title = (TextView) rootView
@@ -57,7 +54,7 @@ public class UnlockDialog extends DialogFragment {
 									DatabasHandler db = new DatabasHandler(
 											getActivity());
 									db.setLastUnlock(_level);
-									db.minusCoins(getActivity()
+									db.addCoins(-getActivity()
 											.getResources()
 											.getInteger(
 													R.integer.COINS_TO_UNLOCK_LEVEL));

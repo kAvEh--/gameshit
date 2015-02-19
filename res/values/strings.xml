@@ -6,7 +6,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_question">QuestionActivity</string>
     <string name="title_activity_level">LevelActivity</string>
-    
     <string name="KEY_COINS">Coins</string>
     <string name="KEY_POINT">Point</string>
     <string name="KEY_LAST_P_UNLOCK">lastPackageUnlock</string>
@@ -20,6 +19,26 @@
     <string name="KEY_LEVEL_STATE">levelState</string>
     <string name="KEY_USED_FREEZ">usedFreez</string>
     <string name="KEY_USED_HINTS">usedHints</string>
+    <string name="KEY_USED_SKIP">usedSkip</string>
     <string name="KEY_ID">Id</string>
-    
+    <string name="KEY_PACKAGEID">packageId</string>
+    <string name="KEY_API_KEY">api_key</string>
+    <string name="KEY_NAME">name</string>
+    <string name="KEY_PHONE_NUM">phoneNum</string>
+    <string name="KEY_EMAIL">email</string>
+    <string name="KEY_SKIP_NUM">skipNum</string>
+    <string name="KEY_FREEZE_NUM">freezeNum</string>
+    <string name="KEY_REMOVE_NUM">removeNum</string>
+    <string name="KEY_HINT_NUM">hintNum</string>
+    <string name="KEY_FIRST_SHOT">firstShot</string>
+    <string name="KEY_LEVEL_COMPLETED">levelCompleted</string>
+    <string name="KEY_CORRECT_IN_RAW">CorrectInRaw</string>
+    <string name="KEY_IS_DONE">isDone</string>
+    <string name="KEY_TITLE">title</string>
+    <string name="KEY_BODY">body</string>
+    <string name="KEY_FREE_HINT">freeHint</string>
+    <string name="KEY_FREE_REMOVE">freeRemove</string>
+    <string name="KEY_FREE_FREEZE">freeFreeze</string>
+    <string name="KEY_FREE_SKIP">freeSkip</string>
+
 </resources>

@@ -21,11 +21,13 @@ import com.glass.footballquize.R;
 public class GridLevelAdapter extends BaseAdapter {
 	private Activity mActivity;
 	ArrayList<HashMap<String, Integer>> data;
+	private int _packageId;
 
 	// Constructor
-	public GridLevelAdapter(Activity c, ArrayList<HashMap<String, Integer>> d) {
+	public GridLevelAdapter(Activity c, ArrayList<HashMap<String, Integer>> d, int packageId) {
 		this.mActivity = c;
 		this.data = d;
+		this._packageId = packageId;
 	}
 
 	public int getCount() {
@@ -118,6 +120,9 @@ public class GridLevelAdapter extends BaseAdapter {
 					data.get(tag)
 							.get(mActivity.getResources().getString(
 									R.string.KEY_ID)));
+			i.putExtra(
+					mActivity.getResources().getString(R.string.KEY_PACKAGEID),
+					_packageId);
 			i.putExtra("position", tag);
 			i.putExtra("test", data);
 			mActivity.startActivity(i);

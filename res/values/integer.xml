@@ -16,38 +16,28 @@
     
     <integer name="COINS_TO_UNLOCK_LEVEL">500</integer>
     
-    <integer-array name="scores_unlock">
-        <item>0</item>
-        <item>0</item>
-        <item>1000</item>
-        <item>2000</item>
-        <item>3000</item>
-        <item>4000</item>
-        <item>5000</item>
-        <item>6000</item>
-        <item>7000</item>
-        <item>8000</item>
-        <item>9000</item>
-        <item>10000</item>
-        <item>11000</item>
-        <item>12000</item>
-        <item>13000</item>
-        <item>14000</item>
-        <item>15000</item>
-        <item>16000</item>
-        <item>17000</item>
-        <item>18000</item>
-        <item>19000</item>
-        <item>20000</item>
-        <item>21000</item>
-        <item>22000</item>
-        <item>23000</item>
-        <item>24000</item>
-        <item>25000</item>
-        <item>26000</item>
-        <item>27000</item>
-        <item>28000</item>
-        <item>29000</item>
-    </integer-array>
+    <integer name="ACH_INRAW_5_ID">1</integer>
+    <integer name="ACH_INRAW_10_ID">2</integer>
+    <integer name="ACH_INRAW_20_ID">3</integer>
+    <integer name="ACH_INRAW_50_ID">4</integer>
+    
+    <integer name="ACH_PACkAGE_2000_ID">5</integer>
+    <integer name="ACH_PACkAGE_2100_ID">6</integer>
+    <integer name="ACH_PACkAGE_2200_ID">7</integer>
+    <integer name="ACH_PACkAGE_2300_ID">8</integer>
+    
+    <integer name="ACH_POINTS_5000_ID">9</integer>
+    <integer name="ACH_POINTS_10000_ID">10</integer>
+    <integer name="ACH_POINTS_20000_ID">11</integer>
+    <integer name="ACH_POINTS_40000_ID">12</integer>
+    
+    <integer name="ACH_INRAW_5">30</integer>
+    <integer name="ACH_INRAW_10">60</integer>
+    <integer name="ACH_INRAW_20">150</integer>
+    <integer name="ACH_INRAW_50">500</integer>
+    <integer name="ACH_PACkAGE_2000">50</integer>
+    <integer name="ACH_PACkAGE_2100">100</integer>
+    <integer name="ACH_PACkAGE_2200">150</integer>
+    <integer name="ACH_PACkAGE_2300">200</integer>
     
 </resources>

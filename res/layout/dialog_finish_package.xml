@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#123" >
+
+    <TextView
+        android:id="@+id/dialog_success_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/dialog_success_coins"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_success_score"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/dialog_success_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_success_coins"
+        android:layout_centerInParent="true"
+        android:layout_margin="25dp"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/dialog_success_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/dialog_success_main"
+        android:padding="7dp"
+        android:text="Next"
+        android:textSize="25sp" />
+
+    <Button
+        android:id="@+id/dialog_success_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_success_main"
+        android:padding="7dp"
+        android:text="Back"
+        android:textSize="25sp" />
+
+</RelativeLayout>

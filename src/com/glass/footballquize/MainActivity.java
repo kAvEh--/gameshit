@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.glass.utils.DatabasHandler;
+import com.glass.utils.SendDatatoServer;
 
 public class MainActivity extends FragmentActivity {
 
@@ -60,6 +61,8 @@ public class MainActivity extends FragmentActivity {
 	DisplayMetrics metrics;
 	float image_margin_px;
 
+	private String _api_key;
+
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +82,7 @@ public class MainActivity extends FragmentActivity {
 		FrameLayout.LayoutParams tmpParams = new FrameLayout.LayoutParams(
 				width, height);
 		tmpParams.gravity = Gravity.CENTER;
-		
+
 		myVP.setLayoutParams(tmpParams);
 
 		initialize();
@@ -104,7 +107,8 @@ public class MainActivity extends FragmentActivity {
 		// set page to last page unlocked
 		mPager.setCurrentItem(_last_level - 1);
 
-		// initialChecks();
+		SendDatatoServer tmp = new SendDatatoServer(this);
+		tmp.checkUser();
 	}
 
 	private void initialize() {

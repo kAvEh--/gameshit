@@ -79,7 +79,7 @@ public class LevelActivity extends Activity {
 		DatabasHandler db = new DatabasHandler(getApplicationContext());
 		ArrayList<HashMap<String, Integer>> data = db.getLevelData(_level);
 		db.close();
-		adapter = new GridLevelAdapter(LevelActivity.this, data);
+		adapter = new GridLevelAdapter(LevelActivity.this, data, _level);
 		_grid.setAdapter(adapter);
 		// _grid.setDrawSelectorOnTop(true);
 

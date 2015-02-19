@@ -30,6 +30,9 @@ public class DatabasHandler extends SQLiteAssetHelper {
 	private static final String TABLE_MANAGER = "Manager";
 	private static final String TABLE_LEVELS = "Levels";
 	private static final String TABLE_GAME_DATA = "GameData";
+	private static final String TABLE_PACKAGE_INFO = "packageInfo";
+	private static final String TABLE_USER = "user";
+	private static final String TABLE_ACHIEVEMENTS = "Achievements";
 
 	// Items Fields
 	private static final String KEY_ID = "Id";
@@ -61,9 +64,27 @@ public class DatabasHandler extends SQLiteAssetHelper {
 	private static final String KEY_TYPE = "Type";
 	private static final String KEY_LEVEL = "level";
 	private static final String KEY_STATE = "state";
+	private static final String KEY_IS_SENT = "isSent";
+	private static final String KEY_LEVEL_COMPLETED = "levelCompleted";
+	private static final String KEY_FIRST_SHOT = "firstShot";
 	private static final String KEY_START_TIME = "startTime";
 	private static final String KEY_REMOVED_CHOICES = "removedChoices";
 	private static final String KEY_LAST_P_UNLOCK = "lastPackageUnlock";
+	private static final String KEY_API_KEY = "api_key";
+	private static final String KEY_NAME = "name";
+	private static final String KEY_PHONE_NUM = "phoneNum";
+	private static final String KEY_EMAIL = "email";
+	private static final String KEY_SKIP_NUM = "skipNum";
+	private static final String KEY_FREEZE_NUM = "freezeNum";
+	private static final String KEY_REMOVE_NUM = "removeNum";
+	private static final String KEY_HINT_NUM = "hintNum";
+	private static final String KEY_CORRECT_IN_RAW = "CorrectInRaw";
+	private static final String KEY_TITLE = "title";
+	private static final String KEY_IS_DONE = "isDone";
+	private static final String KEY_FREE_HINT = "freeHint";
+	private static final String KEY_FREE_REMOVE = "freeRemove";
+	private static final String KEY_FREE_FREEZE = "freeFreeze";
+	private static final String KEY_FREE_SKIP = "freeSkip";
 
 	private Context myContex;
 
@@ -84,6 +105,16 @@ public class DatabasHandler extends SQLiteAssetHelper {
 			ret.put(KEY_POINT, cursor.getInt(cursor.getColumnIndex(KEY_POINT)));
 			ret.put(KEY_LAST_P_UNLOCK,
 					cursor.getInt(cursor.getColumnIndex(KEY_LAST_P_UNLOCK)));
+			ret.put(KEY_CORRECT_IN_RAW,
+					cursor.getInt(cursor.getColumnIndex(KEY_CORRECT_IN_RAW)));
+			ret.put(KEY_FREE_HINT,
+					cursor.getInt(cursor.getColumnIndex(KEY_FREE_HINT)));
+			ret.put(KEY_FREE_REMOVE,
+					cursor.getInt(cursor.getColumnIndex(KEY_FREE_REMOVE)));
+			ret.put(KEY_FREE_FREEZE,
+					cursor.getInt(cursor.getColumnIndex(KEY_FREE_FREEZE)));
+			ret.put(KEY_FREE_SKIP,
+					cursor.getInt(cursor.getColumnIndex(KEY_FREE_SKIP)));
 		}
 		cursor.close();
 		db.close();
@@ -301,21 +332,42 @@ public class DatabasHandler extends SQLiteAssetHelper {
 		db.close();
 	}
 
-	public void setRemovedChoices(int levelId, String choices) {
+	public void setRemovedChoices(int packageId, int levelId, String choices) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		String sql = "UPDATE " + TABLE_LEVELS + " SET " + KEY_REMOVED_CHOICES
 				+ " = '" + choices + "' WHERE " + KEY_ID + " = " + levelId
 				+ ";";
 		db.execSQL(sql);
+		sql = "UPDATE " + TABLE_PACKAGE_INFO + " SET " + KEY_REMOVE_NUM + " = "
+				+ KEY_REMOVE_NUM + " + 1 WHERE " + KEY_ID + " = " + packageId
+				+ ";";
+		db.execSQL(sql);
 		db.close();
 	}
 
-	public void setCorrectAnswer(int levelId) {
+	public void setCorrectAnswer(int packageId, int levelId, boolean flag) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		String sql = "UPDATE " + TABLE_LEVELS + " SET " + KEY_STATE + " = "
 				+ myContex.getResources().getInteger(R.integer.STATE_CORRECT)
 				+ " WHERE " + KEY_ID + " = " + levelId + ";";
 		db.execSQL(sql);
+		sql = "UPDATE " + TABLE_PACKAGE_INFO + " SET " + KEY_LEVEL_COMPLETED
+				+ " = " + KEY_LEVEL_COMPLETED + " + 1 " + " WHERE " + KEY_ID
+				+ " = " + packageId + ";";
+		db.execSQL(sql);
+		if (flag) {
+			sql = "UPDATE " + TABLE_PACKAGE_INFO + " SET " + KEY_FIRST_SHOT
+					+ " = " + KEY_FIRST_SHOT + " + 1 " + " WHERE " + KEY_ID
+					+ " = " + packageId + ";";
+			db.execSQL(sql);
+			sql = "UPDATE " + TABLE_GAME_DATA + " SET " + KEY_CORRECT_IN_RAW
+					+ " = " + KEY_CORRECT_IN_RAW + " + 1;";
+			db.execSQL(sql);
+		} else {
+			sql = "UPDATE " + TABLE_GAME_DATA + " SET " + KEY_CORRECT_IN_RAW
+					+ " = 0;";
+			db.execSQL(sql);
+		}
 		db.close();
 	}
 
@@ -354,14 +406,6 @@ public class DatabasHandler extends SQLiteAssetHelper {
 		return ret;
 	}
 
-	public void minusCoins(int _coins) {
-		SQLiteDatabase db = this.getWritableDatabase();
-		String sql = "UPDATE " + TABLE_GAME_DATA + " SET " + KEY_COINS + " = "
-				+ KEY_COINS + " - " + _coins + ";";
-		db.execSQL(sql);
-		db.close();
-	}
-
 	public void addScore(int _score) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		String sql = "UPDATE " + TABLE_GAME_DATA + " SET " + KEY_POINT + " = "
@@ -369,7 +413,17 @@ public class DatabasHandler extends SQLiteAssetHelper {
 		db.execSQL(sql);
 		db.close();
 	}
-	
+
+	public void updatePackageInfoData(int packageId, int score, int coins) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "UPDATE " + TABLE_PACKAGE_INFO + " SET " + KEY_COINS
+				+ " = " + KEY_COINS + " + " + coins + ", " + KEY_POINT + " = "
+				+ KEY_POINT + " + " + score + " WHERE " + KEY_ID + " = "
+				+ packageId + ";";
+		db.execSQL(sql);
+		db.close();
+	}
+
 	public void addCoins(int _coins) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		String sql = "UPDATE " + TABLE_GAME_DATA + " SET " + KEY_COINS + " = "
@@ -378,18 +432,214 @@ public class DatabasHandler extends SQLiteAssetHelper {
 		db.close();
 	}
 
-	public void usedFreez(int levelId, long time) {
+	public void usedFreez(int packageId, int levelId, long time) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		String sql = "UPDATE " + TABLE_LEVELS + " SET " + KEY_USED_FREEZ
 				+ " = " + time + " WHERE " + KEY_ID + " = " + levelId + ";";
 		db.execSQL(sql);
+		sql = "UPDATE " + TABLE_PACKAGE_INFO + " SET " + KEY_FREEZE_NUM + " = "
+				+ KEY_FREEZE_NUM + " + 1 WHERE " + KEY_ID + " = " + packageId
+				+ ";";
+		db.execSQL(sql);
 		db.close();
 	}
 
-	public void usedHint(int levelId) {
+	public void usedSkip(int packageId) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "UPDATE " + TABLE_PACKAGE_INFO + " SET " + KEY_SKIP_NUM
+				+ " = " + KEY_SKIP_NUM + " + 1" + " WHERE " + KEY_ID + " = "
+				+ packageId + ";";
+		db.execSQL(sql);
+		db.close();
+	}
+
+	public void usedHint(int packageId, int levelId) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		String sql = "UPDATE " + TABLE_LEVELS + " SET " + KEY_USED_HINTS
 				+ " = 1 WHERE " + KEY_ID + " = " + levelId + ";";
+		db.execSQL(sql);
+		sql = "UPDATE " + TABLE_PACKAGE_INFO + " SET " + KEY_HINT_NUM + " = "
+				+ KEY_HINT_NUM + " + 1" + " WHERE " + KEY_ID + " = "
+				+ packageId + ";";
+		db.execSQL(sql);
+		db.close();
+	}
+
+	public HashMap<String, String> getUser() {
+		String selectQuery = "SELECT * FROM " + TABLE_USER + ";";
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+
+		HashMap<String, String> ret = new HashMap<String, String>();
+		if (cursor.moveToFirst()) {
+			ret.put(KEY_ID, String.valueOf(cursor.getInt(cursor
+					.getColumnIndex(KEY_ID))));
+			ret.put(KEY_API_KEY,
+					cursor.getString(cursor.getColumnIndex(KEY_API_KEY)));
+			ret.put(KEY_NAME, String.valueOf(cursor.getInt(cursor
+					.getColumnIndex(KEY_NAME))));
+			ret.put(KEY_PHONE_NUM, String.valueOf(cursor.getInt(cursor
+					.getColumnIndex(KEY_PHONE_NUM))));
+			ret.put(KEY_EMAIL, String.valueOf(cursor.getLong(cursor
+					.getColumnIndex(KEY_EMAIL))));
+		}
+		cursor.close();
+		db.close();
+		return ret;
+	}
+
+	public void setUser(int id, String api_key) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "UPDATE " + TABLE_USER + " SET " + KEY_ID + " = " + id
+				+ ", " + KEY_API_KEY + " = '" + api_key + "';";
+		db.execSQL(sql);
+		db.close();
+	}
+
+	public void setPackageIsFinish(int id) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "UPDATE " + TABLE_PACKAGE_INFO + " SET " + KEY_IS_SENT
+				+ " = " + 1 + " WHERE " + KEY_ID + " = " + id + ";";
+		db.execSQL(sql);
+		db.close();
+	}
+
+	public void setPackageIsSent(int id) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "UPDATE " + TABLE_PACKAGE_INFO + " SET " + KEY_IS_SENT
+				+ " = " + 2 + " WHERE " + KEY_ID + " = " + id + ";";
+		db.execSQL(sql);
+		db.close();
+	}
+
+	public ArrayList<HashMap<String, String>> getUnSentPackages() {
+		String selectQuery = "SELECT * FROM " + TABLE_PACKAGE_INFO + " WHERE "
+				+ KEY_IS_SENT + " = " + 1 + ";";
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+
+		ArrayList<HashMap<String, String>> ret = new ArrayList<HashMap<String, String>>();
+		HashMap<String, String> hash;
+		if (cursor.moveToFirst()) {
+			do {
+				hash = new HashMap<String, String>();
+				hash.put(KEY_ID, String.valueOf(cursor.getInt(cursor
+						.getColumnIndex(KEY_ID))));
+				hash.put(KEY_POINT, String.valueOf(cursor.getInt(cursor
+						.getColumnIndex(KEY_POINT))));
+				hash.put(KEY_COINS, String.valueOf(cursor.getInt(cursor
+						.getColumnIndex(KEY_COINS))));
+				hash.put(KEY_FIRST_SHOT, String.valueOf(cursor.getInt(cursor
+						.getColumnIndex(KEY_FIRST_SHOT))));
+				hash.put(KEY_SKIP_NUM, String.valueOf(cursor.getInt(cursor
+						.getColumnIndex(KEY_SKIP_NUM))));
+				hash.put(KEY_FREEZE_NUM, String.valueOf(cursor.getInt(cursor
+						.getColumnIndex(KEY_FREEZE_NUM))));
+				hash.put(KEY_REMOVE_NUM,
+						cursor.getString(cursor.getColumnIndex(KEY_REMOVE_NUM)));
+				hash.put(KEY_HINT_NUM,
+						cursor.getString(cursor.getColumnIndex(KEY_HINT_NUM)));
+				ret.add(hash);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		db.close();
+		return ret;
+	}
+
+	public HashMap<String, String> getPackageInfo(int packageId) {
+		String selectQuery = "SELECT * FROM " + TABLE_PACKAGE_INFO + " WHERE "
+				+ KEY_ID + " = " + packageId + ";";
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+
+		HashMap<String, String> hash = new HashMap<String, String>();
+		if (cursor.moveToFirst()) {
+			hash = new HashMap<String, String>();
+			hash.put(KEY_ID, String.valueOf(cursor.getInt(cursor
+					.getColumnIndex(KEY_ID))));
+			hash.put(KEY_LEVEL_COMPLETED, String.valueOf(cursor.getInt(cursor
+					.getColumnIndex(KEY_LEVEL_COMPLETED))));
+			hash.put(KEY_POINT, String.valueOf(cursor.getInt(cursor
+					.getColumnIndex(KEY_POINT))));
+			hash.put(KEY_COINS, String.valueOf(cursor.getInt(cursor
+					.getColumnIndex(KEY_COINS))));
+			hash.put(KEY_FIRST_SHOT, String.valueOf(cursor.getInt(cursor
+					.getColumnIndex(KEY_FIRST_SHOT))));
+			hash.put(KEY_SKIP_NUM, String.valueOf(cursor.getInt(cursor
+					.getColumnIndex(KEY_SKIP_NUM))));
+			hash.put(KEY_FREEZE_NUM, String.valueOf(cursor.getInt(cursor
+					.getColumnIndex(KEY_FREEZE_NUM))));
+			hash.put(KEY_REMOVE_NUM,
+					cursor.getString(cursor.getColumnIndex(KEY_REMOVE_NUM)));
+			hash.put(KEY_HINT_NUM,
+					cursor.getString(cursor.getColumnIndex(KEY_HINT_NUM)));
+		}
+		cursor.close();
+		db.close();
+		return hash;
+	}
+
+	public HashMap<String, String> checkAchievements(int id) {
+		String selectQuery = "SELECT * FROM " + TABLE_ACHIEVEMENTS + " WHERE "
+				+ KEY_ID + " = " + id + ";";
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+
+		HashMap<String, String> hash = new HashMap<String, String>();
+		if (cursor.moveToFirst()) {
+			hash.put(KEY_TITLE, cursor.getString(cursor
+					.getColumnIndex(KEY_TITLE)));
+			hash.put(KEY_BODY, cursor.getString(cursor
+					.getColumnIndex(KEY_BODY)));
+			hash.put(KEY_IS_DONE, String.valueOf(cursor.getInt(cursor
+					.getColumnIndex(KEY_IS_DONE))));
+		}
+		cursor.close();
+		db.close();
+		return hash;
+	}
+	
+	public void setAchievement(int id) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "UPDATE " + TABLE_ACHIEVEMENTS + " SET " + KEY_IS_DONE
+				+ " = 1, " + KEY_IS_SENT + " = 1 WHERE " + KEY_ID + " = " + id + ";";
+		db.execSQL(sql);
+		db.close();
+	}
+	
+	public void addFreeHint() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "UPDATE " + TABLE_GAME_DATA + " SET " + KEY_FREE_HINT
+				+ " = " + KEY_FREE_HINT + " + 1;";
+		db.execSQL(sql);
+		db.close();
+	}
+	
+	public void addFreeRemove() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "UPDATE " + TABLE_GAME_DATA + " SET " + KEY_FREE_REMOVE
+				+ " = " + KEY_FREE_REMOVE + " + 1;";
+		db.execSQL(sql);
+		db.close();
+	}
+	
+	public void addFreeFreeze() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "UPDATE " + TABLE_GAME_DATA + " SET " + KEY_FREE_FREEZE
+				+ " = " + KEY_FREE_FREEZE + " + 1;";
+		db.execSQL(sql);
+		db.close();
+	}
+	
+	public void addFreeSkip() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "UPDATE " + TABLE_GAME_DATA + " SET " + KEY_FREE_SKIP
+				+ " = " + KEY_FREE_SKIP + " + 1;";
 		db.execSQL(sql);
 		db.close();
 	}

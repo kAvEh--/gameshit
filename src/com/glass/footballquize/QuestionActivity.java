@@ -24,14 +24,17 @@ import android.os.CountDownTimer;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,9 +44,8 @@ import com.glass.objects.Player;
 import com.glass.objects.Question;
 import com.glass.objects.Shirt;
 import com.glass.objects.Stadium;
-import com.glass.utils.AndroidUtils;
 import com.glass.utils.DatabasHandler;
-import com.glass.utils.DiffuseFilter;
+import com.glass.utils.SendDatatoServer;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class QuestionActivity extends FragmentActivity {
@@ -62,12 +64,11 @@ public class QuestionActivity extends FragmentActivity {
 	protected TextView mainTextQuestion;
 	protected Bitmap mFilterBitmap;
 
-	private int[] mColors;
-
 	boolean[] filters;
 
 	private int _points;
 	private int _coins;
+	private int _correct_in_raw;
 
 	TextView _points_view;
 	TextView _coins_view;
@@ -78,6 +79,7 @@ public class QuestionActivity extends FragmentActivity {
 	ImageButton _hint_button;
 
 	int _levelId;
+	int _packageId;
 	int _relatedId;
 	int _type;
 	int _state;
@@ -112,16 +114,19 @@ public class QuestionActivity extends FragmentActivity {
 	long currentTime;
 
 	boolean game_flag = true;
+	boolean free_hint = false;
+	boolean free_remove = false;
+	boolean free_freeze = false;
+	boolean free_skip = false;
 
 	private String _correct_answer;
 	private String _hint_toshow;
 
-	final long _TOTAL_TIME = 80000;
-	final long _BONUS_TIME = 10000;
-	final int _COIN_SKIP = 90;
-	final int _COIN_FREEZ = 45;
-	final int _COIN_REMOVE = 20;
-	final int _COIN_HELP = 15;
+	final long _TOTAL_TIME = 60000;
+	final int _COIN_SKIP = 100;
+	final int _COIN_FREEZ = 50;
+	final int _COIN_REMOVE = 30;
+	final int _COIN_HELP = 20;
 
 	final int _SCORE_SKIP = 80;
 	final int _SCORE_FULL = 80;
@@ -141,6 +146,8 @@ public class QuestionActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
+		_packageId = intent.getIntExtra(
+				getResources().getString(R.string.KEY_PACKAGEID), 0);
 		_levelId = intent.getIntExtra(
 				getResources().getString(R.string.KEY_ID), 0);
 		__levelData = (ArrayList<HashMap<String, Integer>>) intent
@@ -152,10 +159,13 @@ public class QuestionActivity extends FragmentActivity {
 		DatabasHandler db = new DatabasHandler(getApplicationContext());
 		tempData = db.getQuestionData(_levelId);
 		gameData = db.getGameData();
+		HashMap<String, String> pData = db.getPackageInfo(_packageId);
 		db.close();
 
 		_points = gameData.get(getResources().getString(R.string.KEY_POINT));
 		_coins = gameData.get(getResources().getString(R.string.KEY_COINS));
+		_correct_in_raw = gameData.get(getResources().getString(
+				R.string.KEY_CORRECT_IN_RAW));
 
 		if (tempData == null)
 			finish();
@@ -211,6 +221,45 @@ public class QuestionActivity extends FragmentActivity {
 
 		_points_view.setText(String.valueOf(_points));
 		_coins_view.setText(String.valueOf(_coins));
+
+		if (game_flag) {
+			if (gameData.get(getResources().getString(R.string.KEY_FREE_HINT)) == 1) {
+				_hint_button.setBackgroundColor(Color.BLUE);
+				free_hint = true;
+			}
+			if (gameData
+					.get(getResources().getString(R.string.KEY_FREE_REMOVE)) == 1) {
+				_remove_button.setBackgroundColor(Color.BLUE);
+				free_remove = true;
+			}
+			if (gameData
+					.get(getResources().getString(R.string.KEY_FREE_FREEZE)) == 1) {
+				_freez_button.setBackgroundColor(Color.BLUE);
+				free_freeze = true;
+			}
+			if (gameData.get(getResources().getString(R.string.KEY_FREE_SKIP)) == 1) {
+				_skip_button.setVisibility(View.VISIBLE);
+				_skip_button.setBackgroundColor(Color.BLUE);
+				free_skip = true;
+			} else {
+				switch (Integer.parseInt(pData.get(getResources().getString(
+						R.string.KEY_SKIP_NUM)))) {
+				case 0:
+					_skip_button.setBackgroundColor(Color.GREEN);
+					break;
+				case 1:
+					_skip_button.setBackgroundColor(Color.YELLOW);
+					break;
+				case 2:
+					_skip_button.setBackgroundColor(Color.RED);
+					break;
+
+				default:
+					_skip_button.setVisibility(View.INVISIBLE);
+					break;
+				}
+			}
+		}
 
 		mShortAnimationDuration = getResources().getInteger(
 				android.R.integer.config_longAnimTime);
@@ -593,7 +642,7 @@ public class QuestionActivity extends FragmentActivity {
 							getApplicationContext());
 					db.setStartTime(_levelId, now_time);
 					db.close();
-					runTimer(_TOTAL_TIME + _BONUS_TIME);
+					runTimer(_TOTAL_TIME);
 				}
 			}
 		}
@@ -604,18 +653,13 @@ public class QuestionActivity extends FragmentActivity {
 		counter = new CountDownTimer(time, 10) {
 
 			public void onTick(long milli) {
-				if (milli < _TOTAL_TIME) {
-					LayoutParams l = (LayoutParams) time_bar.getLayoutParams();
-					currentTime = milli;
-					l.width = (Math
-							.min((int) (((double) milli / (double) _TOTAL_TIME) * time_bar_width),
-									time_bar_width));
-					time_bar.setLayoutParams(l);
-					time_text.setText((int) (milli / 1000) + "");
-				} else {
-					time_text
-							.setText((int) ((milli - _TOTAL_TIME) / 1000) + "");
-				}
+				LayoutParams l = (LayoutParams) time_bar.getLayoutParams();
+				currentTime = milli;
+				l.width = (Math
+						.min((int) (((double) milli / (double) _TOTAL_TIME) * time_bar_width),
+								time_bar_width));
+				time_bar.setLayoutParams(l);
+				time_text.setText((int) (milli / 1000) + "");
 				if (milli < _TOTAL_TIME / 4)
 					time_bar.setBackgroundColor(Color.RED);
 				else if (milli < _TOTAL_TIME / 4 * 2)
@@ -659,7 +703,7 @@ public class QuestionActivity extends FragmentActivity {
 		_hint_button.setVisibility(View.INVISIBLE);
 		v.setBackgroundColor(Color.GREEN);
 		// TODO set score
-		int tmpScore = (int) (Math.min(_TOTAL_TIME, currentTime) / 1000);
+		int tmpScore = (int) (Math.min(_TOTAL_TIME, currentTime) * 4 / 3000);
 
 		if (_false_num < 1)
 			tmpScore += _SCORE_BONUS_FULL;
@@ -676,33 +720,376 @@ public class QuestionActivity extends FragmentActivity {
 			tmpCoins = _COINS_FULL;
 		else if (_false_num < 2)
 			tmpCoins = _COINS_HALF;
-		else if (_false_num < 4)
+		else if (_false_num < 3)
 			tmpCoins = _COINS_LESS;
 
 		_coins += tmpCoins;
 		_coins_view.setText(String.valueOf(_coins));
 
 		DatabasHandler db = new DatabasHandler(getApplicationContext());
-		db.setCorrectAnswer(_levelId);
 		db.addScore(tmpScore);
 		db.addCoins(tmpCoins);
+		db.updatePackageInfoData(_packageId, tmpScore, tmpCoins);
 		db.close();
 
 		showSuccessPage(tmpScore, tmpCoins);
+
+		// TODO connect to server and send data
+
 	}
 
 	private void showSuccessPage(int score, int coins) {
-		SuccessDialog fr = new SuccessDialog();
-		fr.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
-		fr.setScore(score);
-		fr.setCoins(coins);
-		fr.show(getSupportFragmentManager(), "Hello");
+		DatabasHandler db = new DatabasHandler(getApplicationContext());
+		if (_false_num < 1) {
+			db.setCorrectAnswer(_packageId, _levelId, true);
+			if (_correct_in_raw > 3)
+				checkInRawAchievement(_correct_in_raw + 1, db);
+		} else
+			db.setCorrectAnswer(_packageId, _levelId, false);
+		HashMap<String, String> pData = db.getPackageInfo(_packageId);
+		checkPackagePointAchievement(pData, db);
+		if (_points > 5000)
+			checkPointsAchievement(db);
+		if (Integer.parseInt(pData.get(getResources().getString(
+				R.string.KEY_LEVEL_COMPLETED))) > 23) {
+			db.setPackageIsFinish(_packageId);
+
+			FinishPackageDialog fp = new FinishPackageDialog();
+			fp.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
+			fp.show(getSupportFragmentManager(), "Hello");
+
+			SendDatatoServer tmp = new SendDatatoServer(this);
+			tmp.checkUser();
+		} else {
+			SuccessDialog fr = new SuccessDialog();
+			fr.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
+			fr.setScore(score);
+			fr.setCoins(coins);
+			fr.show(getSupportFragmentManager(), "Hello");
+		}
+		db.close();
+	}
+
+	private void checkPointsAchievement(DatabasHandler db) {
+		HashMap<String, String> data;
+		if (_points >= 5000) {
+			data = db.checkAchievements(getResources().getInteger(
+					R.integer.ACH_POINTS_5000_ID));
+			if (Integer.parseInt(data.get(getResources().getString(
+					R.string.KEY_IS_DONE))) == 0) {
+				db.setAchievement(getResources().getInteger(
+						R.integer.ACH_POINTS_5000_ID));
+				db.addFreeHint();
+				LayoutInflater inflater = getLayoutInflater();
+				View layout = inflater.inflate(R.layout.custom_toast,
+						(ViewGroup) findViewById(R.id.toast_layout_root));
+
+				TextView text = (TextView) layout.findViewById(R.id.text);
+				text.setText(data.get(getResources().getString(
+						R.string.KEY_TITLE)));
+
+				Toast toast = new Toast(getApplicationContext());
+				toast.setGravity(Gravity.TOP, 0, 10);
+				toast.setDuration(Toast.LENGTH_LONG);
+				toast.setView(layout);
+				toast.show();
+			}
+		}
+		if (_points >= 10000) {
+			data = db.checkAchievements(getResources().getInteger(
+					R.integer.ACH_POINTS_10000_ID));
+			if (Integer.parseInt(data.get(getResources().getString(
+					R.string.KEY_IS_DONE))) == 0) {
+				db.setAchievement(getResources().getInteger(
+						R.integer.ACH_POINTS_10000_ID));
+				db.addFreeRemove();
+				LayoutInflater inflater = getLayoutInflater();
+				View layout = inflater.inflate(R.layout.custom_toast,
+						(ViewGroup) findViewById(R.id.toast_layout_root));
+
+				TextView text = (TextView) layout.findViewById(R.id.text);
+				text.setText(data.get(getResources().getString(
+						R.string.KEY_TITLE)));
+
+				Toast toast = new Toast(getApplicationContext());
+				toast.setGravity(Gravity.TOP, 0, 10);
+				toast.setDuration(Toast.LENGTH_LONG);
+				toast.setView(layout);
+				toast.show();
+			}
+		}
+		if (_points >= 20000) {
+			data = db.checkAchievements(getResources().getInteger(
+					R.integer.ACH_POINTS_20000_ID));
+			if (Integer.parseInt(data.get(getResources().getString(
+					R.string.KEY_IS_DONE))) == 0) {
+				db.setAchievement(getResources().getInteger(
+						R.integer.ACH_POINTS_20000_ID));
+				db.addFreeFreeze();
+				LayoutInflater inflater = getLayoutInflater();
+				View layout = inflater.inflate(R.layout.custom_toast,
+						(ViewGroup) findViewById(R.id.toast_layout_root));
+
+				TextView text = (TextView) layout.findViewById(R.id.text);
+				text.setText(data.get(getResources().getString(
+						R.string.KEY_TITLE)));
+
+				Toast toast = new Toast(getApplicationContext());
+				toast.setGravity(Gravity.TOP, 0, 10);
+				toast.setDuration(Toast.LENGTH_LONG);
+				toast.setView(layout);
+				toast.show();
+			}
+		}
+		if (_points >= 40000) {
+			data = db.checkAchievements(getResources().getInteger(
+					R.integer.ACH_POINTS_40000_ID));
+			if (Integer.parseInt(data.get(getResources().getString(
+					R.string.KEY_IS_DONE))) == 0) {
+				db.setAchievement(getResources().getInteger(
+						R.integer.ACH_POINTS_40000_ID));
+				db.addFreeSkip();
+				LayoutInflater inflater = getLayoutInflater();
+				View layout = inflater.inflate(R.layout.custom_toast,
+						(ViewGroup) findViewById(R.id.toast_layout_root));
+
+				TextView text = (TextView) layout.findViewById(R.id.text);
+				text.setText(data.get(getResources().getString(
+						R.string.KEY_TITLE)));
+
+				Toast toast = new Toast(getApplicationContext());
+				toast.setGravity(Gravity.TOP, 0, 10);
+				toast.setDuration(Toast.LENGTH_LONG);
+				toast.setView(layout);
+				toast.show();
+			}
+		}
+	}
+
+	private void checkPackagePointAchievement(HashMap<String, String> pData,
+			DatabasHandler db) {
+		HashMap<String, String> data;
+		if (Integer.parseInt(pData.get(getResources().getString(
+				R.string.KEY_POINT))) >= 2000) {
+			data = db.checkAchievements(getResources().getInteger(
+					R.integer.ACH_PACkAGE_2000_ID));
+			if (Integer.parseInt(data.get(getResources().getString(
+					R.string.KEY_IS_DONE))) == 0) {
+				_coins += getResources().getInteger(R.integer.ACH_PACkAGE_2000);
+				db.setAchievement(getResources().getInteger(
+						R.integer.ACH_PACkAGE_2000_ID));
+				db.addCoins(getResources().getInteger(
+						R.integer.ACH_PACkAGE_2000));
+				_coins_view.setText(_coins + "");
+				LayoutInflater inflater = getLayoutInflater();
+				View layout = inflater.inflate(R.layout.custom_toast,
+						(ViewGroup) findViewById(R.id.toast_layout_root));
+
+				TextView text = (TextView) layout.findViewById(R.id.text);
+				text.setText(data.get(getResources().getString(
+						R.string.KEY_TITLE)));
+
+				Toast toast = new Toast(getApplicationContext());
+				toast.setGravity(Gravity.TOP, 0, 10);
+				toast.setDuration(Toast.LENGTH_LONG);
+				toast.setView(layout);
+				toast.show();
+			}
+		}
+		if (Integer.parseInt(pData.get(getResources().getString(
+				R.string.KEY_POINT))) >= 2100) {
+			data = db.checkAchievements(getResources().getInteger(
+					R.integer.ACH_PACkAGE_2100_ID));
+			if (Integer.parseInt(data.get(getResources().getString(
+					R.string.KEY_IS_DONE))) == 0) {
+				_coins += getResources().getInteger(R.integer.ACH_PACkAGE_2100);
+				db.setAchievement(getResources().getInteger(
+						R.integer.ACH_PACkAGE_2100_ID));
+				db.addCoins(getResources().getInteger(
+						R.integer.ACH_PACkAGE_2100));
+				_coins_view.setText(_coins + "");
+				LayoutInflater inflater = getLayoutInflater();
+				View layout = inflater.inflate(R.layout.custom_toast,
+						(ViewGroup) findViewById(R.id.toast_layout_root));
+
+				TextView text = (TextView) layout.findViewById(R.id.text);
+				text.setText(data.get(getResources().getString(
+						R.string.KEY_TITLE)));
+
+				Toast toast = new Toast(getApplicationContext());
+				toast.setGravity(Gravity.TOP, 0, 10);
+				toast.setDuration(Toast.LENGTH_LONG);
+				toast.setView(layout);
+				toast.show();
+			}
+		}
+		if (Integer.parseInt(pData.get(getResources().getString(
+				R.string.KEY_POINT))) >= 2200) {
+			data = db.checkAchievements(getResources().getInteger(
+					R.integer.ACH_PACkAGE_2200_ID));
+			if (Integer.parseInt(data.get(getResources().getString(
+					R.string.KEY_IS_DONE))) == 0) {
+				_coins += getResources().getInteger(R.integer.ACH_PACkAGE_2200);
+				db.setAchievement(getResources().getInteger(
+						R.integer.ACH_PACkAGE_2200_ID));
+				db.addCoins(getResources().getInteger(
+						R.integer.ACH_PACkAGE_2200));
+				_coins_view.setText(_coins + "");
+				LayoutInflater inflater = getLayoutInflater();
+				View layout = inflater.inflate(R.layout.custom_toast,
+						(ViewGroup) findViewById(R.id.toast_layout_root));
+
+				TextView text = (TextView) layout.findViewById(R.id.text);
+				text.setText(data.get(getResources().getString(
+						R.string.KEY_TITLE)));
+
+				Toast toast = new Toast(getApplicationContext());
+				toast.setGravity(Gravity.TOP, 0, 10);
+				toast.setDuration(Toast.LENGTH_LONG);
+				toast.setView(layout);
+				toast.show();
+			}
+		}
+		if (Integer.parseInt(pData.get(getResources().getString(
+				R.string.KEY_POINT))) >= 2300) {
+			data = db.checkAchievements(getResources().getInteger(
+					R.integer.ACH_PACkAGE_2300_ID));
+			if (Integer.parseInt(data.get(getResources().getString(
+					R.string.KEY_IS_DONE))) == 0) {
+				_coins += getResources().getInteger(R.integer.ACH_PACkAGE_2300);
+				db.setAchievement(getResources().getInteger(
+						R.integer.ACH_PACkAGE_2300_ID));
+				db.addCoins(getResources().getInteger(
+						R.integer.ACH_PACkAGE_2300));
+				_coins_view.setText(_coins + "");
+				LayoutInflater inflater = getLayoutInflater();
+				View layout = inflater.inflate(R.layout.custom_toast,
+						(ViewGroup) findViewById(R.id.toast_layout_root));
+
+				TextView text = (TextView) layout.findViewById(R.id.text);
+				text.setText(data.get(getResources().getString(
+						R.string.KEY_TITLE)));
+
+				Toast toast = new Toast(getApplicationContext());
+				toast.setGravity(Gravity.TOP, 0, 10);
+				toast.setDuration(Toast.LENGTH_LONG);
+				toast.setView(layout);
+				toast.show();
+			}
+		}
+	}
+
+	private void checkInRawAchievement(int count, DatabasHandler db) {
+		HashMap<String, String> data;
+		switch (count) {
+		case 5:
+			data = db.checkAchievements(getResources().getInteger(
+					R.integer.ACH_INRAW_5_ID));
+			if (Integer.parseInt(data.get(getResources().getString(
+					R.string.KEY_IS_DONE))) == 0) {
+				_coins += getResources().getInteger(R.integer.ACH_INRAW_5);
+				db.setAchievement(getResources().getInteger(
+						R.integer.ACH_INRAW_5_ID));
+				db.addCoins(getResources().getInteger(R.integer.ACH_INRAW_5));
+				_coins_view.setText(_coins + "");
+				LayoutInflater inflater = getLayoutInflater();
+				View layout = inflater.inflate(R.layout.custom_toast,
+						(ViewGroup) findViewById(R.id.toast_layout_root));
+
+				TextView text = (TextView) layout.findViewById(R.id.text);
+				text.setText(data.get(getResources().getString(
+						R.string.KEY_TITLE)));
+
+				Toast toast = new Toast(getApplicationContext());
+				toast.setGravity(Gravity.TOP, 0, 10);
+				toast.setDuration(Toast.LENGTH_LONG);
+				toast.setView(layout);
+				toast.show();
+			}
+			break;
+		case 10:
+			data = db.checkAchievements(getResources().getInteger(
+					R.integer.ACH_INRAW_10_ID));
+			if (Integer.parseInt(data.get(getResources().getString(
+					R.string.KEY_IS_DONE))) == 0) {
+				_coins += getResources().getInteger(R.integer.ACH_INRAW_10);
+				db.setAchievement(getResources().getInteger(
+						R.integer.ACH_INRAW_10_ID));
+				db.addCoins(getResources().getInteger(R.integer.ACH_INRAW_10));
+				_coins_view.setText(_coins + "");
+				LayoutInflater inflater = getLayoutInflater();
+				View layout = inflater.inflate(R.layout.custom_toast,
+						(ViewGroup) findViewById(R.id.toast_layout_root));
+
+				TextView text = (TextView) layout.findViewById(R.id.text);
+				text.setText(data.get(getResources().getString(
+						R.string.KEY_TITLE)));
+
+				Toast toast = new Toast(getApplicationContext());
+				toast.setGravity(Gravity.TOP, 0, 10);
+				toast.setDuration(Toast.LENGTH_LONG);
+				toast.setView(layout);
+				toast.show();
+			}
+			break;
+		case 20:
+			data = db.checkAchievements(getResources().getInteger(
+					R.integer.ACH_INRAW_20_ID));
+			if (Integer.parseInt(data.get(getResources().getString(
+					R.string.KEY_IS_DONE))) == 0) {
+				_coins += getResources().getInteger(R.integer.ACH_INRAW_20);
+				db.setAchievement(getResources().getInteger(
+						R.integer.ACH_INRAW_20_ID));
+				db.addCoins(getResources().getInteger(R.integer.ACH_INRAW_20));
+				_coins_view.setText(_coins + "");
+				LayoutInflater inflater = getLayoutInflater();
+				View layout = inflater.inflate(R.layout.custom_toast,
+						(ViewGroup) findViewById(R.id.toast_layout_root));
+
+				TextView text = (TextView) layout.findViewById(R.id.text);
+				text.setText(data.get(getResources().getString(
+						R.string.KEY_TITLE)));
+
+				Toast toast = new Toast(getApplicationContext());
+				toast.setGravity(Gravity.TOP, 0, 10);
+				toast.setDuration(Toast.LENGTH_LONG);
+				toast.setView(layout);
+				toast.show();
+			}
+			break;
+		case 50:
+			data = db.checkAchievements(getResources().getInteger(
+					R.integer.ACH_INRAW_50_ID));
+			if (Integer.parseInt(data.get(getResources().getString(
+					R.string.KEY_IS_DONE))) == 0) {
+				_coins += getResources().getInteger(R.integer.ACH_INRAW_50);
+				db.setAchievement(getResources().getInteger(
+						R.integer.ACH_INRAW_50_ID));
+				db.addCoins(getResources().getInteger(R.integer.ACH_INRAW_50));
+				_coins_view.setText(_coins + "");
+				LayoutInflater inflater = getLayoutInflater();
+				View layout = inflater.inflate(R.layout.custom_toast,
+						(ViewGroup) findViewById(R.id.toast_layout_root));
+
+				TextView text = (TextView) layout.findViewById(R.id.text);
+				text.setText(data.get(getResources().getString(
+						R.string.KEY_TITLE)));
+
+				Toast toast = new Toast(getApplicationContext());
+				toast.setGravity(Gravity.TOP, 0, 10);
+				toast.setDuration(Toast.LENGTH_LONG);
+				toast.setView(layout);
+				toast.show();
+			}
+			break;
+		}
 	}
 
 	public void selectFalse(View v, String select) {
 		v.setBackgroundColor(Color.RED);
-		counter.cancel();
-		runTimer(Math.max(currentTime - ((_TOTAL_TIME + _BONUS_TIME) / 4), 0));
+		if (counter != null)
+			counter.cancel();
+		runTimer(Math.max(currentTime - (_TOTAL_TIME / 4), 0));
 		if (_falseAnswers == null)
 			_falseAnswers = select;
 		else
@@ -711,43 +1098,6 @@ public class QuestionActivity extends FragmentActivity {
 		DatabasHandler db = new DatabasHandler(getApplicationContext());
 		db.setFalseAnswer(_levelId, _falseAnswers);
 		db.close();
-	}
-
-	public void sssss() {
-		filters = new boolean[6];
-
-		// mOriginalImageView = (ImageView)
-		// findViewById(R.id.q_main_image_null);
-		mainImageQuestion = (ImageView) findViewById(R.id.q_main_image);
-
-		mOriginalImageView.setImageResource(R.drawable.button);
-
-		final int width = mOriginalImageView.getDrawable().getIntrinsicWidth();
-		final int height = mOriginalImageView.getDrawable()
-				.getIntrinsicHeight();
-
-		mColors = AndroidUtils.drawableToIntArray(mOriginalImageView
-				.getDrawable());
-
-		Thread thread = new Thread() {
-			public void run() {
-				DiffuseFilter filter = new DiffuseFilter();
-				filter.setScale(16);
-				filters[0] = true;
-				filters[3] = true;
-				filters[5] = true;
-				mColors = filter.filter(mColors, width, height, filters);
-
-				QuestionActivity.this.runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						setModifyView(mColors, width, height);
-					}
-				});
-			}
-		};
-		thread.setDaemon(true);
-		thread.start();
 	}
 
 	@Override
@@ -931,8 +1281,9 @@ public class QuestionActivity extends FragmentActivity {
 
 	public void onSkipClick(View v) {
 		if (game_flag) {
-			if (_coins > _COIN_SKIP) {
-				counter.cancel();
+			if (_coins > _COIN_SKIP || free_skip) {
+				if (counter != null)
+					counter.cancel();
 				if (_ch1.getText().toString().equals(_correct_answer))
 					_ch1.setBackgroundColor(Color.GREEN);
 				else if (_ch2.getText().toString().equals(_correct_answer))
@@ -949,20 +1300,34 @@ public class QuestionActivity extends FragmentActivity {
 					_ch7.setBackgroundColor(Color.GREEN);
 				else if (_ch8.getText().toString().equals(_correct_answer))
 					_ch8.setBackgroundColor(Color.GREEN);
-				DatabasHandler db = new DatabasHandler(getApplicationContext());
-				db.minusCoins(_COIN_SKIP);
-				db.addScore(_SCORE_SKIP);
-				db.close();
-				_coins -= _COIN_SKIP;
+
+				if (!free_skip)
+					_coins -= _COIN_SKIP;
+
 				int tmpCoins = 0;
 				if (_false_num < 1)
 					tmpCoins = _COINS_FULL;
 				else if (_false_num < 2)
 					tmpCoins = _COINS_HALF;
-				else if (_false_num < 4)
+				else if (_false_num < 3)
 					tmpCoins = _COINS_LESS;
 				_coins += tmpCoins;
 				_coins_view.setText(String.valueOf(_coins));
+
+				DatabasHandler db = new DatabasHandler(getApplicationContext());
+				if (free_skip) {
+					db.addCoins(tmpCoins);
+					db.updatePackageInfoData(_packageId, _SCORE_SKIP, tmpCoins);
+					free_skip = false;
+					db.addFreeSkip();
+				} else {
+					db.addCoins(tmpCoins - _COIN_SKIP);
+					db.usedSkip(_packageId);
+					db.updatePackageInfoData(_packageId, _SCORE_SKIP,
+							(tmpCoins - _COIN_SKIP));
+				}
+				db.addScore(_SCORE_SKIP);
+				db.close();
 				// TODO
 				showSuccessPage(_SCORE_SKIP, tmpCoins);
 			} else
@@ -977,7 +1342,7 @@ public class QuestionActivity extends FragmentActivity {
 	public void onRemoveClick(View v) {
 		if (game_flag) {
 			if (_removedChoices == null) {
-				if (_coins > _COIN_REMOVE) {
+				if (_coins > _COIN_REMOVE || free_remove) {
 					_remove_button.setVisibility(View.INVISIBLE);
 					List<Button> choicetmp = new ArrayList<Button>();
 					choicetmp.add(_ch1);
@@ -1012,21 +1377,28 @@ public class QuestionActivity extends FragmentActivity {
 							}
 						}
 					}
+					if (!free_remove) {
+						_coins -= _COIN_REMOVE;
+						_coins_view.setText(String.valueOf(_coins));
+					}
 					DatabasHandler db = new DatabasHandler(
 							getApplicationContext());
-					db.minusCoins(_COIN_REMOVE);
-					db.setRemovedChoices(_levelId, _removedChoices);
+					if (free_remove) {
+						free_remove = false;
+						db.addFreeRemove();
+					} else {
+						db.addCoins(-_COIN_REMOVE);
+						db.updatePackageInfoData(_packageId, 0, -_COIN_REMOVE);
+					}
+					db.setRemovedChoices(_packageId, _levelId, _removedChoices);
 					db.close();
-					_coins -= _COIN_REMOVE;
-					_coins_view.setText(String.valueOf(_coins));
 				} else
 					Toast.makeText(getApplicationContext(),
 							"You don`t have enough coins.", Toast.LENGTH_LONG)
 							.show();
 			} else {
 				Toast.makeText(getApplicationContext(),
-						"You can`t use it twice.", Toast.LENGTH_LONG)
-						.show();
+						"You can`t use it twice.", Toast.LENGTH_LONG).show();
 			}
 		} else
 			Toast.makeText(getApplicationContext(), "Really needs help??",
@@ -1037,18 +1409,28 @@ public class QuestionActivity extends FragmentActivity {
 		if (game_flag) {
 			if (_used_freez == 0) {
 				if (currentTime > 0) {
-					if (_coins > _COIN_FREEZ) {
-						counter.cancel();
+					if (_coins > _COIN_FREEZ || free_freeze) {
+						if (counter != null)
+							counter.cancel();
 						time_bar.setBackgroundColor(Color.GREEN);
 
+						_used_freez = (int) currentTime;
+						if (!free_freeze) {
+							_coins -= _COIN_FREEZ;
+							_coins_view.setText(String.valueOf(_coins));
+						}
 						DatabasHandler db = new DatabasHandler(
 								getApplicationContext());
-						db.minusCoins(_COIN_FREEZ);
-						db.usedFreez(_levelId, currentTime);
+						if (free_freeze) {
+							free_freeze = false;
+							db.addFreeFreeze();
+						} else {
+							db.addCoins(-_COIN_FREEZ);
+							db.updatePackageInfoData(_packageId, 0,
+									-_COIN_FREEZ);
+						}
+						db.usedFreez(_packageId, _levelId, currentTime);
 						db.close();
-						_used_freez = (int) Math.min(currentTime, _TOTAL_TIME);
-						_coins -= _COIN_FREEZ;
-						_coins_view.setText(String.valueOf(_coins));
 					} else
 						Toast.makeText(getApplicationContext(),
 								"You don`t have enough coins.",
@@ -1067,15 +1449,23 @@ public class QuestionActivity extends FragmentActivity {
 	public void onHintClick(View v) {
 		if (game_flag) {
 			if (_used_hint == 0) {
-				if (_coins > _COIN_HELP) {
+				if (_coins > _COIN_HELP || free_hint) {
+					if (!free_hint) {
+						_coins -= _COIN_HELP;
+						_coins_view.setText(String.valueOf(_coins));
+					}
 					DatabasHandler db = new DatabasHandler(
 							getApplicationContext());
-					db.minusCoins(_COIN_HELP);
-					db.usedHint(_levelId);
+					if (free_hint) {
+						free_hint = false;
+						db.addFreeHint();
+					} else {
+						db.addCoins(-_COIN_HELP);
+						db.updatePackageInfoData(_packageId, 0, -_COIN_HELP);
+					}
+					db.usedHint(_packageId, _levelId);
 					db.close();
-					_coins -= _COIN_HELP;
 					_used_hint = 1;
-					_coins_view.setText(String.valueOf(_coins));
 					Toast.makeText(getApplicationContext(), _hint_toshow,
 							Toast.LENGTH_LONG).show();
 				} else
@@ -1097,6 +1487,8 @@ public class QuestionActivity extends FragmentActivity {
 					getResources().getString(R.string.KEY_ID),
 					__levelData.get(__position + 1).get(
 							getResources().getString(R.string.KEY_ID)));
+			i.putExtra(getResources().getString(R.string.KEY_PACKAGEID),
+					_packageId);
 			i.putExtra("position", __position + 1);
 			i.putExtra("test", __levelData);
 			startActivity(i);
@@ -1108,4 +1500,5 @@ public class QuestionActivity extends FragmentActivity {
 	public void backAction() {
 		finish();
 	}
+
 }
