@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Football Quize</string>
+    <string name="app_name">فوتبال فن</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_question">QuestionActivity</string>
@@ -58,7 +58,8 @@
     <string name="stat_player">بازیکن</string>
     <string name="stat_manager">مربی</string>
     <string name="stat_q">سوال</string>
-    <string name="stat_logo">آرم باشگاه</string>
+    <string name="stat_logo">لوگو</string>
     <string name="stat_shirt">پیراهن</string>
+    <string name="main_to_final">تا فینال</string>
 
 </resources>

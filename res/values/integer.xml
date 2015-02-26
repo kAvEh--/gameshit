@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <integer name="FINALE_SCORE">55555</integer>
+    
     <integer name="NOT_GENERATED">0</integer>
     <integer name="IS_GENERATED">1</integer>
     
@@ -15,7 +17,7 @@
     <integer name="STATE_CORRECT">3</integer>
     
     <integer name="COINS_TO_UNLOCK_LEVEL">500</integer>
-    <integer name="COINS_TO_UNLOCK_LEVEL_30">2500</integer>
+    <integer name="COINS_TO_UNLOCK_LEVEL_30">3000</integer>
     
     <integer name="ACH_INRAW_5_ID">1</integer>
     <integer name="ACH_INRAW_10_ID">2</integer>

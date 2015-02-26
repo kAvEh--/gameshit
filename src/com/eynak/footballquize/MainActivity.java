@@ -52,6 +52,9 @@ public class MainActivity extends FragmentActivity {
 	TextView _points_view;
 	TextView _coins_view;
 
+	TextView _main_to_finale;
+	TextView _main_to_finale_2;
+
 	private int _points;
 	private int _coins;
 
@@ -68,6 +71,9 @@ public class MainActivity extends FragmentActivity {
 
 		_points_view = (TextView) findViewById(R.id.question_header_points);
 		_coins_view = (TextView) findViewById(R.id.question_header_coins);
+
+		_main_to_finale = (TextView) findViewById(R.id.main_finale_text);
+		_main_to_finale_2 = (TextView) findViewById(R.id.main_finale_text_2);
 
 		ViewPager myVP = (ViewPager) findViewById(R.id.mainViewPager);
 		metrics = new DisplayMetrics();
@@ -117,6 +123,15 @@ public class MainActivity extends FragmentActivity {
 		_coins = gameData.get(getResources().getString(R.string.KEY_COINS));
 		_last_level = gameData.get(getResources().getString(
 				R.string.KEY_LAST_P_UNLOCK));
+
+		if (_points >= getResources().getInteger(R.integer.FINALE_SCORE)) {
+			_main_to_finale.setVisibility(View.INVISIBLE);
+			_main_to_finale_2.setVisibility(View.INVISIBLE);
+		} else {
+			_main_to_finale.setText((getResources().getInteger(
+					R.integer.FINALE_SCORE) - _points)
+					+ " " + getResources().getString(R.string.stat_score));
+		}
 
 		_points_view.setText(String.valueOf(_points));
 		_coins_view.setText(String.valueOf(_coins));
@@ -229,20 +244,20 @@ public class MainActivity extends FragmentActivity {
 			if (position == 30)
 				tv.setVisibility(View.INVISIBLE);
 			else
-				tv.setText("Level " + (position + 1));
+				tv.setText("مرحله " + (position + 1));
 
 			ImageButton stat = (ImageButton) view
 					.findViewById(R.id.package_stat);
-			
+
 			stat.setTag(position + 1);
 			stat.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
 					onStatClick(v);
 				}
 			});
-			
+
 			ImageView _8x = (ImageView) view.findViewById(R.id.package_8x);
 
 			view.setTag(position);
@@ -309,13 +324,15 @@ public class MainActivity extends FragmentActivity {
 			return (view == object);
 		}
 	}
-	
+
 	public void onStatClick(View v) {
 		int level = (Integer) v.getTag();
-		StatDialog fr = new StatDialog();
-		fr.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog2);
-		fr.setLevel(level);
-		fr.show(getSupportFragmentManager(), "Hello");
+		if (level <= _last_level) {
+			StatDialog fr = new StatDialog();
+			fr.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog2);
+			fr.setLevel(level);
+			fr.show(getSupportFragmentManager(), "Hello");
+		}
 	}
 
 	public void onShopClick(View v) {

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -37,7 +38,7 @@ public class LevelActivity extends Activity {
 		_coins_view = (TextView) findViewById(R.id.question_header_coins);
 		_title_view = (TextView) findViewById(R.id.level_title);
 
-		_title_view.setText("Level " + _level);
+		_title_view.setText("مرحله " + _level);
 
 		_grid = (GridView) findViewById(R.id.level_grid);
 		initialize();
@@ -90,6 +91,11 @@ public class LevelActivity extends Activity {
 
 		_points_view.setText(String.valueOf(_points));
 		_coins_view.setText(String.valueOf(_coins));
+	}
+	
+	public void onCoinClick(View v) {
+		Intent intent = new Intent(LevelActivity.this, ShopActivity.class);
+		startActivity(intent);
 	}
 
 	@Override
