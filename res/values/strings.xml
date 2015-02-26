@@ -34,11 +34,31 @@
     <string name="KEY_LEVEL_COMPLETED">levelCompleted</string>
     <string name="KEY_CORRECT_IN_RAW">CorrectInRaw</string>
     <string name="KEY_IS_DONE">isDone</string>
+    <string name="KEY_IS_SENT">isSent</string>
     <string name="KEY_TITLE">title</string>
     <string name="KEY_BODY">body</string>
     <string name="KEY_FREE_HINT">freeHint</string>
     <string name="KEY_FREE_REMOVE">freeRemove</string>
     <string name="KEY_FREE_FREEZE">freeFreeze</string>
     <string name="KEY_FREE_SKIP">freeSkip</string>
+    <string name="title_activity_shop">ShopActivity</string>
+    <string name="lock_title">قفله!</string>
+    <string name="lock_body_unlock">می‌خوای بازش کنی؟</string>
+    <string name="lock_body_shop">تا سکه برای </string>
+    <string name="lock_body_shop_2">باز کردنش کم داری!</string>
+    <string name="user_title">اطلاعات شما فقط برای شرکت در قرعه‌کشی استفاده می‌شود.</string>
+    <string name="user_name">اسم :</string>
+    <string name="user_phone">تلفن :</string>
+    <string name="user_email">ایمیل :</string>
+    <string name="NAME_IS_REQUIRED">وارد کردن اسم اجباریه!</string>
+    <string name="PHONE_IS_REQUIRED">تلفن یا ایمیل خود را باید وارد کنید!</string>
+    <string name="stat_title_locale">عملکرد شما در این مرحله</string>
+    <string name="stat_title_total">عملکرد شما در مجموع</string>
+    <string name="stat_score">امتیاز</string>
+    <string name="stat_player">بازیکن</string>
+    <string name="stat_manager">مربی</string>
+    <string name="stat_q">سوال</string>
+    <string name="stat_logo">آرم باشگاه</string>
+    <string name="stat_shirt">پیراهن</string>
 
 </resources>

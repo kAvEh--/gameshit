@@ -3,15 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
-    android:background="#FFF"
+    android:background="@drawable/main_bg"
     android:gravity="center_horizontal"
     tools:context=".MainActivity" >
 
     <RelativeLayout
-        android:id="@+id/q_header_score_layout"
+        android:id="@+id/main_header_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#ccc"
+        android:background="@drawable/header_bg"
         android:padding="3dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp" >
@@ -19,14 +19,14 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:onClick="onCoimClick" >
+            android:onClick="onShopClick" >
 
             <ImageView
                 android:id="@+id/question_header_coins_ic"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_cups" />
+                android:src="@drawable/ic_coin" />
 
             <TextView
                 android:id="@+id/question_header_coins"
@@ -37,6 +37,16 @@
                 android:layout_toRightOf="@id/question_header_coins_ic"
                 android:textSize="22sp" />
         </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/header_user_ic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@null"
+            android:onClick="onUserClick"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_user" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -61,7 +71,7 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <com.glass.footballquize.PagerContainer
+    <com.eynak.footballquize.PagerContainer
         android:id="@+id/pager_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -72,17 +82,97 @@
             android:layout_width="350dp"
             android:layout_height="250dp"
             android:layout_gravity="center_horizontal" />
-    </com.glass.footballquize.PagerContainer>
+    </com.eynak.footballquize.PagerContainer>
 
     <ImageView
-        android:id="@+id/main_ball"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_below="@id/pager_container"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/pager_container"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:scaleType="centerInside"
-        android:src="@drawable/aa" />
+        android:src="@drawable/main_title" />
+
+    <RelativeLayout
+        android:id="@+id/main_finale_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pager_container"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.2"
+            android:scaleType="centerInside"
+            android:src="@drawable/finale_shadow" />
+
+        <TextView
+            android:id="@+id/main_finale_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="10000 امتیاز"
+            android:textColor="#A80000"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/main_finale_text"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="تا فینال"
+            android:textColor="#A80000"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:orientation="horizontal"
+        android:weightSum="3" >
+
+        <ImageButton
+            android:id="@+id/main_ach"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:onClick="onAchievementClick"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_ach" />
+
+        <ImageButton
+            android:id="@+id/main_shop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:onClick="onShopClick"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_shop" />
+
+        <ImageButton
+            android:id="@+id/main_leaderboard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:onClick="onLeaderClick"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_lb" />
+    </LinearLayout>
 
 </RelativeLayout>

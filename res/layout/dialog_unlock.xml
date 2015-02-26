@@ -3,21 +3,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/dialog_unlock_title"
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="5dp"
-        android:textColor="#fff"
-        android:textSize="20sp" />
+        android:padding="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/popup_bg" />
 
     <TextView
-        android:id="@+id/dialog_unlock_body"
+        android:id="@+id/lock_body_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_unlock_title"
         android:layout_centerHorizontal="true"
-        android:textColor="#fff" />
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:layout_marginTop="30dp"
+        android:text="@string/lock_title"
+        android:textColor="#B21E28"
+        android:textSize="45sp" />
+
+    <TextView
+        android:id="@+id/lock_body_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lock_body_1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:layout_marginTop="30dp"
+        android:textColor="#B21E28"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/lock_body_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lock_body_2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:layout_marginTop="5dp"
+        android:textColor="#B21E28"
+        android:textSize="25sp" />
+
+    <ImageButton
+        android:id="@+id/lock_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lock_body_3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:layout_marginTop="50dp"
+        android:background="@null" />
 
 </RelativeLayout>

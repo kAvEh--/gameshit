@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/popup_bg" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <RelativeLayout
+                android:id="@+id/stat_locale_title"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="45dp" >
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_centerVertical="true"
+                    android:background="@color/ajori" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="#FFF"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@string/stat_title_locale"
+                    android:textColor="@color/ajori"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/stat_locale_score"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/stat_locale_title"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="25dp" >
+
+                <TextView
+                    android:id="@+id/stat_locale_score_text"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@string/stat_score"
+                    android:textColor="@color/ajori"
+                    android:textSize="15sp" />
+
+                <ProgressBar
+                    android:id="@+id/pb_score"
+                    style="@style/CustomProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_toLeftOf="@id/stat_locale_score_text"
+                    android:gravity="right"
+                    android:max="100"
+                    android:progress="0" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/stat_locale_player"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/stat_locale_score"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="25dp" >
+
+                <TextView
+                    android:id="@+id/stat_locale_player_text"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@string/stat_player"
+                    android:textColor="@color/ajori"
+                    android:textSize="15sp" />
+
+                <ProgressBar
+                    android:id="@+id/pb_player"
+                    style="@style/CustomProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_toLeftOf="@id/stat_locale_player_text"
+                    android:gravity="right"
+                    android:max="100"
+                    android:progress="0" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/stat_locale_manager"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/stat_locale_player"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="25dp" >
+
+                <TextView
+                    android:id="@+id/stat_locale_manager_text"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@string/stat_manager"
+                    android:textColor="@color/ajori"
+                    android:textSize="15sp" />
+
+                <ProgressBar
+                    android:id="@+id/pb_manager"
+                    style="@style/CustomProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_toLeftOf="@id/stat_locale_manager_text"
+                    android:gravity="right"
+                    android:max="100"
+                    android:progress="0" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/stat_locale_logo"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/stat_locale_manager"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="25dp" >
+
+                <TextView
+                    android:id="@+id/stat_locale_logo_text"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@string/stat_logo"
+                    android:textColor="@color/ajori"
+                    android:textSize="15sp" />
+
+                <ProgressBar
+                    android:id="@+id/pb_logo"
+                    style="@style/CustomProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_toLeftOf="@id/stat_locale_logo_text"
+                    android:gravity="right"
+                    android:max="100"
+                    android:progress="0" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/stat_locale_q"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/stat_locale_logo"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="25dp" >
+
+                <TextView
+                    android:id="@+id/stat_locale_q_text"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@string/stat_q"
+                    android:textColor="@color/ajori"
+                    android:textSize="15sp" />
+
+                <ProgressBar
+                    android:id="@+id/pb_q"
+                    style="@style/CustomProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_toLeftOf="@id/stat_locale_q_text"
+                    android:gravity="right"
+                    android:max="100"
+                    android:progress="0" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/stat_locale_shirt"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/stat_locale_q"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="25dp" >
+
+                <TextView
+                    android:id="@+id/stat_locale_shirt_text"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@string/stat_shirt"
+                    android:textColor="@color/ajori"
+                    android:textSize="15sp" />
+
+                <ProgressBar
+                    android:id="@+id/pb_shirt"
+                    style="@style/CustomProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_toLeftOf="@id/stat_locale_shirt_text"
+                    android:gravity="right"
+                    android:max="100"
+                    android:progress="0" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/stat_total_title"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_below="@id/stat_locale_shirt"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="15dp" >
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_centerVertical="true"
+                    android:background="@color/ajori" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="#FFF"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@string/stat_title_total"
+                    android:textColor="@color/ajori"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/stat_total_score"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/stat_total_title"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="25dp" >
+
+                <TextView
+                    android:id="@+id/stat_total_score_text"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@string/stat_score"
+                    android:textColor="@color/ajori"
+                    android:textSize="15sp" />
+
+                <ProgressBar
+                    android:id="@+id/pb_total_score"
+                    style="@style/CustomProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_toLeftOf="@id/stat_total_score_text"
+                    android:gravity="right"
+                    android:max="100"
+                    android:progress="0" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/stat_total_player"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/stat_total_score"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="25dp" >
+
+                <TextView
+                    android:id="@+id/stat_total_player_text"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@string/stat_player"
+                    android:textColor="@color/ajori"
+                    android:textSize="15sp" />
+
+                <ProgressBar
+                    android:id="@+id/pb_total_player"
+                    style="@style/CustomProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_toLeftOf="@id/stat_total_player_text"
+                    android:gravity="right"
+                    android:max="100"
+                    android:progress="0" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/stat_total_manager"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/stat_total_player"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="25dp" >
+
+                <TextView
+                    android:id="@+id/stat_total_manager_text"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@string/stat_manager"
+                    android:textColor="@color/ajori"
+                    android:textSize="15sp" />
+
+                <ProgressBar
+                    android:id="@+id/pb_total_manager"
+                    style="@style/CustomProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_toLeftOf="@id/stat_total_manager_text"
+                    android:gravity="right"
+                    android:max="100"
+                    android:progress="0" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/stat_total_logo"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/stat_total_manager"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="25dp" >
+
+                <TextView
+                    android:id="@+id/stat_total_logo_text"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@string/stat_logo"
+                    android:textColor="@color/ajori"
+                    android:textSize="15sp" />
+
+                <ProgressBar
+                    android:id="@+id/pb_total_logo"
+                    style="@style/CustomProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_toLeftOf="@id/stat_total_logo_text"
+                    android:gravity="right"
+                    android:max="100"
+                    android:progress="0" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/stat_total_q"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/stat_total_logo"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="25dp" >
+
+                <TextView
+                    android:id="@+id/stat_total_q_text"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@string/stat_q"
+                    android:textColor="@color/ajori"
+                    android:textSize="15sp" />
+
+                <ProgressBar
+                    android:id="@+id/pb_total_q"
+                    style="@style/CustomProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_toLeftOf="@id/stat_total_q_text"
+                    android:gravity="right"
+                    android:max="100"
+                    android:progress="0" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/stat_total_shirt"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/stat_total_q"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"
+                android:layout_marginTop="25dp" >
+
+                <TextView
+                    android:id="@+id/stat_total_shirt_text"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@string/stat_shirt"
+                    android:textColor="@color/ajori"
+                    android:textSize="15sp" />
+
+                <ProgressBar
+                    android:id="@+id/pb_total_shirt"
+                    style="@style/CustomProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_toLeftOf="@id/stat_total_shirt_text"
+                    android:gravity="right"
+                    android:max="100"
+                    android:progress="0" />
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>
