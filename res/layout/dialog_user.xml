@@ -32,6 +32,9 @@
         android:layout_marginTop="5dp"
         android:background="@drawable/user_text_box"
         android:hint="@string/user_name"
+        android:inputType="textPersonName"
+        android:lines="1"
+        android:maxWidth="350dp"
         android:minWidth="250dp"
         android:textColor="@color/ajori"
         android:textSize="22sp" />
@@ -46,6 +49,8 @@
         android:background="@drawable/user_text_box"
         android:hint="@string/user_phone"
         android:inputType="phone"
+        android:lines="1"
+        android:maxWidth="350dp"
         android:minWidth="250dp"
         android:textColor="@color/ajori"
         android:textSize="22sp" />
@@ -60,6 +65,8 @@
         android:background="@drawable/user_text_box"
         android:hint="@string/user_email"
         android:inputType="textEmailAddress"
+        android:lines="1"
+        android:maxWidth="350dp"
         android:minWidth="250dp"
         android:textColor="@color/ajori"
         android:textSize="22sp" />
