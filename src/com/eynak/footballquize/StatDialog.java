@@ -8,6 +8,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -26,6 +27,7 @@ public class StatDialog extends DialogFragment {
 
 	int[] _level_data;
 	int[] _total_data;
+	int[] _total_data_sum;
 
 	ProgressBar pb_score;
 	ProgressBar pb_player;
@@ -63,6 +65,9 @@ public class StatDialog extends DialogFragment {
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.dialog_stat, null);
 
+		Typeface face = Typeface.createFromAsset(getActivity().getAssets(),
+				"font/" + getResources().getString(R.string.font) + "");
+
 		pb_score = (ProgressBar) rootView.findViewById(R.id.pb_score);
 		pb_score.setRotation(180);
 		pb_player = (ProgressBar) rootView.findViewById(R.id.pb_player);
@@ -94,27 +99,40 @@ public class StatDialog extends DialogFragment {
 		pb_total_shirt.setRotation(180);
 
 		tv_score = (TextView) rootView.findViewById(R.id.stat_locale_score_p);
+		tv_score.setTypeface(face);
 		tv_player = (TextView) rootView.findViewById(R.id.stat_locale_player_p);
+		tv_player.setTypeface(face);
 		tv_manager = (TextView) rootView
 				.findViewById(R.id.stat_locale_manager_p);
+		tv_manager.setTypeface(face);
 		tv_logo = (TextView) rootView.findViewById(R.id.stat_locale_logo_p);
+		tv_logo.setTypeface(face);
 		tv_q = (TextView) rootView.findViewById(R.id.stat_locale_q_p);
+		tv_q.setTypeface(face);
 		tv_shirt = (TextView) rootView.findViewById(R.id.stat_locale_shirt_p);
+		tv_shirt.setTypeface(face);
 
 		tv_total_score = (TextView) rootView
 				.findViewById(R.id.stat_total_score_p);
+		tv_total_score.setTypeface(face);
 		tv_total_player = (TextView) rootView
 				.findViewById(R.id.stat_total_player_p);
+		tv_total_player.setTypeface(face);
 		tv_total_manager = (TextView) rootView
 				.findViewById(R.id.stat_total_manager_p);
+		tv_total_manager.setTypeface(face);
 		tv_total_logo = (TextView) rootView
 				.findViewById(R.id.stat_total_logo_p);
+		tv_total_logo.setTypeface(face);
 		tv_total_q = (TextView) rootView.findViewById(R.id.stat_total_q_p);
+		tv_total_q.setTypeface(face);
 		tv_total_shirt = (TextView) rootView
 				.findViewById(R.id.stat_total_shirt_p);
+		tv_total_shirt.setTypeface(face);
 
 		_level_data = new int[7];
 		_total_data = new int[7];
+		_total_data_sum = new int[7];
 		new TestAsync().execute();
 
 		return rootView;
@@ -144,6 +162,13 @@ public class StatDialog extends DialogFragment {
 				_total_data[totalStat.get(i).get("Type")] += totalStat.get(i)
 						.get("Point");
 				_total_data[0] += totalStat.get(i).get("Point");
+				if (totalStat.get(i).get("level") == 30) {
+					_total_data_sum[totalStat.get(i).get("Type")] += 800;
+					_total_data_sum[0] += 800;
+				} else {
+					_total_data_sum[totalStat.get(i).get("Type")] += 100;
+					_total_data_sum[0] += 100;
+				}
 			}
 			return "You are at PostExecute";
 		}
@@ -285,27 +310,29 @@ public class StatDialog extends DialogFragment {
 			}
 
 			tv_total_score
-					.setText((int) (((float) _total_data[0] / (2400 * 37)) * 100)
+					.setText((int) (((float) _total_data[0] / _total_data_sum[0]) * 100)
 							+ "%");
 			tv_total_player
-					.setText((int) (((float) _total_data[5] / (900 * 37)) * 100)
+					.setText((int) (((float) _total_data[5] / _total_data_sum[5]) * 100)
 							+ "%");
 			tv_total_manager
-					.setText((int) (((float) _total_data[3] / (200 * 37)) * 100)
+					.setText((int) (((float) _total_data[3] / _total_data_sum[3]) * 100)
 							+ "%");
 			tv_total_logo
-					.setText((int) (((float) _total_data[1] / (400 * 37)) * 100)
+					.setText((int) (((float) _total_data[1] / _total_data_sum[1]) * 100)
 							+ "%");
 			tv_total_q
-					.setText((int) (((float) _total_data[6] / (500 * 37)) * 100)
+					.setText((int) (((float) _total_data[6] / _total_data_sum[6]) * 100)
 							+ "%");
 			tv_total_shirt
-					.setText((int) (((float) _total_data[2] / (400 * 37)) * 100)
+					.setText((int) (((float) _total_data[2] / _total_data_sum[2]) * 100)
 							+ "%");
 
-			ObjectAnimator progressAnimation6 = ObjectAnimator.ofInt(
-					pb_total_score, "progress", 0,
-					(int) (((float) _total_data[0] / (2400 * 37)) * 100));
+			ObjectAnimator progressAnimation6 = ObjectAnimator
+					.ofInt(pb_total_score,
+							"progress",
+							0,
+							(int) (((float) _total_data[0] / _total_data_sum[0]) * 100));
 
 			progressAnimation6.setDuration(time);
 			progressAnimation6.setInterpolator(new DecelerateInterpolator());
@@ -314,9 +341,11 @@ public class StatDialog extends DialogFragment {
 			// pb_total_player
 			// .setProgress((int) (((float) _total_data[5] / (900 * 37)) *
 			// 100));
-			ObjectAnimator progressAnimation7 = ObjectAnimator.ofInt(
-					pb_total_player, "progress", 0,
-					(int) (((float) _total_data[5] / (900 * 37)) * 100));
+			ObjectAnimator progressAnimation7 = ObjectAnimator
+					.ofInt(pb_total_player,
+							"progress",
+							0,
+							(int) (((float) _total_data[5] / _total_data_sum[5]) * 100));
 
 			progressAnimation7.setDuration(time);
 			progressAnimation7.setInterpolator(new DecelerateInterpolator());
@@ -325,9 +354,11 @@ public class StatDialog extends DialogFragment {
 			// pb_total_manager
 			// .setProgress((int) (((float) _total_data[3] / (200 * 37)) *
 			// 100));
-			ObjectAnimator progressAnimation8 = ObjectAnimator.ofInt(
-					pb_total_manager, "progress", 0,
-					(int) (((float) _total_data[3] / (200 * 37)) * 100));
+			ObjectAnimator progressAnimation8 = ObjectAnimator
+					.ofInt(pb_total_manager,
+							"progress",
+							0,
+							(int) (((float) _total_data[3] / _total_data_sum[3]) * 100));
 
 			progressAnimation8.setDuration(time);
 			progressAnimation8.setInterpolator(new DecelerateInterpolator());
@@ -336,9 +367,11 @@ public class StatDialog extends DialogFragment {
 			// pb_total_logo
 			// .setProgress((int) (((float) _total_data[1] / (400 * 37)) *
 			// 100));
-			ObjectAnimator progressAnimation9 = ObjectAnimator.ofInt(
-					pb_total_logo, "progress", 0,
-					(int) (((float) _total_data[1] / (400 * 37)) * 100));
+			ObjectAnimator progressAnimation9 = ObjectAnimator
+					.ofInt(pb_total_logo,
+							"progress",
+							0,
+							(int) (((float) _total_data[1] / _total_data_sum[1]) * 100));
 
 			progressAnimation9.setDuration(time);
 			progressAnimation9.setInterpolator(new DecelerateInterpolator());
@@ -347,9 +380,11 @@ public class StatDialog extends DialogFragment {
 			// pb_total_q
 			// .setProgress((int) (((float) _total_data[6] / (500 * 37)) *
 			// 100));
-			ObjectAnimator progressAnimation10 = ObjectAnimator.ofInt(
-					pb_total_q, "progress", 0,
-					(int) (((float) _total_data[6] / (500 * 37)) * 100));
+			ObjectAnimator progressAnimation10 = ObjectAnimator
+					.ofInt(pb_total_q,
+							"progress",
+							0,
+							(int) (((float) _total_data[6] / _total_data_sum[6]) * 100));
 
 			progressAnimation10.setDuration(time);
 			progressAnimation10.setInterpolator(new DecelerateInterpolator());
@@ -357,9 +392,11 @@ public class StatDialog extends DialogFragment {
 			// pb_total_shirt
 			// .setProgress((int) (((float) _total_data[2] / (400 * 37)) *
 			// 100));
-			ObjectAnimator progressAnimation11 = ObjectAnimator.ofInt(
-					pb_total_shirt, "progress", 0,
-					(int) (((float) _total_data[2] / (400 * 37)) * 100));
+			ObjectAnimator progressAnimation11 = ObjectAnimator
+					.ofInt(pb_total_shirt,
+							"progress",
+							0,
+							(int) (((float) _total_data[2] / _total_data_sum[2]) * 100));
 
 			progressAnimation11.setDuration(time);
 			progressAnimation11.setInterpolator(new DecelerateInterpolator());

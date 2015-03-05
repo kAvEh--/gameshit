@@ -1,0 +1,177 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg" >
+
+    <RelativeLayout
+        android:id="@+id/q_header_score_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/header_bg"
+        android:padding="3dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:id="@+id/question_header_coins_ic"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_coin" />
+
+            <TextView
+                android:id="@+id/question_header_coins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/question_header_coins_ic"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true" >
+
+            <TextView
+                android:id="@+id/question_header_points"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/question_header_points"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_points" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/q_header_score_layout"
+        android:layout_margin="15dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/shop_bg" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/q_header_score_layout"
+        android:padding="20dp"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/ach_1"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:onClick="on5StarClick"
+                android:padding="15dp"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/ach_2"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:padding="15dp"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/ach_3"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:padding="15dp"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/ach_4"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:padding="15dp"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/ach_5"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:padding="15dp"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/ach_6"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:padding="15dp"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/ach_7"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:padding="15dp"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/ach_8"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:padding="15dp"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/ach_9"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:padding="15dp"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/ach_10"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:padding="15dp"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/ach_11"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:padding="15dp"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/ach_12"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:padding="15dp"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/ach_13"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:padding="15dp"
+                android:scaleType="centerInside" />
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

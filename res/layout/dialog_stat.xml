@@ -57,7 +57,7 @@
 
                 <TextView
                     android:id="@+id/stat_locale_score_text"
-                    android:layout_width="50dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:gravity="right"
@@ -65,7 +65,7 @@
                     android:paddingRight="5dp"
                     android:text="@string/stat_score"
                     android:textColor="@color/ajori"
-                    android:textSize="15sp" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/stat_locale_score_p"
@@ -98,7 +98,7 @@
 
                 <TextView
                     android:id="@+id/stat_locale_player_text"
-                    android:layout_width="50dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:gravity="right"
@@ -106,7 +106,7 @@
                     android:paddingRight="5dp"
                     android:text="@string/stat_player"
                     android:textColor="@color/ajori"
-                    android:textSize="15sp" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/stat_locale_player_p"
@@ -139,7 +139,7 @@
 
                 <TextView
                     android:id="@+id/stat_locale_manager_text"
-                    android:layout_width="50dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:gravity="right"
@@ -147,7 +147,7 @@
                     android:paddingRight="5dp"
                     android:text="@string/stat_manager"
                     android:textColor="@color/ajori"
-                    android:textSize="15sp" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/stat_locale_manager_p"
@@ -180,7 +180,7 @@
 
                 <TextView
                     android:id="@+id/stat_locale_logo_text"
-                    android:layout_width="50dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:gravity="right"
@@ -188,7 +188,7 @@
                     android:paddingRight="5dp"
                     android:text="@string/stat_logo"
                     android:textColor="@color/ajori"
-                    android:textSize="15sp" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/stat_locale_logo_p"
@@ -221,7 +221,7 @@
 
                 <TextView
                     android:id="@+id/stat_locale_q_text"
-                    android:layout_width="50dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:gravity="right"
@@ -229,7 +229,7 @@
                     android:paddingRight="5dp"
                     android:text="@string/stat_q"
                     android:textColor="@color/ajori"
-                    android:textSize="15sp" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/stat_locale_q_p"
@@ -262,7 +262,7 @@
 
                 <TextView
                     android:id="@+id/stat_locale_shirt_text"
-                    android:layout_width="50dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:gravity="right"
@@ -270,7 +270,7 @@
                     android:paddingRight="5dp"
                     android:text="@string/stat_shirt"
                     android:textColor="@color/ajori"
-                    android:textSize="15sp" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/stat_locale_shirt_p"
@@ -331,7 +331,7 @@
 
                 <TextView
                     android:id="@+id/stat_total_score_text"
-                    android:layout_width="50dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:gravity="right"
@@ -339,7 +339,7 @@
                     android:paddingRight="5dp"
                     android:text="@string/stat_score"
                     android:textColor="@color/ajori"
-                    android:textSize="15sp" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/stat_total_score_p"
@@ -372,7 +372,7 @@
 
                 <TextView
                     android:id="@+id/stat_total_player_text"
-                    android:layout_width="50dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:gravity="right"
@@ -380,7 +380,7 @@
                     android:paddingRight="5dp"
                     android:text="@string/stat_player"
                     android:textColor="@color/ajori"
-                    android:textSize="15sp" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/stat_total_player_p"
@@ -413,7 +413,7 @@
 
                 <TextView
                     android:id="@+id/stat_total_manager_text"
-                    android:layout_width="50dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:gravity="right"
@@ -421,7 +421,7 @@
                     android:paddingRight="5dp"
                     android:text="@string/stat_manager"
                     android:textColor="@color/ajori"
-                    android:textSize="15sp" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/stat_total_manager_p"
@@ -454,7 +454,7 @@
 
                 <TextView
                     android:id="@+id/stat_total_logo_text"
-                    android:layout_width="50dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:gravity="right"
@@ -462,7 +462,7 @@
                     android:paddingRight="5dp"
                     android:text="@string/stat_logo"
                     android:textColor="@color/ajori"
-                    android:textSize="15sp" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/stat_total_logo_p"
@@ -495,7 +495,7 @@
 
                 <TextView
                     android:id="@+id/stat_total_q_text"
-                    android:layout_width="50dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:gravity="right"
@@ -503,7 +503,7 @@
                     android:paddingRight="5dp"
                     android:text="@string/stat_q"
                     android:textColor="@color/ajori"
-                    android:textSize="15sp" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/stat_total_q_p"
@@ -536,7 +536,7 @@
 
                 <TextView
                     android:id="@+id/stat_total_shirt_text"
-                    android:layout_width="50dp"
+                    android:layout_width="55dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:gravity="right"
@@ -544,7 +544,7 @@
                     android:paddingRight="5dp"
                     android:text="@string/stat_shirt"
                     android:textColor="@color/ajori"
-                    android:textSize="15sp" />
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/stat_total_shirt_p"

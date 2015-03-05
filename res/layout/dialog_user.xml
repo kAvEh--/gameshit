@@ -14,13 +14,14 @@
         android:id="@+id/user_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="35dp"
         android:lines="2"
         android:text="@string/user_title"
         android:textColor="#B21E28"
-        android:textSize="35sp" />
+        android:textSize="22sp" />
 
     <EditText
         android:id="@+id/user_name"

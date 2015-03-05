@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:layout_width="350dp"
+        android:layout_height="500dp" >
+
+        <ImageView
+            android:layout_width="350dp"
+            android:layout_height="500dp"
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/success_bg" />
+
+        <ImageView
+            android:id="@+id/success_image"
+            android:layout_width="350dp"
+            android:layout_height="245dp"
+            android:layout_margin="3dp"
+            android:scaleType="fitStart" />
+
+        <TextView
+            android:id="@+id/dialog_success_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/success_image"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/ajori"
+            android:textSize="25sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/success_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/stat_score"
+            android:textColor="@color/ajori"
+            android:textSize="25sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/success_image"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_points" />
+
+        <ImageView
+            android:id="@+id/success_seprator_2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/dialog_success_score"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/ajori" />
+
+        <TextView
+            android:id="@+id/dialog_success_coins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/success_seprator_2"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/ajori"
+            android:textSize="25sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/success_seprator_2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/coins"
+            android:textColor="@color/ajori"
+            android:textSize="25sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/success_seprator_2"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_coin" />
+
+        <ImageView
+            android:id="@+id/success_seprator_3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/dialog_success_coins"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/ajori" />
+
+        <TextView
+            android:id="@+id/dialog_success_total_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/success_seprator_3"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/ajori"
+            android:textSize="25sp" />
+
+        <ImageView
+            android:id="@+id/success_seprator_4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/dialog_success_total_score"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/ajori" />
+
+        <ImageButton
+            android:id="@+id/dialog_success_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/success_seprator_4"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:background="@null"
+            android:src="@drawable/finale_ok" />
+    </RelativeLayout>
+
+</RelativeLayout>

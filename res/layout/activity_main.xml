@@ -52,8 +52,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:onClick="onCoinClick" >
+            android:layout_alignParentRight="true" >
 
             <TextView
                 android:id="@+id/question_header_points"
@@ -73,6 +72,16 @@
         </RelativeLayout>
     </RelativeLayout>
 
+    <ImageView
+        android:id="@+id/main_gift"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/main_header_layout"
+        android:layout_marginTop="10dp"
+        android:onClick="onGiftClick"
+        android:src="@drawable/ic_gift" />
+
     <com.eynak.footballquize.PagerContainer
         android:id="@+id/pager_container"
         android:layout_width="match_parent"
@@ -91,10 +100,10 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/pager_container"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:scaleType="centerInside"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
+        android:scaleType="fitCenter"
         android:src="@drawable/main_title" />
 
     <RelativeLayout
@@ -102,8 +111,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/pager_container"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" >
+        android:layout_centerHorizontal="true" >
 
         <ImageView
             android:layout_width="wrap_content"
@@ -118,7 +126,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:textColor="#A80000"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <TextView
@@ -129,11 +137,12 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:text="@string/main_to_final"
-            android:textColor="#A80000"
+            android:textColor="@color/white"
             android:textSize="20sp" />
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/main_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

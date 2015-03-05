@@ -7,5 +7,6 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="lib" path="libs/sqliteassethelper-2.0.1.jar"/>
 	<classpathentry kind="lib" path="libs/volley.jar"/>
+	<classpathentry kind="lib" path="libs/gcm.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

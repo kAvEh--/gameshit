@@ -1,52 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#123" >
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/finish_bg" >
 
-    <TextView
-        android:id="@+id/dialog_success_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:textSize="25sp" />
+    <RelativeLayout
+        android:layout_width="350dp"
+        android:layout_height="500dp" >
 
-    <TextView
-        android:id="@+id/dialog_success_coins"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_success_score"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:textSize="25sp" />
+        <TextView
+            android:id="@+id/dialog_success_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/green_dark"
+            android:textSize="43sp" />
 
-    <TextView
-        android:id="@+id/dialog_success_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_success_coins"
-        android:layout_centerInParent="true"
-        android:layout_margin="25dp"
-        android:textSize="30sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/dialog_success_title"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:text="امتیاز این مرحله :"
+            android:textColor="#000"
+            android:textSize="29sp" />
 
-    <Button
-        android:id="@+id/dialog_success_next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/dialog_success_main"
-        android:padding="7dp"
-        android:text="Next"
-        android:textSize="25sp" />
+        <TextView
+            android:id="@+id/dialog_success_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dialog_success_title"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/ajori"
+            android:textSize="29sp" />
 
-    <Button
-        android:id="@+id/dialog_success_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_success_main"
-        android:padding="7dp"
-        android:text="Back"
-        android:textSize="25sp" />
+        <ImageView
+            android:id="@+id/seprator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/dialog_success_score"
+            android:background="@color/ajori" />
+
+        <TextView
+            android:id="@+id/success_body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/seprator"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:lines="3"
+            android:textColor="#000"
+            android:lineSpacingExtra="4dp"
+            android:textSize="29sp" />
+
+        <ImageButton
+            android:id="@+id/dialog_success_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:background="@null"
+            android:src="@drawable/finale_ok" />
+    </RelativeLayout>
 
 </RelativeLayout>

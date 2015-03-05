@@ -30,7 +30,21 @@ public class UnlockDialog extends DialogFragment {
 		TextView body_3 = (TextView) rootView.findViewById(R.id.lock_body_3);
 
 		if (_level == 31) {
-
+			if (_coins >= getActivity().getResources().getInteger(
+					R.integer.COINS_TO_UNLOCK_LEVEL_FINALE)) {
+				button.setImageResource(R.drawable.coin_100);
+				body_2.setText(getActivity().getResources().getString(
+						R.string.lock_body_unlock));
+			} else {
+				button.setImageResource(R.drawable.unlock_shop_button);
+				body_2.setText((getActivity().getResources().getInteger(
+						R.integer.COINS_TO_UNLOCK_LEVEL_FINALE) - _coins)
+						+ " "
+						+ getActivity().getResources().getString(
+								R.string.lock_body_shop));
+				body_3.setText(getActivity().getResources().getString(
+								R.string.lock_body_shop_2));
+			}
 		} else if (_level == 30) {
 			if (_coins >= getActivity().getResources().getInteger(
 					R.integer.COINS_TO_UNLOCK_LEVEL_30)) {
@@ -69,7 +83,19 @@ public class UnlockDialog extends DialogFragment {
 
 			@Override
 			public void onClick(View v) {
-				if (_level == 30) {
+				if (_level == 31) {
+					if (_coins >= getActivity().getResources().getInteger(
+							R.integer.COINS_TO_UNLOCK_LEVEL_FINALE)) {
+						DatabasHandler db = new DatabasHandler(getActivity());
+						db.addCoins(-getActivity().getResources().getInteger(
+								R.integer.COINS_TO_UNLOCK_LEVEL_FINALE));
+						db.close();
+						((FinaleLevelActivity) getActivity()).gotoLevel();
+						UnlockDialog.this.getDialog().cancel();
+					} else {
+						((FinaleLevelActivity) getActivity()).onShopClick(null);
+					}
+				} else if (_level == 30) {
 					if (_coins >= getActivity().getResources().getInteger(
 							R.integer.COINS_TO_UNLOCK_LEVEL_30)) {
 						DatabasHandler db = new DatabasHandler(getActivity());

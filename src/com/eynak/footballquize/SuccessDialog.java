@@ -1,12 +1,13 @@
 package com.eynak.footballquize;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class SuccessDialog extends DialogFragment {
@@ -20,16 +21,19 @@ public class SuccessDialog extends DialogFragment {
 		setRetainInstance(true);
 		View rootView = inflater.inflate(R.layout.dialog_success,
 				container, false);
-		TextView title = (TextView) rootView.findViewById(R.id.dialog_success_main);
-		title.setText("Success !!!");
+		
+		Typeface face = Typeface.createFromAsset(getActivity().getAssets(), "font/"
+				+ getResources().getString(R.string.font) + "");
 		
 		TextView score = (TextView) rootView.findViewById(R.id.dialog_success_score);
-		score.setText("You get " + _score + " balls...");
+		score.setTypeface(face);
+		score.setText("+ " + _score);
 		
 		TextView coins = (TextView) rootView.findViewById(R.id.dialog_success_coins);
-		coins.setText("You get " + _coins + " cups...");
+		coins.setTypeface(face);
+		coins.setText("+ " + _coins);
 		
-		Button next = (Button) rootView.findViewById(R.id.dialog_success_next);
+		ImageButton next = (ImageButton) rootView.findViewById(R.id.dialog_success_next);
 		next.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -38,7 +42,7 @@ public class SuccessDialog extends DialogFragment {
 			}
 		});
 		
-		Button back = (Button) rootView.findViewById(R.id.dialog_success_back);
+		ImageButton back = (ImageButton) rootView.findViewById(R.id.dialog_success_back);
 		back.setOnClickListener(new OnClickListener() {
 			
 			@Override

@@ -23,6 +23,7 @@ public class SendDatatoServer {
 	public static final String URL_PACKAGE_DATA = "http://eynakgroup.ir/fq/v1/index.php/packageData";
 	public static final String URL_ACHIEVEMENTS_DATA = "http://eynakgroup.ir/fq/v1/index.php/achievements";
 	public static final String URL_USER_DATA = "http://eynakgroup.ir/fq/v1/index.php/userData";
+	public static final String URL_FINALE_DATA = "http://eynakgroup.ir/fq/v1/index.php/sendFinaleScore";
 	private String tag_json_obj = "jobj_req";
 
 	private String _api_key;
@@ -52,7 +53,7 @@ public class SendDatatoServer {
 	/**
 	 * Making json object request
 	 * */
-	private void sendUserData() {
+	public void sendUserData() {
 		// showProgressDialog();
 		StringRequest jsonObjReq = new StringRequest(Method.POST,
 				URL_JSON_OBJECT, new Response.Listener<String>() {

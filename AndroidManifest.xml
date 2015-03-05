@@ -9,7 +9,25 @@
         android:targetSdkVersion="21" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR"/>
+    <uses-permission android:name="com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR" />
+    <!-- GCM requires a Google account. -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <!-- Network State Permissions to detect Internet status -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Permission to vibrate -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Keeps the processor from sleeping when a message is received. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- Creates a custom permission so only this app can receive its messages. -->
+    <permission
+        android:name="com.eynak.footballquize.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.eynak.footballquize.permission.C2D_MESSAGE" />
+
+    <!-- This app has permission to register and receive data message. -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <application
         android:name="com.eynak.utils.AppController"
@@ -18,8 +36,9 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.eynak.footballquize.MainActivity"
-            android:label="@string/app_name" >
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,16 +46,56 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.eynak.footballquize.QuestionActivity"
-            android:label="@string/title_activity_question" >
+            android:name=".QuestionActivity"
+            android:label="@string/title_activity_question"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <receiver
+            android:name="com.google.android.gcm.GCMBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+
+                <!-- Receives the actual messages. -->
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <!-- Receives the registration id. -->
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <category android:name="com.androidhive.pushnotifications" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".GCMIntentService" />
+
+        <activity
+            android:name=".LevelActivity"
+            android:label="@string/title_activity_level"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.eynak.footballquize.LevelActivity"
-            android:label="@string/title_activity_level" >
+            android:name=".ShopActivity"
+            android:label="@string/title_activity_shop"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.eynak.footballquize.ShopActivity"
-            android:label="@string/title_activity_shop" >
+            android:name=".LeaderBoardActivity"
+            android:label="@string/title_activity_leader_board"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".AchievementActivity"
+            android:label="@string/title_activity_achievement"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".FinaleLevelActivity"
+            android:label="@string/title_activity_finale_level"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".FinaleQActivity"
+            android:label="@string/title_activity_finale_q"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

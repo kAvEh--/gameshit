@@ -1,14 +1,19 @@
 package com.eynak.footballquize;
 
+import java.util.HashMap;
+
 import util.IabHelper;
 import util.IabResult;
-import util.Inventory;
 import util.Purchase;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+
+import com.eynak.utils.DatabasHandler;
 
 public class ShopActivity extends Activity {
 
@@ -17,6 +22,13 @@ public class ShopActivity extends Activity {
 
 	// SKUs for our products: the premium upgrade (non-consumable)
 	static final String SKU_100_coins = "buy_100_coins";
+	static final String SKU_500_coins = "buy_500_coins";
+	static final String SKU_1000_coins = "buy_1000_coins";
+	static final String SKU_3000_coins = "buy_3000_coins";
+	static final String SKU_10000_coins = "buy_10000_coins";
+
+	TextView _points_view;
+	TextView _coins_view;
 
 	// Does the user have the premium upgrade?
 	boolean mIsPremium = false;
@@ -31,6 +43,16 @@ public class ShopActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_shop);
+
+		Typeface face = Typeface.createFromAsset(getAssets(), "font/"
+				+ getResources().getString(R.string.font) + "");
+		
+		_points_view = (TextView) findViewById(R.id.question_header_points);
+		_points_view.setTypeface(face);
+		_coins_view = (TextView) findViewById(R.id.question_header_coins);
+		_coins_view.setTypeface(face);
+
+		updateCoins();
 
 		String base64EncodedPublicKey = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwDActLMXQ0TyNXy3NCEPzF62IyAbr6HoogfGtq30npJI63Vax64tIfdwHE5GNSaDLX05BXRoTduekZcNtJFyLEErEFKhWbDizPTMTiWkyHi+4yiOG6K/Vs8tj/bLSNvkiKZX5P0YQ3P4MVN/gCvTgPKAvlJceq+RNqiCOnBe2vqsuRl8zkqEP74GtaBzxKVqRTI9eHEiUoBYKzR9dDq3051/Ij9aRgbOko0FyEIKacCAwEAAQ==";
 		// You can find it in your Bazaar console, in the Dealers section.
@@ -48,32 +70,24 @@ public class ShopActivity extends Activity {
 					Log.d(TAG, "Problem setting up In-app Billing: " + result);
 				}
 				// Hooray, IAB is fully set up!
-				mHelper.queryInventoryAsync(mGotInventoryListener);
+				// mHelper.queryInventoryAsync(mGotInventoryListener);
 			}
 		});
 	}
 
-	IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
-		public void onQueryInventoryFinished(IabResult result,
-				Inventory inventory) {
-			Log.d(TAG, "Query inventory finished.");
-			if (result.isFailure()) {
-				Log.d(TAG, "Failed to query inventory: " + result);
-				return;
-			} else {
-				Log.d(TAG, "Query inventory was successful.");
-				// does the user have the premium upgrade?
-				mIsPremium = inventory.hasPurchase(SKU_100_coins);
+	public void updateCoins() {
+		HashMap<String, Integer> gameData;
+		DatabasHandler db = new DatabasHandler(getApplicationContext());
+		gameData = db.getGameData();
+		db.close();
 
-				// update UI accordingly
+		int _points = gameData
+				.get(getResources().getString(R.string.KEY_POINT));
+		int _coins = gameData.get(getResources().getString(R.string.KEY_COINS));
 
-				Log.d(TAG, "User is "
-						+ (mIsPremium ? "PREMIUM" : "NOT PREMIUM"));
-			}
-
-			Log.d(TAG, "Initial inventory query finished; enabling main UI.");
-		}
-	};
+		_points_view.setText(String.valueOf(_points));
+		_coins_view.setText(String.valueOf(_coins));
+	}
 
 	IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
 		public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
@@ -81,7 +95,35 @@ public class ShopActivity extends Activity {
 				Log.d(TAG, "Error purchasing: " + result);
 				return;
 			} else if (purchase.getSku().equals(SKU_100_coins)) {
-				// give user access to premium content and update the UI
+				DatabasHandler db = new DatabasHandler(getApplicationContext());
+				db.addCoins(100);
+				db.close();
+				updateCoins();
+				return;
+			} else if (purchase.getSku().equals(SKU_500_coins)) {
+				DatabasHandler db = new DatabasHandler(getApplicationContext());
+				db.addCoins(500);
+				db.close();
+				updateCoins();
+				return;
+			} else if (purchase.getSku().equals(SKU_1000_coins)) {
+				DatabasHandler db = new DatabasHandler(getApplicationContext());
+				db.addCoins(1000);
+				db.close();
+				updateCoins();
+				return;
+			} else if (purchase.getSku().equals(SKU_3000_coins)) {
+				DatabasHandler db = new DatabasHandler(getApplicationContext());
+				db.addCoins(3000);
+				db.close();
+				updateCoins();
+				return;
+			} else if (purchase.getSku().equals(SKU_10000_coins)) {
+				DatabasHandler db = new DatabasHandler(getApplicationContext());
+				db.addCoins(10000);
+				db.close();
+				updateCoins();
+				return;
 			}
 		}
 	};
@@ -104,6 +146,42 @@ public class ShopActivity extends Activity {
 	public void on100CoinClick(View v) {
 		try {
 			mHelper.launchPurchaseFlow(this, SKU_100_coins, RC_REQUEST,
+					mPurchaseFinishedListener, "payload-string");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void on500CoinClick(View v) {
+		try {
+			mHelper.launchPurchaseFlow(this, SKU_500_coins, RC_REQUEST,
+					mPurchaseFinishedListener, "payload-string");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void on1000CoinClick(View v) {
+		try {
+			mHelper.launchPurchaseFlow(this, SKU_1000_coins, RC_REQUEST,
+					mPurchaseFinishedListener, "payload-string");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void on3000CoinClick(View v) {
+		try {
+			mHelper.launchPurchaseFlow(this, SKU_3000_coins, RC_REQUEST,
+					mPurchaseFinishedListener, "payload-string");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void on10000CoinClick(View v) {
+		try {
+			mHelper.launchPurchaseFlow(this, SKU_10000_coins, RC_REQUEST,
 					mPurchaseFinishedListener, "payload-string");
 		} catch (Exception e) {
 			e.printStackTrace();

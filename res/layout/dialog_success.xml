@@ -1,51 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
 
-    <TextView
-        android:id="@+id/dialog_success_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:textSize="25sp" />
+    <RelativeLayout
+        android:layout_width="350dp"
+        android:layout_height="500dp" >
 
-    <TextView
-        android:id="@+id/dialog_success_coins"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_success_score"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:textSize="25sp" />
+        <ImageView
+            android:layout_width="350dp"
+            android:layout_height="500dp"
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/success_bg" />
 
-    <TextView
-        android:id="@+id/dialog_success_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_success_coins"
-        android:layout_centerInParent="true"
-        android:layout_margin="25dp"
-        android:textSize="30sp" />
+        <ImageView
+            android:id="@+id/success_image"
+            android:layout_width="350dp"
+            android:layout_height="245dp"
+            android:layout_margin="3dp"
+            android:scaleType="fitStart"
+            android:src="@drawable/success_ball" />
 
-    <Button
-        android:id="@+id/dialog_success_next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/dialog_success_main"
-        android:padding="7dp"
-        android:text="Next"
-        android:textSize="25sp" />
+        <TextView
+            android:id="@+id/success_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/success_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/success_goal"
+            android:textColor="@color/ajori"
+            android:textSize="28sp" />
 
-    <Button
-        android:id="@+id/dialog_success_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_success_main"
-        android:padding="7dp"
-        android:text="Back"
-        android:textSize="25sp" />
+        <ImageView
+            android:id="@+id/success_seprator_1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/success_title"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/ajori" />
+
+        <TextView
+            android:id="@+id/dialog_success_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/success_seprator_1"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/ajori"
+            android:textSize="25sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/success_seprator_1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/stat_score"
+            android:textColor="@color/ajori"
+            android:textSize="25sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/success_seprator_1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_points" />
+
+        <ImageView
+            android:id="@+id/success_seprator_2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/dialog_success_score"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/ajori" />
+
+        <TextView
+            android:id="@+id/dialog_success_coins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/success_seprator_2"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/ajori"
+            android:textSize="25sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/success_seprator_2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/coins"
+            android:textColor="@color/ajori"
+            android:textSize="25sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/success_seprator_2"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_coin" />
+
+        <ImageView
+            android:id="@+id/success_seprator_3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/dialog_success_coins"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/ajori" />
+
+        <ImageButton
+            android:id="@+id/dialog_success_next"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/success_seprator_3"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:src="@drawable/ic_next" />
+
+        <ImageButton
+            android:id="@+id/dialog_success_back"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/success_seprator_3"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@null"
+            android:src="@drawable/ic_list" />
+    </RelativeLayout>
 
 </RelativeLayout>

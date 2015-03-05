@@ -4,4 +4,7 @@
     <color name="ajori">#B21E28</color>
     <color name="green_header">#506D29</color>
     <color name="white">#FFFFFF</color>
+    <color name="grey">#C3C3C3</color>
+    <color name="black">#000</color>
+    <color name="green_dark">#0a5c00</color>
 </resources>

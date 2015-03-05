@@ -29,15 +29,34 @@
         android:textColor="@color/ajori"
         android:textSize="30sp" />
 
+    <TextView
+        android:id="@+id/package_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textColor="@color/ajori"
+        android:textSize="25sp" />
+
     <ImageButton
         android:id="@+id/package_stat"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="10dp"
         android:background="@null"
         android:scaleType="fitXY" />
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@null"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_launcher" />
 
     <ImageView
         android:id="@+id/package_8x"

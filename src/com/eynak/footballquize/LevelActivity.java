@@ -3,9 +3,11 @@ package com.eynak.footballquize;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -13,7 +15,7 @@ import android.widget.TextView;
 import com.eynak.adapters.GridLevelAdapter;
 import com.eynak.utils.DatabasHandler;
 
-public class LevelActivity extends Activity {
+public class LevelActivity extends FragmentActivity {
 
 	int _level;
 	GridView _grid;
@@ -33,44 +35,35 @@ public class LevelActivity extends Activity {
 
 		Intent i = getIntent();
 		_level = i.getIntExtra("level", 1);
+		
+		if (_level == 1) {
+			HelpDialog fr = new HelpDialog();
+			fr.setStyle(DialogFragment.STYLE_NO_TITLE,
+					R.style.MyDialog);
+			fr.setType(2);
+			fr.show(getSupportFragmentManager(), "Hello");
+		} else if (_level == 30) {
+			HelpDialog fr = new HelpDialog();
+			fr.setStyle(DialogFragment.STYLE_NO_TITLE,
+					R.style.MyDialog);
+			fr.setType(3);
+			fr.show(getSupportFragmentManager(), "Hello");
+		}
 
+		Typeface face = Typeface.createFromAsset(getAssets(), "font/"
+				+ getResources().getString(R.string.font) + "");
+		
 		_points_view = (TextView) findViewById(R.id.question_header_points);
+		_points_view.setTypeface(face);
 		_coins_view = (TextView) findViewById(R.id.question_header_coins);
+		_coins_view.setTypeface(face);
 		_title_view = (TextView) findViewById(R.id.level_title);
+		_title_view.setTypeface(face);
 
 		_title_view.setText("مرحله " + _level);
 
 		_grid = (GridView) findViewById(R.id.level_grid);
 		initialize();
-
-//		DatabasHandler db = new DatabasHandler(getApplicationContext());
-//		System.err.println("hello ----------------");
-//		for (int j = 0; j < 150; j++) {
-//			Question l = db.getQuestion(j + 1);
-////			try {
-////				getAssets().open("Manager/" + l.get_imagePath());
-////			} catch (IOException e) {
-////				// TODO Auto-generated catch block
-////				// e.printStackTrace();
-////				System.err.println(l.get_id() + "---" + l.get_imagePath());
-////			}
-//			String[] tt = new String[8];
-//			tt[0] = l.get_answer();
-//			tt[1] = l.get_ch1();
-//			tt[2] = l.get_ch2();
-//			tt[3] = l.get_ch3();
-//			tt[4] = l.get_ch4();
-//			tt[5] = l.get_ch5();
-//			tt[6] = l.get_ch6();
-//			tt[7] = l.get_ch7();
-//			for (int k = 0; k < 8; k++) {
-//				for (int k2 = 0; k2 < k; k2++) {
-//					if (tt[k].equals(tt[k2])) {
-//						System.err.println(l.get_id() + "-----" + tt[k] + "---" + tt[k2]);
-//					}
-//				}
-//			}
-//		}
 	}
 
 	private void initialize() {

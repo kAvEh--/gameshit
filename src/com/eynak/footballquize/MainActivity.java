@@ -6,6 +6,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -25,10 +27,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.eynak.utils.DatabasHandler;
 import com.eynak.utils.SendDatatoServer;
+import com.eynak.utils.ServerUtilities;
+import com.google.android.gcm.GCMRegistrar;
 
 public class MainActivity extends FragmentActivity {
 
@@ -63,17 +66,33 @@ public class MainActivity extends FragmentActivity {
 	DisplayMetrics metrics;
 	float image_margin_px;
 
+	int _help_count;
+	Typeface face;
+
+	// Google project id
+	static final String SENDER_ID = "367325912027";
+
+	// Asyntask
+	AsyncTask<Void, Void, Void> mRegisterTask;
+
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		face = Typeface.createFromAsset(getAssets(), "font/"
+				+ getResources().getString(R.string.font) + "");
+
 		_points_view = (TextView) findViewById(R.id.question_header_points);
+		_points_view.setTypeface(face);
 		_coins_view = (TextView) findViewById(R.id.question_header_coins);
+		_coins_view.setTypeface(face);
 
 		_main_to_finale = (TextView) findViewById(R.id.main_finale_text);
+		_main_to_finale.setTypeface(face);
 		_main_to_finale_2 = (TextView) findViewById(R.id.main_finale_text_2);
+		_main_to_finale_2.setTypeface(face);
 
 		ViewPager myVP = (ViewPager) findViewById(R.id.mainViewPager);
 		metrics = new DisplayMetrics();
@@ -88,6 +107,18 @@ public class MainActivity extends FragmentActivity {
 		myVP.setLayoutParams(tmpParams);
 
 		initialize();
+
+		if (_help_count < 2) {
+			HelpDialog fr = new HelpDialog();
+			fr.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
+			fr.setType(1);
+			fr.show(getSupportFragmentManager(), "Hello");
+
+			DatabasHandler db = new DatabasHandler(getApplicationContext());
+			db = new DatabasHandler(getApplicationContext());
+			db.addShownCount();
+			db.close();
+		}
 
 		mContainer = (PagerContainer) findViewById(R.id.pager_container);
 
@@ -111,6 +142,52 @@ public class MainActivity extends FragmentActivity {
 
 		SendDatatoServer tmp = new SendDatatoServer(this);
 		tmp.checkUser();
+
+		// Make sure the device has the proper dependencies.
+		GCMRegistrar.checkDevice(this);
+
+		// Make sure the manifest was properly set - comment out this line
+		// while developing the app, then uncomment it when it's ready.
+		GCMRegistrar.checkManifest(this);
+
+		// registerReceiver(mHandleMessageReceiver, new IntentFilter(
+		// DISPLAY_MESSAGE_ACTION));
+
+		// Get GCM registration id
+		final String regId = GCMRegistrar.getRegistrationId(this);
+
+		// Check if regid already presents
+		if (regId.equals("")) {
+			// Registration is not present, register now with GCM
+			GCMRegistrar.register(this, SENDER_ID);
+		} else {
+			// Device is already registered on GCM
+			if (GCMRegistrar.isRegisteredOnServer(this)) {
+				// Skips registration.
+			} else {
+				// Try to register again, but not in the UI thread.
+				// It's also necessary to cancel the thread onDestroy(),
+				// hence the use of AsyncTask instead of a raw thread.
+				final Context context = this;
+				mRegisterTask = new AsyncTask<Void, Void, Void>() {
+
+					@Override
+					protected Void doInBackground(Void... params) {
+						// Register on our server
+						// On server creates a new user
+						ServerUtilities.register(context, regId);
+						return null;
+					}
+
+					@Override
+					protected void onPostExecute(Void result) {
+						mRegisterTask = null;
+					}
+
+				};
+				mRegisterTask.execute(null, null, null);
+			}
+		}
 	}
 
 	private void initialize() {
@@ -118,6 +195,8 @@ public class MainActivity extends FragmentActivity {
 		DatabasHandler db = new DatabasHandler(getApplicationContext());
 		gameData = db.getGameData();
 		db.close();
+
+		_help_count = gameData.get("helpShownCount");
 
 		_points = gameData.get(getResources().getString(R.string.KEY_POINT));
 		_coins = gameData.get(getResources().getString(R.string.KEY_COINS));
@@ -166,9 +245,6 @@ public class MainActivity extends FragmentActivity {
 
 		@SuppressLint("NewApi")
 		public void transformPage(View view, float position) {
-			// int pageWidth = view.getWidth();
-			// int pageHeight = view.getHeight();
-
 			if (position < -1) { // [-Infinity,-1)
 				// This page is way off-screen to the left.
 				view.setAlpha(MIN_ALPHA);
@@ -176,22 +252,11 @@ public class MainActivity extends FragmentActivity {
 				params.setMargins((int) (metrics.widthPixels / 30 * mPager
 						.getCurrentItem()), (int) dp_10_px, 0, (int) dp_15_px);
 				params.addRule(RelativeLayout.BELOW, R.id.pager_container);
-				// _ball_image.setLayoutParams(params);
 
 			} else if (position <= 1) { // [-1,1]
 				// Modify the default slide transition to shrink the page as
 				// well
 				float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
-				// float vertMargin = pageHeight * (1 - scaleFactor) / 2;
-				// float horzMargin = pageWidth * (1 - scaleFactor) / 2;
-				// if (position < 0) {
-				// // view.setTranslationX(horzMargin - vertMargin / 3);
-				// } else {
-				// // view.setTranslationX(-horzMargin + vertMargin / 3);
-				// }
-
-				// Scale the page down (between MIN_SCALE and 1)
-				// view.setScaleX(scaleFactor);
 				view.setScaleY(scaleFactor);
 
 				// Fade the page relative to its size.
@@ -206,21 +271,10 @@ public class MainActivity extends FragmentActivity {
 										* metrics.widthPixels / 60) + dp_15_px),
 						(int) dp_10_px, 0, (int) dp_15_px);
 				params.addRule(RelativeLayout.BELOW, R.id.pager_container);
-				// _ball_image.setLayoutParams(params);
-				// tt.setTranslationX((position) * (pageWidth / 4));
-				//
-				// jj.setTranslationX((position) * (pageWidth / 1));
 
-			} else { // (1,+Infinity]
-				// This page is way off-screen to the right.
+			} else {
 				view.setAlpha(MIN_ALPHA);
 				view.setScaleY(MIN_SCALE);
-				// params.setMargins(
-				// (int) (metrics.widthPixels / 30 * mPager.getCurrentItem() +
-				// dp_15_px),
-				// (int) dp_10_px, 0, (int) dp_15_px);
-				// params.addRule(RelativeLayout.BELOW, R.id.pager_container);
-				// _ball_image.setLayoutParams(params);
 			}
 		}
 	}
@@ -241,6 +295,19 @@ public class MainActivity extends FragmentActivity {
 			ImageView lockIcon = (ImageView) view
 					.findViewById(R.id.level_main_lock);
 			TextView tv = (TextView) view.findViewById(R.id.package_title);
+			tv.setTypeface(face);
+			TextView score_tv = (TextView) view
+					.findViewById(R.id.package_score);
+			score_tv.setTypeface(face);
+
+			DatabasHandler db = new DatabasHandler(getApplicationContext());
+			HashMap<String, String> data = db.getPackageInfo(position + 1);
+			db.close();
+
+			if (position <= 30)
+				if (position < _last_level)
+					score_tv.setText(data.get("Point") + " امتیاز");
+
 			if (position == 30)
 				tv.setVisibility(View.INVISIBLE);
 			else
@@ -266,7 +333,26 @@ public class MainActivity extends FragmentActivity {
 				@Override
 				public void onClick(View v) {
 					int stage = (Integer) v.getTag();
-					if (stage < _last_level) {
+
+					if (stage == 30) {
+						if (_points >= getResources().getInteger(
+								R.integer.FINALE_SCORE)) {
+							DatabasHandler db = new DatabasHandler(
+									getApplicationContext());
+							HashMap<String, String> userData = db.getUser();
+							db.close();
+							if (userData.get(getResources().getString(
+									R.string.KEY_NAME)) != null) {
+								Intent intent = new Intent(MainActivity.this,
+										FinaleLevelActivity.class);
+								startActivity(intent);
+							} else {
+								onUserClick(null);
+							}
+						} else {
+							// TODO
+						}
+					} else if (stage < _last_level) {
 						Intent i = new Intent(MainActivity.this,
 								LevelActivity.class);
 						i.putExtra("level", (stage + 1));
@@ -279,26 +365,30 @@ public class MainActivity extends FragmentActivity {
 						fr.setCoins(_coins);
 						fr.show(getSupportFragmentManager(), "Hello");
 					} else {
-						Toast.makeText(getApplicationContext(),
-								"You don`t have access to this level.",
-								Toast.LENGTH_LONG).show();
+						// Toast.makeText(getApplicationContext(),
+						// "You don`t have access to this level.",
+						// Toast.LENGTH_LONG).show();
 					}
 				}
 			});
-			if (position == 30 && _last_level < 30) {
-				bg.setImageResource(R.drawable.finale_lock_bg);
-				lockIcon.setVisibility(View.INVISIBLE);
+			if (position == 30) {
+				if (_points < getResources().getInteger(R.integer.FINALE_SCORE)) {
+					bg.setImageResource(R.drawable.finale_lock_bg);
+					tv.setTextColor(getResources().getColor(R.color.black));
+				} else {
+					bg.setImageResource(R.drawable.finale_unlock_bg);
+					tv.setTextColor(getResources().getColor(R.color.ajori));
+				}
 				stat.setVisibility(View.INVISIBLE);
-			} else if (position == 30) {
-				bg.setImageResource(R.drawable.finale_unlock_bg);
 				lockIcon.setVisibility(View.INVISIBLE);
-				stat.setVisibility(View.INVISIBLE);
 			} else if (position < _last_level) {
 				bg.setImageResource(R.drawable.package_unlock_bg);
+				tv.setTextColor(getResources().getColor(R.color.ajori));
 				lockIcon.setVisibility(View.INVISIBLE);
 				stat.setImageResource(R.drawable.ic_stat_on);
 			} else {
 				bg.setImageResource(R.drawable.package_lock_bg);
+				tv.setTextColor(getResources().getColor(R.color.black));
 				lockIcon.setVisibility(View.VISIBLE);
 				stat.setImageResource(R.drawable.ic_stat_off);
 			}
@@ -347,23 +437,40 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	public void onAchievementClick(View v) {
-
+		Intent intent = new Intent(MainActivity.this, AchievementActivity.class);
+		startActivity(intent);
 	}
 
 	public void onLeaderClick(View v) {
-
+		Intent intent = new Intent(MainActivity.this, LeaderBoardActivity.class);
+		startActivity(intent);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		mPager.setAdapter(adapter);
+		mPager.setCurrentItem(_last_level - 1);
 		initialize();
 	}
 
 	public void updateunlock() {
 		initialize();
-		mPager.setAdapter(adapter);
-		mPager.setCurrentItem(_last_level - 1);
+		Intent i = new Intent(MainActivity.this, LevelActivity.class);
+		i.putExtra("level", _last_level);
+		startActivity(i);
+	}
+
+	public void gotoFinal(View v) {
+//		Intent intent = new Intent(MainActivity.this, FinaleLevelActivity.class);
+//		startActivity(intent);
+	}
+
+	public void onGiftClick(View v) {
+		HelpDialog fr = new HelpDialog();
+		fr.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
+		fr.setType(5);
+		fr.show(getSupportFragmentManager(), "Hello");
 	}
 
 }

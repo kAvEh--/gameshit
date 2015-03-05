@@ -46,6 +46,7 @@ public class UserDialog extends DialogFragment {
 
 		DatabasHandler db = new DatabasHandler(getActivity());
 		HashMap<String, String> userData = db.getUser();
+		db.close();
 		if (userData.get(getActivity().getResources().getString(
 				R.string.KEY_NAME)) != null) {
 			_name.setText(userData.get(getActivity().getResources().getString(

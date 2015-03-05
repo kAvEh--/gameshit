@@ -6,18 +6,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -29,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -50,16 +44,6 @@ import com.eynak.utils.SendDatatoServer;
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class QuestionActivity extends FragmentActivity {
 
-	// Hold a reference to the current animator,
-	// so that it can be canceled mid-way.
-	private Animator mCurrentAnimator;
-
-	// The system "short" animation time duration, in milliseconds. This
-	// duration is ideal for subtle animations or animations that occur
-	// very frequently.
-	private int mShortAnimationDuration;
-
-	protected ImageView mOriginalImageView;
 	protected ImageView mainImageQuestion;
 	protected TextView mainTextQuestion;
 	protected Bitmap mFilterBitmap;
@@ -107,7 +91,6 @@ public class QuestionActivity extends FragmentActivity {
 	Player _player;
 
 	RelativeLayout time_bar;
-	TextView time_text;
 	int time_bar_width;
 
 	CountDownTimer counter;
@@ -159,7 +142,7 @@ public class QuestionActivity extends FragmentActivity {
 		DatabasHandler db = new DatabasHandler(getApplicationContext());
 		tempData = db.getQuestionData(_levelId);
 		gameData = db.getGameData();
-		HashMap<String, String> pData = db.getPackageInfo(_packageId);
+		// HashMap<String, String> pData = db.getPackageInfo(_packageId);
 		db.close();
 
 		_points = gameData.get(getResources().getString(R.string.KEY_POINT));
@@ -186,7 +169,6 @@ public class QuestionActivity extends FragmentActivity {
 					.getString(R.string.KEY_USED_HINTS)));
 			_start_time = Long.parseLong(tempData.get(getResources().getString(
 					R.string.KEY_START_TIME)));
-
 		}
 
 		setContentView(R.layout.activity_question);
@@ -196,10 +178,14 @@ public class QuestionActivity extends FragmentActivity {
 		_remove_button = (ImageButton) findViewById(R.id.q_bar_remove_choice);
 		_hint_button = (ImageButton) findViewById(R.id.q_bar_hint);
 
+		Typeface face = Typeface.createFromAsset(getAssets(), "font/"
+				+ getResources().getString(R.string.font) + "");
+
 		_points_view = (TextView) findViewById(R.id.question_header_points);
+		_points_view.setTypeface(face);
 		_coins_view = (TextView) findViewById(R.id.question_header_coins);
+		_coins_view.setTypeface(face);
 		time_bar = (RelativeLayout) findViewById(R.id.q_tima_bar);
-		time_text = (TextView) findViewById(R.id.q_time_text);
 
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -223,46 +209,27 @@ public class QuestionActivity extends FragmentActivity {
 		_coins_view.setText(String.valueOf(_coins));
 
 		if (game_flag) {
-			if (gameData.get(getResources().getString(R.string.KEY_FREE_HINT)) == 1) {
-				_hint_button.setBackgroundColor(Color.BLUE);
+			if (gameData.get(getResources().getString(R.string.KEY_FREE_HINT)) == 1
+					&& _type != getResources().getInteger(
+							R.integer.TYPE_QUESTION)) {
+				_hint_button.setImageResource(R.drawable.ic_help_free);
 				free_hint = true;
 			}
 			if (gameData
 					.get(getResources().getString(R.string.KEY_FREE_REMOVE)) == 1) {
-				_remove_button.setBackgroundColor(Color.BLUE);
+				_remove_button.setImageResource(R.drawable.ic_remove_free);
 				free_remove = true;
 			}
 			if (gameData
 					.get(getResources().getString(R.string.KEY_FREE_FREEZE)) == 1) {
-				_freez_button.setBackgroundColor(Color.BLUE);
+				_freez_button.setImageResource(R.drawable.ic_freeze_free);
 				free_freeze = true;
 			}
 			if (gameData.get(getResources().getString(R.string.KEY_FREE_SKIP)) == 1) {
-				_skip_button.setVisibility(View.VISIBLE);
-				_skip_button.setBackgroundColor(Color.BLUE);
+				_skip_button.setImageResource(R.drawable.ic_skip_free);
 				free_skip = true;
-			} else {
-				switch (Integer.parseInt(pData.get(getResources().getString(
-						R.string.KEY_SKIP_NUM)))) {
-				case 0:
-					_skip_button.setBackgroundColor(Color.GREEN);
-					break;
-				case 1:
-					_skip_button.setBackgroundColor(Color.YELLOW);
-					break;
-				case 2:
-					_skip_button.setBackgroundColor(Color.RED);
-					break;
-
-				default:
-					_skip_button.setVisibility(View.INVISIBLE);
-					break;
-				}
 			}
 		}
-
-		mShortAnimationDuration = getResources().getInteger(
-				android.R.integer.config_longAnimTime);
 	}
 
 	private void setStadium() {
@@ -289,12 +256,6 @@ public class QuestionActivity extends FragmentActivity {
 			final Bitmap bitmap = BitmapFactory.decodeStream(getAssets().open(
 					"Stadium/" + _stadium.get_imagePath()));
 			mainImageQuestion.setImageBitmap(bitmap);
-			mainImageQuestion.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					zoomImageFromThumb(mainImageQuestion, bitmap);
-				}
-			});
 		} catch (IOException e) {
 			e.printStackTrace();
 			finish();
@@ -302,7 +263,6 @@ public class QuestionActivity extends FragmentActivity {
 
 		setChoicesHistory();
 
-		// TODO generate text
 		_hint_toshow = _stadium.get_nameFa();
 	}
 
@@ -331,12 +291,6 @@ public class QuestionActivity extends FragmentActivity {
 			final Bitmap bitmap = BitmapFactory.decodeStream(getAssets().open(
 					"Shirt/" + _shirt.get_imagePath()));
 			mainImageQuestion.setImageBitmap(bitmap);
-			mainImageQuestion.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					zoomImageFromThumb(mainImageQuestion, bitmap);
-				}
-			});
 		} catch (IOException e) {
 			e.printStackTrace();
 			finish();
@@ -344,8 +298,7 @@ public class QuestionActivity extends FragmentActivity {
 
 		setChoicesHistory();
 
-		// TODO generate text
-		_hint_toshow = _logo.get_hint();
+		_hint_toshow = "این باشگاه در لیگ " + _logo.get_hint() + " است.";
 	}
 
 	private void setQuestion() {
@@ -377,7 +330,7 @@ public class QuestionActivity extends FragmentActivity {
 		setChoicesHistory();
 
 		// hiding hint
-		_hint_button.setVisibility(View.INVISIBLE);
+		_hint_button.setImageResource(R.drawable.ic_help_off);
 	}
 
 	private void setPlayer() {
@@ -411,9 +364,8 @@ public class QuestionActivity extends FragmentActivity {
 
 		setChoicesHistory();
 
-		// TODO generate text
-		_hint_toshow = _player.get_nationality() + " -- "
-				+ _player.get_playNum();
+		_hint_toshow = "این بازیکن برای تیم ملی " + _player.get_nationality()
+				+ " " + _player.get_playNum() + " بازی کرده است.";
 	}
 
 	private void setManager() {
@@ -447,8 +399,8 @@ public class QuestionActivity extends FragmentActivity {
 
 		setChoicesHistory();
 
-		// TODO generate text
-		_hint_toshow = _manager.get_team() + " -- " + _manager.get_year();
+		_hint_toshow = "در سال‌های " + _manager.get_year() + " مربی "
+				+ _manager.get_team() + " بوده است.";
 	}
 
 	public void setLogo() {
@@ -475,20 +427,13 @@ public class QuestionActivity extends FragmentActivity {
 			final Bitmap bitmap = BitmapFactory.decodeStream(getAssets().open(
 					"Logo/" + _logo.get_imagePath()));
 			mainImageQuestion.setImageBitmap(bitmap);
-			mainImageQuestion.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					zoomImageFromThumb(mainImageQuestion, bitmap);
-				}
-			});
 		} catch (IOException e) {
 			e.printStackTrace();
 			finish();
 		}
 		setChoicesHistory();
 
-		// TODO generate text
-		_hint_toshow = _logo.get_hint();
+		_hint_toshow = "این باشگاه در لیگ " + _logo.get_hint() + " است.";
 	}
 
 	public void setInitialSettings(List<String> choicesData) {
@@ -526,34 +471,34 @@ public class QuestionActivity extends FragmentActivity {
 			_false_num = parts.length;
 			for (int i = 0; i < parts.length; i++) {
 				if (_ch1.getText().equals(parts[i])) {
-					_ch1.setBackgroundColor(Color.RED);
+					_ch1.setBackgroundResource(R.drawable.ch_error_bg);
 					_ch1.setTag(false);
 				} else if (_ch2.getText().equals(parts[i])) {
-					_ch2.setBackgroundColor(Color.RED);
+					_ch2.setBackgroundResource(R.drawable.ch_error_bg);
 					_ch2.setTag(false);
 				} else if (_ch3.getText().equals(parts[i])) {
-					_ch3.setBackgroundColor(Color.RED);
+					_ch3.setBackgroundResource(R.drawable.ch_error_bg);
 					_ch3.setTag(false);
 				} else if (_ch4.getText().equals(parts[i])) {
-					_ch4.setBackgroundColor(Color.RED);
+					_ch4.setBackgroundResource(R.drawable.ch_error_bg);
 					_ch4.setTag(false);
 				} else if (_ch5.getText().equals(parts[i])) {
-					_ch5.setBackgroundColor(Color.RED);
+					_ch5.setBackgroundResource(R.drawable.ch_error_bg);
 					_ch5.setTag(false);
 				} else if (_ch6.getText().equals(parts[i])) {
-					_ch6.setBackgroundColor(Color.RED);
+					_ch6.setBackgroundResource(R.drawable.ch_error_bg);
 					_ch6.setTag(false);
 				} else if (_ch7.getText().equals(parts[i])) {
-					_ch7.setBackgroundColor(Color.RED);
+					_ch7.setBackgroundResource(R.drawable.ch_error_bg);
 					_ch7.setTag(false);
 				} else if (_ch8.getText().equals(parts[i])) {
-					_ch8.setBackgroundColor(Color.RED);
+					_ch8.setBackgroundResource(R.drawable.ch_error_bg);
 					_ch8.setTag(false);
 				}
 			}
 		}
 		if (_removedChoices != null && _removedChoices.length() > 0) {
-			_remove_button.setVisibility(View.INVISIBLE);
+			_remove_button.setImageResource(R.drawable.ic_remove_off);
 			String[] parts = _removedChoices.split(",");
 			for (int i = 0; i < parts.length; i++) {
 				if (_ch1.getText().equals(parts[i])) {
@@ -584,10 +529,10 @@ public class QuestionActivity extends FragmentActivity {
 			}
 		}
 		if (_state == getResources().getInteger(R.integer.STATE_CORRECT)) {
-			_skip_button.setVisibility(View.INVISIBLE);
-			_freez_button.setVisibility(View.INVISIBLE);
-			_remove_button.setVisibility(View.INVISIBLE);
-			_hint_button.setVisibility(View.INVISIBLE);
+			_skip_button.setImageResource(R.drawable.ic_skip_off);
+			_freez_button.setImageResource(R.drawable.ic_freeze_off);
+			_remove_button.setImageResource(R.drawable.ic_remove_off);
+			_hint_button.setImageResource(R.drawable.ic_help_off);
 			game_flag = false;
 			_ch1.setTag(false);
 			_ch2.setTag(false);
@@ -598,22 +543,38 @@ public class QuestionActivity extends FragmentActivity {
 			_ch7.setTag(false);
 			_ch8.setTag(false);
 			if (_ch1.getText().equals(_correct_answer))
-				_ch1.setBackgroundColor(Color.GREEN);
+				_ch1.setBackgroundResource(R.drawable.ch_correct_bg);
 			else if (_ch2.getText().equals(_correct_answer))
-				_ch2.setBackgroundColor(Color.GREEN);
+				_ch2.setBackgroundResource(R.drawable.ch_correct_bg);
 			else if (_ch3.getText().equals(_correct_answer))
-				_ch3.setBackgroundColor(Color.GREEN);
+				_ch3.setBackgroundResource(R.drawable.ch_correct_bg);
 			else if (_ch4.getText().equals(_correct_answer))
-				_ch4.setBackgroundColor(Color.GREEN);
+				_ch4.setBackgroundResource(R.drawable.ch_correct_bg);
 			else if (_ch5.getText().equals(_correct_answer))
-				_ch5.setBackgroundColor(Color.GREEN);
+				_ch5.setBackgroundResource(R.drawable.ch_correct_bg);
 			else if (_ch6.getText().equals(_correct_answer))
-				_ch6.setBackgroundColor(Color.GREEN);
+				_ch6.setBackgroundResource(R.drawable.ch_correct_bg);
 			else if (_ch7.getText().equals(_correct_answer))
-				_ch7.setBackgroundColor(Color.GREEN);
+				_ch7.setBackgroundResource(R.drawable.ch_correct_bg);
 			else if (_ch8.getText().equals(_correct_answer))
-				_ch8.setBackgroundColor(Color.GREEN);
+				_ch8.setBackgroundResource(R.drawable.ch_correct_bg);
+			DatabasHandler db = new DatabasHandler(getApplicationContext());
+			HashMap<String, String> tempData = db.getQuestionData(_levelId);
+			db.close();
+			int tmpCoins = 0;
+			if (_false_num < 1)
+				tmpCoins = _COINS_FULL;
+			else if (_false_num < 2)
+				tmpCoins = _COINS_HALF;
+			else if (_false_num < 3)
+				tmpCoins = _COINS_LESS;
+			showSuccess(
+					Integer.parseInt(tempData.get(getResources().getString(
+							R.string.KEY_POINT))), tmpCoins);
 		} else {
+			if (_used_hint == 1) {
+				_hint_button.setImageResource(R.drawable.ic_help_off);
+			}
 			if (_used_freez > 0) {
 				long tmpTime = (long) _used_freez;
 				LayoutParams l = (LayoutParams) time_bar.getLayoutParams();
@@ -659,15 +620,6 @@ public class QuestionActivity extends FragmentActivity {
 						.min((int) (((double) milli / (double) _TOTAL_TIME) * time_bar_width),
 								time_bar_width));
 				time_bar.setLayoutParams(l);
-				time_text.setText((int) (milli / 1000) + "");
-				if (milli < _TOTAL_TIME / 4)
-					time_bar.setBackgroundColor(Color.RED);
-				else if (milli < _TOTAL_TIME / 4 * 2)
-					time_bar.setBackgroundColor(Color.YELLOW);
-				else if (milli < _TOTAL_TIME / 4 * 3)
-					time_bar.setBackgroundColor(Color.CYAN);
-				else
-					time_bar.setBackgroundColor(Color.GREEN);
 			}
 
 			public void onFinish() {
@@ -675,7 +627,7 @@ public class QuestionActivity extends FragmentActivity {
 				l.width = 0;
 				time_bar.setLayoutParams(l);
 				currentTime = 0;
-				_freez_button.setVisibility(View.INVISIBLE);
+				_freez_button.setImageResource(R.drawable.ic_freeze_off);
 			}
 		};
 		counter.start();
@@ -697,12 +649,11 @@ public class QuestionActivity extends FragmentActivity {
 		if (counter != null)
 			counter.cancel();
 		game_flag = false;
-		_skip_button.setVisibility(View.INVISIBLE);
-		_freez_button.setVisibility(View.INVISIBLE);
-		_remove_button.setVisibility(View.INVISIBLE);
-		_hint_button.setVisibility(View.INVISIBLE);
-		v.setBackgroundColor(Color.GREEN);
-		// TODO set score
+		_skip_button.setImageResource(R.drawable.ic_skip_off);
+		_freez_button.setImageResource(R.drawable.ic_freeze_off);
+		_remove_button.setImageResource(R.drawable.ic_remove_off);
+		_hint_button.setImageResource(R.drawable.ic_help_off);
+		v.setBackgroundResource(R.drawable.ch_correct_bg);
 		int tmpScore = (int) (Math.min(_TOTAL_TIME, currentTime) * 4 / 3000);
 
 		if (_false_num < 1)
@@ -712,9 +663,13 @@ public class QuestionActivity extends FragmentActivity {
 		else if (_false_num < 3)
 			tmpScore += _SCORE_BONUS_LESS;
 
+		if (_packageId == 30) {
+			tmpScore *= 8;
+		}
+
 		_points += tmpScore;
 		_points_view.setText(String.valueOf(_points));
-		// TODO set coins
+
 		int tmpCoins = 0;
 		if (_false_num < 1)
 			tmpCoins = _COINS_FULL;
@@ -734,9 +689,6 @@ public class QuestionActivity extends FragmentActivity {
 		db.close();
 
 		showSuccessPage(tmpScore, tmpCoins);
-
-		// TODO connect to server and send data
-
 	}
 
 	private void showSuccessPage(int score, int coins) {
@@ -758,7 +710,10 @@ public class QuestionActivity extends FragmentActivity {
 			FinishPackageDialog fp = new FinishPackageDialog();
 			fp.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
 			fp.show(getSupportFragmentManager(), "Hello");
-
+			fp.setPackage(_packageId);
+			fp.setScore(Integer.parseInt(pData.get(getResources().getString(
+					R.string.KEY_POINT))));
+			fp.settotalscore(_points);
 			SendDatatoServer tmp = new SendDatatoServer(this);
 			tmp.checkUser();
 		} else {
@@ -770,6 +725,15 @@ public class QuestionActivity extends FragmentActivity {
 		}
 		db.close();
 	}
+	
+	public void showSuccess(int score, int coins) {
+		SuccessDialog fr = new SuccessDialog();
+		fr.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
+		fr.setScore(score);
+		fr.setCoins(coins);
+		fr.show(getSupportFragmentManager(), "Hello");
+	}
+	
 
 	private void checkPointsAchievement(DatabasHandler db) {
 		HashMap<String, String> data;
@@ -785,9 +749,9 @@ public class QuestionActivity extends FragmentActivity {
 				View layout = inflater.inflate(R.layout.custom_toast,
 						(ViewGroup) findViewById(R.id.toast_layout_root));
 
-				TextView text = (TextView) layout.findViewById(R.id.text);
-				text.setText(data.get(getResources().getString(
-						R.string.KEY_TITLE)));
+				ImageView imageTmp = (ImageView) layout
+						.findViewById(R.id.ach_main_image);
+				imageTmp.setImageResource(R.drawable.ach_6_on);
 
 				Toast toast = new Toast(getApplicationContext());
 				toast.setGravity(Gravity.TOP, 0, 10);
@@ -811,9 +775,9 @@ public class QuestionActivity extends FragmentActivity {
 				View layout = inflater.inflate(R.layout.custom_toast,
 						(ViewGroup) findViewById(R.id.toast_layout_root));
 
-				TextView text = (TextView) layout.findViewById(R.id.text);
-				text.setText(data.get(getResources().getString(
-						R.string.KEY_TITLE)));
+				ImageView imageTmp = (ImageView) layout
+						.findViewById(R.id.ach_main_image);
+				imageTmp.setImageResource(R.drawable.ach_7_on);
 
 				Toast toast = new Toast(getApplicationContext());
 				toast.setGravity(Gravity.TOP, 0, 10);
@@ -837,9 +801,9 @@ public class QuestionActivity extends FragmentActivity {
 				View layout = inflater.inflate(R.layout.custom_toast,
 						(ViewGroup) findViewById(R.id.toast_layout_root));
 
-				TextView text = (TextView) layout.findViewById(R.id.text);
-				text.setText(data.get(getResources().getString(
-						R.string.KEY_TITLE)));
+				ImageView imageTmp = (ImageView) layout
+						.findViewById(R.id.ach_main_image);
+				imageTmp.setImageResource(R.drawable.ach_8_on);
 
 				Toast toast = new Toast(getApplicationContext());
 				toast.setGravity(Gravity.TOP, 0, 10);
@@ -863,9 +827,9 @@ public class QuestionActivity extends FragmentActivity {
 				View layout = inflater.inflate(R.layout.custom_toast,
 						(ViewGroup) findViewById(R.id.toast_layout_root));
 
-				TextView text = (TextView) layout.findViewById(R.id.text);
-				text.setText(data.get(getResources().getString(
-						R.string.KEY_TITLE)));
+				ImageView imageTmp = (ImageView) layout
+						.findViewById(R.id.ach_main_image);
+				imageTmp.setImageResource(R.drawable.ach_9_on);
 
 				Toast toast = new Toast(getApplicationContext());
 				toast.setGravity(Gravity.TOP, 0, 10);
@@ -898,9 +862,9 @@ public class QuestionActivity extends FragmentActivity {
 				View layout = inflater.inflate(R.layout.custom_toast,
 						(ViewGroup) findViewById(R.id.toast_layout_root));
 
-				TextView text = (TextView) layout.findViewById(R.id.text);
-				text.setText(data.get(getResources().getString(
-						R.string.KEY_TITLE)));
+				ImageView imageTmp = (ImageView) layout
+						.findViewById(R.id.ach_main_image);
+				imageTmp.setImageResource(R.drawable.ach_10_on);
 
 				Toast toast = new Toast(getApplicationContext());
 				toast.setGravity(Gravity.TOP, 0, 10);
@@ -928,9 +892,9 @@ public class QuestionActivity extends FragmentActivity {
 				View layout = inflater.inflate(R.layout.custom_toast,
 						(ViewGroup) findViewById(R.id.toast_layout_root));
 
-				TextView text = (TextView) layout.findViewById(R.id.text);
-				text.setText(data.get(getResources().getString(
-						R.string.KEY_TITLE)));
+				ImageView imageTmp = (ImageView) layout
+						.findViewById(R.id.ach_main_image);
+				imageTmp.setImageResource(R.drawable.ach_11_on);
 
 				Toast toast = new Toast(getApplicationContext());
 				toast.setGravity(Gravity.TOP, 0, 10);
@@ -958,9 +922,9 @@ public class QuestionActivity extends FragmentActivity {
 				View layout = inflater.inflate(R.layout.custom_toast,
 						(ViewGroup) findViewById(R.id.toast_layout_root));
 
-				TextView text = (TextView) layout.findViewById(R.id.text);
-				text.setText(data.get(getResources().getString(
-						R.string.KEY_TITLE)));
+				ImageView imageTmp = (ImageView) layout
+						.findViewById(R.id.ach_main_image);
+				imageTmp.setImageResource(R.drawable.ach_12_on);
 
 				Toast toast = new Toast(getApplicationContext());
 				toast.setGravity(Gravity.TOP, 0, 10);
@@ -988,9 +952,9 @@ public class QuestionActivity extends FragmentActivity {
 				View layout = inflater.inflate(R.layout.custom_toast,
 						(ViewGroup) findViewById(R.id.toast_layout_root));
 
-				TextView text = (TextView) layout.findViewById(R.id.text);
-				text.setText(data.get(getResources().getString(
-						R.string.KEY_TITLE)));
+				ImageView imageTmp = (ImageView) layout
+						.findViewById(R.id.ach_main_image);
+				imageTmp.setImageResource(R.drawable.ach_13_on);
 
 				Toast toast = new Toast(getApplicationContext());
 				toast.setGravity(Gravity.TOP, 0, 10);
@@ -1021,9 +985,9 @@ public class QuestionActivity extends FragmentActivity {
 				View layout = inflater.inflate(R.layout.custom_toast,
 						(ViewGroup) findViewById(R.id.toast_layout_root));
 
-				TextView text = (TextView) layout.findViewById(R.id.text);
-				text.setText(data.get(getResources().getString(
-						R.string.KEY_TITLE)));
+				ImageView imageTmp = (ImageView) layout
+						.findViewById(R.id.ach_main_image);
+				imageTmp.setImageResource(R.drawable.ach_2_on);
 
 				Toast toast = new Toast(getApplicationContext());
 				toast.setGravity(Gravity.TOP, 0, 10);
@@ -1049,9 +1013,9 @@ public class QuestionActivity extends FragmentActivity {
 				View layout = inflater.inflate(R.layout.custom_toast,
 						(ViewGroup) findViewById(R.id.toast_layout_root));
 
-				TextView text = (TextView) layout.findViewById(R.id.text);
-				text.setText(data.get(getResources().getString(
-						R.string.KEY_TITLE)));
+				ImageView imageTmp = (ImageView) layout
+						.findViewById(R.id.ach_main_image);
+				imageTmp.setImageResource(R.drawable.ach_3_on);
 
 				Toast toast = new Toast(getApplicationContext());
 				toast.setGravity(Gravity.TOP, 0, 10);
@@ -1077,9 +1041,9 @@ public class QuestionActivity extends FragmentActivity {
 				View layout = inflater.inflate(R.layout.custom_toast,
 						(ViewGroup) findViewById(R.id.toast_layout_root));
 
-				TextView text = (TextView) layout.findViewById(R.id.text);
-				text.setText(data.get(getResources().getString(
-						R.string.KEY_TITLE)));
+				ImageView imageTmp = (ImageView) layout
+						.findViewById(R.id.ach_main_image);
+				imageTmp.setImageResource(R.drawable.ach_4_on);
 
 				Toast toast = new Toast(getApplicationContext());
 				toast.setGravity(Gravity.TOP, 0, 10);
@@ -1105,9 +1069,9 @@ public class QuestionActivity extends FragmentActivity {
 				View layout = inflater.inflate(R.layout.custom_toast,
 						(ViewGroup) findViewById(R.id.toast_layout_root));
 
-				TextView text = (TextView) layout.findViewById(R.id.text);
-				text.setText(data.get(getResources().getString(
-						R.string.KEY_TITLE)));
+				ImageView imageTmp = (ImageView) layout
+						.findViewById(R.id.ach_main_image);
+				imageTmp.setImageResource(R.drawable.ach_5_on);
 
 				Toast toast = new Toast(getApplicationContext());
 				toast.setGravity(Gravity.TOP, 0, 10);
@@ -1123,7 +1087,7 @@ public class QuestionActivity extends FragmentActivity {
 	}
 
 	public void selectFalse(View v, String select) {
-		v.setBackgroundColor(Color.RED);
+		v.setBackgroundResource(R.drawable.ch_error_bg);
 		if (counter != null)
 			counter.cancel();
 		runTimer(Math.max(currentTime - (_TOTAL_TIME / 4), 0));
@@ -1178,165 +1142,32 @@ public class QuestionActivity extends FragmentActivity {
 		view.setBackground(null);
 	}
 
-	private void zoomImageFromThumb(final View thumbView, Bitmap imageResId) {
-		// If there's an animation in progress, cancel it
-		// immediately and proceed with this one.
-		if (mCurrentAnimator != null) {
-			mCurrentAnimator.cancel();
-		}
-
-		// Load the high-resolution "zoomed-in" image.
-		final ImageView expandedImageView = (ImageView) findViewById(R.id.question_expanded_image);
-		expandedImageView.setImageBitmap(imageResId);
-
-		// Calculate the starting and ending bounds for the zoomed-in image.
-		// This step involves lots of math. Yay, math.
-		final Rect startBounds = new Rect();
-		final Rect finalBounds = new Rect();
-		final Point globalOffset = new Point();
-
-		// The start bounds are the global visible rectangle of the thumbnail,
-		// and the final bounds are the global visible rectangle of the
-		// container
-		// view. Also set the container view's offset as the origin for the
-		// bounds, since that's the origin for the positioning animation
-		// properties (X, Y).
-		thumbView.getGlobalVisibleRect(startBounds);
-		((View) expandedImageView.getParent()).getGlobalVisibleRect(
-				finalBounds, globalOffset);
-		// startBounds.offset(-globalOffset.x, -globalOffset.y);
-		// finalBounds.offset(-globalOffset.x, -globalOffset.y);
-
-		// Adjust the start bounds to be the same aspect ratio as the final
-		// bounds using the "center crop" technique. This prevents undesirable
-		// stretching during the animation. Also calculate the start scaling
-		// factor (the end scaling factor is always 1.0).
-		float startScale;
-		if ((float) finalBounds.width() / finalBounds.height() > (float) startBounds
-				.width() / startBounds.height()) {
-			// Extend start bounds horizontally
-			// startScale = 0.5f;
-			startScale = (float) startBounds.height() / finalBounds.height();
-			float startWidth = startScale * finalBounds.width();
-			float deltaWidth = (startWidth - startBounds.width()) / 2;
-			startBounds.left -= deltaWidth;
-			startBounds.right += deltaWidth;
-		} else {
-			// Extend start bounds vertically
-			startScale = (float) startBounds.width() / finalBounds.width();
-			float startHeight = startScale * finalBounds.height();
-			float deltaHeight = (startHeight - startBounds.height()) / 2;
-			startBounds.top -= deltaHeight;
-			startBounds.bottom += deltaHeight;
-		}
-		// Hide the thumbnail and show the zoomed-in view. When the animation
-		// begins, it will position the zoomed-in view in the place of the
-		// thumbnail.
-		thumbView.setAlpha(0f);
-		expandedImageView.setVisibility(View.VISIBLE);
-
-		// Set the pivot point for SCALE_X and SCALE_Y transformations
-		// to the top-left corner of the zoomed-in view (the default
-		// is the center of the view).
-		expandedImageView.setPivotX(0f);
-		expandedImageView.setPivotY(0f);
-
-		// Construct and run the parallel animation of the four translation and
-		// scale properties (X, Y, SCALE_X, and SCALE_Y).
-		AnimatorSet set = new AnimatorSet();
-		set.play(
-				ObjectAnimator.ofFloat(expandedImageView, View.X,
-						startBounds.left, finalBounds.left))
-				.with(ObjectAnimator.ofFloat(expandedImageView, View.Y,
-						finalBounds.top, finalBounds.top))
-				.with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_X,
-						startScale, 1f))
-				.with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_Y,
-						startScale, 1f));
-		set.setDuration(mShortAnimationDuration);
-		set.setInterpolator(new DecelerateInterpolator());
-		set.addListener(new AnimatorListenerAdapter() {
-			@Override
-			public void onAnimationEnd(Animator animation) {
-				mCurrentAnimator = null;
-			}
-
-			@Override
-			public void onAnimationCancel(Animator animation) {
-				mCurrentAnimator = null;
-			}
-		});
-		set.start();
-		System.out.println();
-		mCurrentAnimator = set;
-
-		// Upon clicking the zoomed-in image, it should zoom back down
-		// to the original bounds and show the thumbnail instead of
-		// the expanded image.
-		final float startScaleFinal = startScale;
-		expandedImageView.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				if (mCurrentAnimator != null) {
-					mCurrentAnimator.cancel();
-				}
-
-				// Animate the four positioning/sizing properties in parallel,
-				// back to their original values.
-				AnimatorSet set = new AnimatorSet();
-				set.play(
-						ObjectAnimator.ofFloat(expandedImageView, View.X,
-								startBounds.left))
-						.with(ObjectAnimator.ofFloat(expandedImageView, View.Y,
-								finalBounds.top))
-						.with(ObjectAnimator.ofFloat(expandedImageView,
-								View.SCALE_X, startScaleFinal))
-						.with(ObjectAnimator.ofFloat(expandedImageView,
-								View.SCALE_Y, startScaleFinal));
-				set.setDuration(mShortAnimationDuration);
-				set.setInterpolator(new DecelerateInterpolator());
-				set.addListener(new AnimatorListenerAdapter() {
-					@Override
-					public void onAnimationEnd(Animator animation) {
-						thumbView.setAlpha(1f);
-						expandedImageView.setVisibility(View.GONE);
-						mCurrentAnimator = null;
-					}
-
-					@Override
-					public void onAnimationCancel(Animator animation) {
-						thumbView.setAlpha(1f);
-						expandedImageView.setVisibility(View.GONE);
-						mCurrentAnimator = null;
-					}
-				});
-				set.start();
-				mCurrentAnimator = set;
-			}
-		});
-	}
-
 	public void onSkipClick(View v) {
 		if (game_flag) {
 			if (_coins > _COIN_SKIP || free_skip) {
 				if (counter != null)
 					counter.cancel();
 				if (_ch1.getText().toString().equals(_correct_answer))
-					_ch1.setBackgroundColor(Color.GREEN);
+					_ch1.setBackgroundResource(R.drawable.ch_correct_bg);
 				else if (_ch2.getText().toString().equals(_correct_answer))
-					_ch2.setBackgroundColor(Color.GREEN);
+					_ch2.setBackgroundResource(R.drawable.ch_correct_bg);
 				else if (_ch3.getText().toString().equals(_correct_answer))
-					_ch3.setBackgroundColor(Color.GREEN);
+					_ch3.setBackgroundResource(R.drawable.ch_correct_bg);
 				else if (_ch4.getText().toString().equals(_correct_answer))
-					_ch4.setBackgroundColor(Color.GREEN);
+					_ch4.setBackgroundResource(R.drawable.ch_correct_bg);
 				else if (_ch5.getText().toString().equals(_correct_answer))
-					_ch5.setBackgroundColor(Color.GREEN);
+					_ch5.setBackgroundResource(R.drawable.ch_correct_bg);
 				else if (_ch6.getText().toString().equals(_correct_answer))
-					_ch6.setBackgroundColor(Color.GREEN);
+					_ch6.setBackgroundResource(R.drawable.ch_correct_bg);
 				else if (_ch7.getText().toString().equals(_correct_answer))
-					_ch7.setBackgroundColor(Color.GREEN);
+					_ch7.setBackgroundResource(R.drawable.ch_correct_bg);
 				else if (_ch8.getText().toString().equals(_correct_answer))
-					_ch8.setBackgroundColor(Color.GREEN);
+					_ch8.setBackgroundResource(R.drawable.ch_correct_bg);
+
+				_skip_button.setImageResource(R.drawable.ic_skip_off);
+				_freez_button.setImageResource(R.drawable.ic_freeze_off);
+				_remove_button.setImageResource(R.drawable.ic_remove_off);
+				_hint_button.setImageResource(R.drawable.ic_help_off);
 
 				if (!free_skip)
 					_coins -= _COIN_SKIP;
@@ -1351,36 +1182,36 @@ public class QuestionActivity extends FragmentActivity {
 				_coins += tmpCoins;
 				_coins_view.setText(String.valueOf(_coins));
 
+				int tmpScore = _SCORE_SKIP;
+				if (_packageId == 30) {
+					tmpScore *= 8;
+				}
+
 				DatabasHandler db = new DatabasHandler(getApplicationContext());
 				if (free_skip) {
 					db.addCoins(tmpCoins);
-					db.updatePackageInfoData(_packageId, _SCORE_SKIP, tmpCoins);
+					db.updatePackageInfoData(_packageId, tmpScore, tmpCoins);
 					free_skip = false;
 					db.addFreeSkip();
 				} else {
 					db.addCoins(tmpCoins - _COIN_SKIP);
 					db.usedSkip(_packageId);
-					db.updatePackageInfoData(_packageId, _SCORE_SKIP,
+					db.updatePackageInfoData(_packageId, tmpScore,
 							(tmpCoins - _COIN_SKIP));
 				}
-				db.addScore(_SCORE_SKIP);
-				db.addScoreLevel(_SCORE_SKIP, _levelId);
+				db.addScore(tmpScore);
+				db.addScoreLevel(tmpScore, _levelId);
 				db.close();
-				showSuccessPage(_SCORE_SKIP, tmpCoins);
-			} else
-				Toast.makeText(getApplicationContext(),
-						"You don`t have enough coins.", Toast.LENGTH_LONG)
-						.show();
-		} else
-			Toast.makeText(getApplicationContext(), "Really needs help??",
-					Toast.LENGTH_LONG).show();
+				showSuccessPage(tmpScore, tmpCoins);
+			}
+		}
 	}
 
 	public void onRemoveClick(View v) {
 		if (game_flag) {
 			if (_removedChoices == null) {
 				if (_coins > _COIN_REMOVE || free_remove) {
-					_remove_button.setVisibility(View.INVISIBLE);
+					_remove_button.setImageResource(R.drawable.ic_remove_off);
 					List<Button> choicetmp = new ArrayList<Button>();
 					choicetmp.add(_ch1);
 					choicetmp.add(_ch2);
@@ -1429,17 +1260,12 @@ public class QuestionActivity extends FragmentActivity {
 					}
 					db.setRemovedChoices(_packageId, _levelId, _removedChoices);
 					db.close();
-				} else
-					Toast.makeText(getApplicationContext(),
-							"You don`t have enough coins.", Toast.LENGTH_LONG)
-							.show();
+				}
 			} else {
-				Toast.makeText(getApplicationContext(),
-						"You can`t use it twice.", Toast.LENGTH_LONG).show();
+				// Toast.makeText(getApplicationContext(),
+				// "You can`t use it twice.", Toast.LENGTH_LONG).show();
 			}
-		} else
-			Toast.makeText(getApplicationContext(), "Really needs help??",
-					Toast.LENGTH_LONG).show();
+		}
 	}
 
 	public void onFreezClick(View v) {
@@ -1450,6 +1276,8 @@ public class QuestionActivity extends FragmentActivity {
 						if (counter != null)
 							counter.cancel();
 						time_bar.setBackgroundColor(Color.GREEN);
+						_freez_button
+								.setImageResource(R.drawable.ic_freeze_off);
 
 						_used_freez = (int) currentTime;
 						if (!free_freeze) {
@@ -1468,29 +1296,22 @@ public class QuestionActivity extends FragmentActivity {
 						}
 						db.usedFreez(_packageId, _levelId, currentTime);
 						db.close();
-					} else
-						Toast.makeText(getApplicationContext(),
-								"You don`t have enough coins.",
-								Toast.LENGTH_LONG).show();
-				} else
-					Toast.makeText(getApplicationContext(),
-							"You are out of time.", Toast.LENGTH_LONG).show();
-			} else
-				Toast.makeText(getApplicationContext(),
-						"You already freezed time.", Toast.LENGTH_LONG).show();
-		} else
-			Toast.makeText(getApplicationContext(), "Really needs help??",
-					Toast.LENGTH_LONG).show();
+					}
+				}
+			}
+		}
 	}
 
 	public void onHintClick(View v) {
-		if (game_flag) {
+		if (game_flag
+				&& _type != getResources().getInteger(R.integer.TYPE_QUESTION)) {
 			if (_used_hint == 0) {
 				if (_coins > _COIN_HELP || free_hint) {
 					if (!free_hint) {
 						_coins -= _COIN_HELP;
 						_coins_view.setText(String.valueOf(_coins));
 					}
+					_hint_button.setImageResource(R.drawable.ic_help_off);
 					DatabasHandler db = new DatabasHandler(
 							getApplicationContext());
 					if (free_hint) {
@@ -1505,16 +1326,12 @@ public class QuestionActivity extends FragmentActivity {
 					_used_hint = 1;
 					Toast.makeText(getApplicationContext(), _hint_toshow,
 							Toast.LENGTH_LONG).show();
-				} else
-					Toast.makeText(getApplicationContext(),
-							"You don`t have enough coins.", Toast.LENGTH_LONG)
-							.show();
-			} else
+				}
+			} else {
 				Toast.makeText(getApplicationContext(), _hint_toshow,
 						Toast.LENGTH_LONG).show();
-		} else
-			Toast.makeText(getApplicationContext(), "Really needs help??",
-					Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 
 	public void gotoNextAction() {
@@ -1532,6 +1349,11 @@ public class QuestionActivity extends FragmentActivity {
 			finish();
 		} else
 			finish();
+	}
+
+	public void onCoinClick(View v) {
+		Intent intent = new Intent(QuestionActivity.this, ShopActivity.class);
+		startActivity(intent);
 	}
 
 	public void backAction() {

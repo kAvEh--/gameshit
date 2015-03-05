@@ -33,6 +33,7 @@ public class DatabasHandler extends SQLiteAssetHelper {
 	private static final String TABLE_PACKAGE_INFO = "packageInfo";
 	private static final String TABLE_USER = "user";
 	private static final String TABLE_ACHIEVEMENTS = "Achievements";
+	private static final String TABLE_FINALE = "Finale";
 
 	// Items Fields
 	private static final String KEY_ID = "Id";
@@ -61,10 +62,13 @@ public class DatabasHandler extends SQLiteAssetHelper {
 	private static final String KEY_USED_FREEZ = "usedFreez";
 	private static final String KEY_COINS = "Coins";
 	private static final String KEY_POINT = "Point";
+	private static final String KEY_FINALE_SCORE = "finaleScore";
 	private static final String KEY_TYPE = "Type";
 	private static final String KEY_LEVEL = "level";
 	private static final String KEY_STATE = "state";
 	private static final String KEY_IS_SENT = "isSent";
+	private static final String KEY_HELP_SHOWN_COUNT = "helpShownCount";
+	private static final String KEY_IS_RESERVE = "isReserve";
 	private static final String KEY_LEVEL_COMPLETED = "levelCompleted";
 	private static final String KEY_FIRST_SHOT = "firstShot";
 	private static final String KEY_START_TIME = "startTime";
@@ -85,6 +89,7 @@ public class DatabasHandler extends SQLiteAssetHelper {
 	private static final String KEY_FREE_REMOVE = "freeRemove";
 	private static final String KEY_FREE_FREEZE = "freeFreeze";
 	private static final String KEY_FREE_SKIP = "freeSkip";
+	private static final String KEY_RAND_NUM = "randNum";
 
 	private Context myContex;
 
@@ -115,11 +120,47 @@ public class DatabasHandler extends SQLiteAssetHelper {
 					cursor.getInt(cursor.getColumnIndex(KEY_FREE_FREEZE)));
 			ret.put(KEY_FREE_SKIP,
 					cursor.getInt(cursor.getColumnIndex(KEY_FREE_SKIP)));
+			ret.put(KEY_FINALE_SCORE,
+					cursor.getInt(cursor.getColumnIndex(KEY_FINALE_SCORE)));
+			ret.put(KEY_HELP_SHOWN_COUNT,
+					cursor.getInt(cursor.getColumnIndex(KEY_HELP_SHOWN_COUNT)));
 		}
 		cursor.close();
 		db.close();
 
 		return ret;
+	}
+
+	public int getRandNum() {
+		String selectQuery = "SELECT * FROM " + TABLE_GAME_DATA + ";";
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+
+		int ret = 0;
+		if (cursor.moveToFirst()) {
+			ret = cursor.getInt(cursor.getColumnIndex(KEY_RAND_NUM));
+		}
+		cursor.close();
+		db.close();
+
+		return ret;
+	}
+
+	public void setRandNum(int rnd) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "UPDATE " + TABLE_GAME_DATA + " SET " + KEY_RAND_NUM
+				+ " = " + rnd + ";";
+		db.execSQL(sql);
+		db.close();
+	}
+
+	public void addShownCount() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "UPDATE " + TABLE_GAME_DATA + " SET "
+				+ KEY_HELP_SHOWN_COUNT + " = " + KEY_HELP_SHOWN_COUNT + " + 1;";
+		db.execSQL(sql);
+		db.close();
 	}
 
 	public ArrayList<HashMap<String, Integer>> getLevelData(int level) {
@@ -145,6 +186,88 @@ public class DatabasHandler extends SQLiteAssetHelper {
 				hash.put(KEY_START_TIME,
 						cursor.getInt(cursor.getColumnIndex(KEY_START_TIME)));
 				hash.put(KEY_ID, cursor.getInt(cursor.getColumnIndex(KEY_ID)));
+				ret.add(hash);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		db.close();
+		return ret;
+	}
+
+	public ArrayList<HashMap<String, String>> getFinaleData() {
+		String selectQuery = "SELECT * FROM " + TABLE_FINALE + " WHERE "
+				+ KEY_IS_RESERVE + " = 0;";
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+
+		ArrayList<HashMap<String, String>> ret = new ArrayList<HashMap<String, String>>();
+		HashMap<String, String> hash;
+		if (cursor.moveToFirst()) {
+			do {
+				hash = new HashMap<String, String>();
+				hash.put(KEY_ID, String.valueOf(cursor.getInt(cursor
+						.getColumnIndex(KEY_ID))));
+				hash.put(KEY_TYPE, String.valueOf(cursor.getInt(cursor
+						.getColumnIndex(KEY_TYPE))));
+				hash.put(KEY_STATE, String.valueOf(cursor.getInt(cursor
+						.getColumnIndex(KEY_STATE))));
+				hash.put(KEY_POINT, String.valueOf(cursor.getInt(cursor
+						.getColumnIndex(KEY_POINT))));
+				hash.put(KEY_IS_SENT, String.valueOf(cursor.getInt(cursor
+						.getColumnIndex(KEY_IS_SENT))));
+				hash.put(KEY_BODY,
+						cursor.getString(cursor.getColumnIndex(KEY_BODY)));
+				hash.put(KEY_ANSWER,
+						cursor.getString(cursor.getColumnIndex(KEY_ANSWER)));
+				hash.put(KEY_CHOICE_1,
+						cursor.getString(cursor.getColumnIndex(KEY_CHOICE_1)));
+				hash.put(KEY_CHOICE_2,
+						cursor.getString(cursor.getColumnIndex(KEY_CHOICE_2)));
+				hash.put(KEY_CHOICE_3,
+						cursor.getString(cursor.getColumnIndex(KEY_CHOICE_3)));
+				hash.put(KEY_IMAGE_PATH,
+						cursor.getString(cursor.getColumnIndex(KEY_IMAGE_PATH)));
+				ret.add(hash);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		db.close();
+		return ret;
+	}
+
+	public ArrayList<HashMap<String, String>> getBackupData() {
+		String selectQuery = "SELECT * FROM " + TABLE_FINALE + " WHERE "
+				+ KEY_IS_RESERVE + " = 1 AND " + KEY_STATE + " = 1;";
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+
+		ArrayList<HashMap<String, String>> ret = new ArrayList<HashMap<String, String>>();
+		HashMap<String, String> hash;
+		if (cursor.moveToFirst()) {
+			do {
+				hash = new HashMap<String, String>();
+				hash.put(KEY_ID, String.valueOf(cursor.getInt(cursor
+						.getColumnIndex(KEY_ID))));
+				hash.put(KEY_TYPE, String.valueOf(cursor.getInt(cursor
+						.getColumnIndex(KEY_TYPE))));
+				hash.put(KEY_STATE, String.valueOf(cursor.getInt(cursor
+						.getColumnIndex(KEY_STATE))));
+				hash.put(KEY_POINT, String.valueOf(cursor.getInt(cursor
+						.getColumnIndex(KEY_POINT))));
+				hash.put(KEY_BODY,
+						cursor.getString(cursor.getColumnIndex(KEY_BODY)));
+				hash.put(KEY_ANSWER,
+						cursor.getString(cursor.getColumnIndex(KEY_ANSWER)));
+				hash.put(KEY_CHOICE_1,
+						cursor.getString(cursor.getColumnIndex(KEY_CHOICE_1)));
+				hash.put(KEY_CHOICE_2,
+						cursor.getString(cursor.getColumnIndex(KEY_CHOICE_2)));
+				hash.put(KEY_CHOICE_3,
+						cursor.getString(cursor.getColumnIndex(KEY_CHOICE_3)));
+				hash.put(KEY_IMAGE_PATH,
+						cursor.getString(cursor.getColumnIndex(KEY_IMAGE_PATH)));
 				ret.add(hash);
 			} while (cursor.moveToNext());
 		}
@@ -386,6 +509,8 @@ public class DatabasHandler extends SQLiteAssetHelper {
 					.getColumnIndex(KEY_RELATED))));
 			ret.put(KEY_LEVEL, String.valueOf(cursor.getInt(cursor
 					.getColumnIndex(KEY_LEVEL))));
+			ret.put(KEY_POINT, String.valueOf(cursor.getInt(cursor
+					.getColumnIndex(KEY_POINT))));
 			ret.put(KEY_STATE, String.valueOf(cursor.getInt(cursor
 					.getColumnIndex(KEY_STATE))));
 			ret.put(KEY_START_TIME, String.valueOf(cursor.getLong(cursor
@@ -413,7 +538,7 @@ public class DatabasHandler extends SQLiteAssetHelper {
 		db.execSQL(sql);
 		db.close();
 	}
-	
+
 	public void addScoreLevel(int _score, int level) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		String sql = "UPDATE " + TABLE_LEVELS + " SET " + KEY_POINT + " = "
@@ -485,12 +610,11 @@ public class DatabasHandler extends SQLiteAssetHelper {
 					.getColumnIndex(KEY_ID))));
 			ret.put(KEY_API_KEY,
 					cursor.getString(cursor.getColumnIndex(KEY_API_KEY)));
-			ret.put(KEY_NAME, cursor.getString(cursor
-					.getColumnIndex(KEY_NAME)));
-			ret.put(KEY_PHONE_NUM, cursor.getString(cursor
-					.getColumnIndex(KEY_PHONE_NUM)));
-			ret.put(KEY_EMAIL, cursor.getString(cursor
-					.getColumnIndex(KEY_EMAIL)));
+			ret.put(KEY_NAME, cursor.getString(cursor.getColumnIndex(KEY_NAME)));
+			ret.put(KEY_PHONE_NUM,
+					cursor.getString(cursor.getColumnIndex(KEY_PHONE_NUM)));
+			ret.put(KEY_EMAIL,
+					cursor.getString(cursor.getColumnIndex(KEY_EMAIL)));
 			ret.put(KEY_IS_SENT, String.valueOf(cursor.getInt(cursor
 					.getColumnIndex(KEY_IS_SENT))));
 		}
@@ -504,6 +628,25 @@ public class DatabasHandler extends SQLiteAssetHelper {
 		String sql = "UPDATE " + TABLE_USER + " SET " + KEY_ID + " = " + id
 				+ ", " + KEY_API_KEY + " = '" + api_key + "';";
 		db.execSQL(sql);
+		db.close();
+	}
+
+	public void addFinalScore(int id, int score) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		if (score > 0) {
+			String sql = "UPDATE " + TABLE_FINALE + " SET " + KEY_POINT + " = "
+					+ score + ", " + KEY_STATE + " = 3 " + " WHERE " + KEY_ID
+					+ " = " + id + ";";
+			db.execSQL(sql);
+			sql = "UPDATE " + TABLE_GAME_DATA + " SET " + KEY_FINALE_SCORE
+					+ " = " + KEY_FINALE_SCORE + " + " + score + ";";
+			db.execSQL(sql);
+		} else {
+			String sql = "UPDATE " + TABLE_FINALE + " SET " + KEY_POINT + " = "
+					+ score + ", " + KEY_STATE + " = 2 " + " WHERE " + KEY_ID
+					+ " = " + id + ";";
+			db.execSQL(sql);
+		}
 		db.close();
 	}
 
@@ -526,6 +669,14 @@ public class DatabasHandler extends SQLiteAssetHelper {
 	public void setUserIsSent() {
 		SQLiteDatabase db = this.getWritableDatabase();
 		String sql = "UPDATE " + TABLE_USER + " SET " + KEY_IS_SENT + " = 2;";
+		db.execSQL(sql);
+		db.close();
+	}
+
+	public void setFinaleIsSent(int id) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "UPDATE " + TABLE_FINALE + " SET " + KEY_IS_SENT
+				+ " = 1 WHERE " + KEY_ID + " = " + id + ";";
 		db.execSQL(sql);
 		db.close();
 	}
@@ -711,7 +862,7 @@ public class DatabasHandler extends SQLiteAssetHelper {
 		db.execSQL(sql);
 		db.close();
 	}
-	
+
 	public ArrayList<HashMap<String, Integer>> getLevelStat(int l) {
 		String selectQuery = "SELECT * FROM " + TABLE_LEVELS + " WHERE "
 				+ KEY_LEVEL + " = " + l + ";";
@@ -735,9 +886,10 @@ public class DatabasHandler extends SQLiteAssetHelper {
 		db.close();
 		return ret;
 	}
-	
+
 	public ArrayList<HashMap<String, Integer>> getAllLevel() {
-		String selectQuery = "SELECT * FROM " + TABLE_LEVELS +  ";";
+		String selectQuery = "SELECT * FROM " + TABLE_LEVELS + " WHERE "
+				+ KEY_STATE + " = 3;";
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
@@ -751,11 +903,20 @@ public class DatabasHandler extends SQLiteAssetHelper {
 						cursor.getInt(cursor.getColumnIndex(KEY_TYPE)));
 				hash.put(KEY_POINT,
 						cursor.getInt(cursor.getColumnIndex(KEY_POINT)));
+				hash.put(KEY_LEVEL,
+						cursor.getInt(cursor.getColumnIndex(KEY_LEVEL)));
 				ret.add(hash);
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
 		db.close();
 		return ret;
+	}
+
+	public void setFinaleStat(int id, int stat) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		String sql = "UPDATE " + TABLE_FINALE + " SET " + KEY_STATE + " = "
+				+ stat + " WHERE " + KEY_ID + " = " + id + ";";
+		db.execSQL(sql);
 	}
 }

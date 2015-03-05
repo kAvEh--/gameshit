@@ -55,11 +55,18 @@
     <string name="stat_title_locale">عملکرد شما در این مرحله</string>
     <string name="stat_title_total">عملکرد شما در مجموع</string>
     <string name="stat_score">امتیاز</string>
+    <string name="coins">سکه</string>
     <string name="stat_player">بازیکن</string>
     <string name="stat_manager">مربی</string>
     <string name="stat_q">سوال</string>
     <string name="stat_logo">لوگو</string>
     <string name="stat_shirt">پیراهن</string>
     <string name="main_to_final">تا فینال</string>
+    <string name="title_activity_leader_board">LeaderBoardActivity</string>
+    <string name="success_goal">توی دروازه!</string>
+    <string name="title_activity_achievement">AchievementActivity</string>
+    <string name="title_activity_finale_level">FinaleLevelActivity</string>
+    <string name="title_activity_finale_q">FinaleQActivity</string>
+    <string name="font">BNazanin.ttf</string>
 
 </resources>

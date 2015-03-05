@@ -1,7 +1,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/main_bg" >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -10,15 +11,14 @@
         <LinearLayout
             android:id="@+id/q_header"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:background="#bbb"
+            android:layout_height="70dp"
             android:orientation="vertical" >
 
             <RelativeLayout
                 android:id="@+id/q_header_score_layout"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="#ccc"
+                android:background="@drawable/header_bg"
                 android:padding="3dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp" >
@@ -26,14 +26,14 @@
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:onClick="onCoimClick" >
+                    android:onClick="onCoinClick" >
 
                     <ImageView
                         android:id="@+id/question_header_coins_ic"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:scaleType="centerInside"
-                        android:src="@drawable/ic_cups" />
+                        android:src="@drawable/ic_coin" />
 
                     <TextView
                         android:id="@+id/question_header_coins"
@@ -42,20 +42,21 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="5dp"
                         android:layout_toRightOf="@id/question_header_coins_ic"
+                        android:textColor="@color/white"
                         android:textSize="22sp" />
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:onClick="onCoinClick" >
+                    android:layout_alignParentRight="true" >
 
                     <TextView
                         android:id="@+id/question_header_points"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
+                        android:textColor="@color/white"
                         android:textSize="22sp" />
 
                     <ImageView
@@ -70,111 +71,142 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_gravity="right" >
+                android:layout_height="17dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="3dp"
+                android:background="@color/white" >
 
                 <RelativeLayout
                     android:id="@+id/q_tima_bar"
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
                     android:layout_gravity="right"
-                    android:background="#00CC00"
+                    android:background="@color/ajori"
                     android:gravity="right" >
                 </RelativeLayout>
-
-                <TextView
-                    android:id="@+id/q_time_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="5dp"
-                    android:textColor="#000"
-                    android:textSize="14sp"
-                    android:text="90" />
             </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="#eee"
-                android:orientation="horizontal"
-                android:weightSum="4" >
-
-                <ImageButton
-                    android:id="@+id/q_bar_next"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:onClick="onSkipClick"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_action_verified_user" />
-
-                <ImageButton
-                    android:id="@+id/q_bar_freez"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:onClick="onFreezClick"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_image_timer_off" />
-
-                <ImageButton
-                    android:id="@+id/q_bar_remove_choice"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:onClick="onRemoveClick"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_content_backspace" />
-
-                <ImageButton
-                    android:id="@+id/q_bar_hint"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:onClick="onHintClick"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_action_help" />
-            </LinearLayout>
         </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/q_main_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="200dp"
+            android:layout_width="210dp"
+            android:layout_height="210dp"
             android:layout_below="@id/q_header"
-            android:layout_centerHorizontal="true" >
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp" >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/main_q_bg" />
 
             <ImageView
                 android:id="@+id/q_main_image"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
                 android:scaleType="fitXY" />
 
             <TextView
                 android:id="@+id/q_main_question"
                 android:layout_width="wrap_content"
                 android:layout_height="200dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="7dp"
-                android:layout_marginRight="7dp"
+                android:layout_centerInParent="true"
                 android:gravity="center"
                 android:textSize="20sp"
                 android:visibility="gone" />
         </RelativeLayout>
 
+        <RelativeLayout
+            android:layout_width="100dp"
+            android:layout_height="190dp"
+            android:layout_below="@id/q_header"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="20dp"
+            android:layout_toLeftOf="@id/q_main_layout" >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/hint_bg" />
+
+            <ImageButton
+                android:id="@+id/q_bar_freez"
+                android:layout_width="96dp"
+                android:layout_height="80dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@null"
+                android:onClick="onFreezClick"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_freeze_on" />
+
+            <ImageButton
+                android:id="@+id/q_bar_next"
+                android:layout_width="96dp"
+                android:layout_height="80dp"
+                android:layout_below="@id/q_bar_freez"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@null"
+                android:onClick="onSkipClick"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_skip_on" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="100dp"
+            android:layout_height="190dp"
+            android:layout_below="@id/q_header"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="20dp"
+            android:layout_toRightOf="@id/q_main_layout" >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/hint_bg" />
+
+            <ImageButton
+                android:id="@+id/q_bar_remove_choice"
+                android:layout_width="96dp"
+                android:layout_height="80dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@null"
+                android:onClick="onRemoveClick"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_remove_on" />
+
+            <ImageButton
+                android:id="@+id/q_bar_hint"
+                android:layout_width="96dp"
+                android:layout_height="80dp"
+                android:layout_below="@id/q_bar_remove_choice"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@null"
+                android:onClick="onHintClick"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_help_on" />
+        </RelativeLayout>
+
         <ImageView
             android:id="@+id/q_seprator"
-            android:layout_width="1dp"
+            android:layout_width="3dp"
             android:layout_height="match_parent"
             android:layout_below="@id/q_header"
             android:layout_centerHorizontal="true"
@@ -183,35 +215,33 @@
         <Button
             android:id="@+id/q_c_1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_below="@id/q_main_layout"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_toLeftOf="@id/q_seprator"
-            android:background="#ccc"
+            android:background="@drawable/ch_bg"
             android:minWidth="200dp"
-            android:onClick="selectChoice"
-            android:padding="7dp" />
+            android:onClick="selectChoice" />
 
         <Button
             android:id="@+id/q_c_2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_below="@id/q_main_layout"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_toRightOf="@id/q_seprator"
-            android:background="#ccc"
+            android:background="@drawable/ch_bg"
             android:minWidth="200dp"
-            android:onClick="selectChoice"
-            android:padding="7dp" />
+            android:onClick="selectChoice" />
 
         <Button
             android:id="@+id/q_c_3"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_below="@id/q_c_1"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_toLeftOf="@id/q_seprator"
-            android:background="#ccc"
+            android:background="@drawable/ch_bg"
             android:minWidth="200dp"
             android:onClick="selectChoice"
             android:padding="7dp" />
@@ -219,11 +249,11 @@
         <Button
             android:id="@+id/q_c_4"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_below="@id/q_c_1"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_toRightOf="@id/q_seprator"
-            android:background="#ccc"
+            android:background="@drawable/ch_bg"
             android:minWidth="200dp"
             android:onClick="selectChoice"
             android:padding="7dp" />
@@ -231,11 +261,11 @@
         <Button
             android:id="@+id/q_c_5"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_below="@id/q_c_3"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_toLeftOf="@id/q_seprator"
-            android:background="#ccc"
+            android:background="@drawable/ch_bg"
             android:minWidth="200dp"
             android:onClick="selectChoice"
             android:padding="7dp" />
@@ -243,11 +273,11 @@
         <Button
             android:id="@+id/q_c_6"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_below="@id/q_c_3"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_toRightOf="@id/q_seprator"
-            android:background="#ccc"
+            android:background="@drawable/ch_bg"
             android:minWidth="200dp"
             android:onClick="selectChoice"
             android:padding="7dp" />
@@ -255,11 +285,11 @@
         <Button
             android:id="@+id/q_c_7"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_below="@id/q_c_5"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_toLeftOf="@id/q_seprator"
-            android:background="#ccc"
+            android:background="@drawable/ch_bg"
             android:minWidth="200dp"
             android:onClick="selectChoice"
             android:padding="7dp" />
@@ -267,23 +297,14 @@
         <Button
             android:id="@+id/q_c_8"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_below="@id/q_c_5"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_toRightOf="@id/q_seprator"
-            android:background="#ccc"
+            android:background="@drawable/ch_bg"
             android:minWidth="200dp"
             android:onClick="selectChoice"
             android:padding="7dp" />
-
-        <ImageView
-            android:id="@+id/question_expanded_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/q_header"
-            android:layout_centerInParent="true"
-            android:scaleType="centerInside"
-            android:visibility="invisible" />
     </RelativeLayout>
 
 </ScrollView>
