@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/finale_bg" >
+    android:background="@drawable/finale_bg"
+    android:keepScreenOn="true" >
 
     <RelativeLayout
         android:id="@+id/q_header_score_layout"

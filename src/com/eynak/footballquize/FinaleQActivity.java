@@ -130,7 +130,7 @@ public class FinaleQActivity extends FragmentActivity {
 
 		Typeface face = Typeface.createFromAsset(getAssets(), "font/"
 				+ getResources().getString(R.string.font) + "");
-		
+
 		_points_view = (TextView) findViewById(R.id.question_header_points);
 		_points_view.setTypeface(face);
 		_coins_view = (TextView) findViewById(R.id.question_header_coins);
@@ -192,10 +192,17 @@ public class FinaleQActivity extends FragmentActivity {
 		_ch2 = (Button) findViewById(R.id.q_c_2);
 		_ch3 = (Button) findViewById(R.id.q_c_3);
 		_ch4 = (Button) findViewById(R.id.q_c_4);
+
 		_ch1.setTag(true);
 		_ch2.setTag(true);
 		_ch3.setTag(true);
 		_ch4.setTag(true);
+
+		_ch1.setVisibility(View.VISIBLE);
+		_ch2.setVisibility(View.VISIBLE);
+		_ch3.setVisibility(View.VISIBLE);
+		_ch4.setVisibility(View.VISIBLE);
+
 		Collections.shuffle(choicesData);
 		_ch1.setText(choicesData.get(0));
 		_ch2.setText(choicesData.get(1));
@@ -249,10 +256,18 @@ public class FinaleQActivity extends FragmentActivity {
 
 		// TODO set score
 		int tmpScore;
-		if (Integer.parseInt(__levelData.get(_levelId).get("Type")) == 6) {
-			tmpScore = (int) (Math.min(_TOTAL_TIME_Q, currentTime) * 8 / 1000);
+		if (!_replace_flag && __backupData != null && __backupData.size() > 0) {
+			if (Integer.parseInt(__backupData.get(0).get("Type")) == 6) {
+				tmpScore = (int) (Math.min(_TOTAL_TIME_Q, currentTime) * 8 / 1000);
+			} else {
+				tmpScore = (int) (Math.min(_TOTAL_TIME_IMAGE, currentTime) * 4 / 300);
+			}
 		} else {
-			tmpScore = (int) (Math.min(_TOTAL_TIME_IMAGE, currentTime) * 4 / 300);
+			if (Integer.parseInt(__levelData.get(_levelId).get("Type")) == 6) {
+				tmpScore = (int) (Math.min(_TOTAL_TIME_Q, currentTime) * 8 / 1000);
+			} else {
+				tmpScore = (int) (Math.min(_TOTAL_TIME_IMAGE, currentTime) * 4 / 300);
+			}
 		}
 
 		_points += tmpScore;
@@ -262,11 +277,16 @@ public class FinaleQActivity extends FragmentActivity {
 		_coins_view.setText(String.valueOf(_coins));
 
 		DatabasHandler db = new DatabasHandler(getApplicationContext());
-		db.addFinalScore(Integer.parseInt(__levelData.get(_levelId).get("Id")),
-				tmpScore);
 		if (!_replace_flag && __backupData != null && __backupData.size() > 0) {
 			db.addFinalScore(Integer.parseInt(__backupData.get(0).get("Id")),
-					tmpScore);
+					0, getResources().getInteger(R.integer.STATE_CORRECT));
+			db.addFinalScore(Integer.parseInt(__levelData.get(_levelId).get(
+					"Id")), tmpScore,
+					getResources().getInteger(R.integer.STATE_CORRECT));
+		} else {
+			db.addFinalScore(Integer.parseInt(__levelData.get(_levelId).get(
+					"Id")), tmpScore,
+					getResources().getInteger(R.integer.STATE_CORRECT));
 		}
 		db.addCoins(_COINS_FULL);
 		db.close();
@@ -279,10 +299,17 @@ public class FinaleQActivity extends FragmentActivity {
 		if (counter != null)
 			counter.cancel();
 		game_flag = false;
-		DatabasHandler db = new DatabasHandler(getApplicationContext());
-		db.addFinalScore(Integer.parseInt(__levelData.get(_levelId).get("Id")),
-				0);
-		db.close();
+		// DatabasHandler db = new DatabasHandler(getApplicationContext());
+		// db.addFinalScore(Integer.parseInt(__levelData.get(_levelId).get("Id")),
+		// 0,
+		// getResources().getInteger(R.integer.STATE_ERROR));
+		// if (!_replace_flag && __backupData != null && __backupData.size() >
+		// 0) {
+		// db.addFinalScore(Integer.parseInt(__backupData.get(0).get("Id")),
+		// 0, getResources()
+		// .getInteger(R.integer.STATE_CORRECT));
+		// }
+		// db.close();
 
 		showFailurePage();
 	}
@@ -333,17 +360,14 @@ public class FinaleQActivity extends FragmentActivity {
 				db.close();
 
 				replaceQuestion();
-			} else
+			} else {
 				Toast.makeText(getApplicationContext(),
-						"You don`t have enough coins.", Toast.LENGTH_LONG)
-						.show();
-		} else
-			Toast.makeText(getApplicationContext(), "Really needs help??",
-					Toast.LENGTH_LONG).show();
+						"سکه‌هات کمه! سکه بخر!", Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 
 	private void replaceQuestion() {
-		// TODO Auto-generated method stub
 		HashMap<String, String> q_data = __backupData.get(0);
 		if (q_data == null)
 			finish();
@@ -425,13 +449,11 @@ public class FinaleQActivity extends FragmentActivity {
 				DatabasHandler db = new DatabasHandler(getApplicationContext());
 				db.addCoins(-_COIN_REMOVE);
 				db.close();
-			} else
+			} else {
 				Toast.makeText(getApplicationContext(),
-						"You don`t have enough coins.", Toast.LENGTH_LONG)
-						.show();
-		} else
-			Toast.makeText(getApplicationContext(), "Really needs help??",
-					Toast.LENGTH_LONG).show();
+						"سکه‌هات کمه! سکه بخر!", Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 
 	public void onCoinClick(View v) {
@@ -445,21 +467,15 @@ public class FinaleQActivity extends FragmentActivity {
 
 	@Override
 	public void onBackPressed() {
-		new AlertDialog.Builder(this).setTitle("Really Exit?")
-				.setMessage("Are you sure you want to exit?")
-				.setNegativeButton("No", null)
-				.setPositiveButton("Yes", new OnClickListener() {
+		new AlertDialog.Builder(this).setTitle("واقعا می‌خوای بری بیرون؟")
+				.setMessage("اگر بری بیرون هیچ امتیازی از این سوال نمی‌گیری!")
+				.setNegativeButton("بی‌خیال", null)
+				.setPositiveButton("قبول", new OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						if (counter != null)
 							counter.cancel();
-						DatabasHandler db = new DatabasHandler(
-								getApplicationContext());
-						db.addFinalScore(
-								Integer.parseInt(__levelData.get(_levelId).get(
-										"Id")), 0);
-						db.close();
 						finish();
 					}
 				}).create().show();

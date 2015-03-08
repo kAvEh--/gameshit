@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.eynak.adapters.GridLevelAdapter;
 import com.eynak.utils.DatabasHandler;
+import com.eynak.utils.SendDatatoServer;
 
 public class LevelActivity extends FragmentActivity {
 
@@ -35,24 +36,22 @@ public class LevelActivity extends FragmentActivity {
 
 		Intent i = getIntent();
 		_level = i.getIntExtra("level", 1);
-		
+
 		if (_level == 1) {
 			HelpDialog fr = new HelpDialog();
-			fr.setStyle(DialogFragment.STYLE_NO_TITLE,
-					R.style.MyDialog);
+			fr.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
 			fr.setType(2);
 			fr.show(getSupportFragmentManager(), "Hello");
 		} else if (_level == 30) {
 			HelpDialog fr = new HelpDialog();
-			fr.setStyle(DialogFragment.STYLE_NO_TITLE,
-					R.style.MyDialog);
+			fr.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
 			fr.setType(3);
 			fr.show(getSupportFragmentManager(), "Hello");
 		}
 
 		Typeface face = Typeface.createFromAsset(getAssets(), "font/"
 				+ getResources().getString(R.string.font) + "");
-		
+
 		_points_view = (TextView) findViewById(R.id.question_header_points);
 		_points_view.setTypeface(face);
 		_coins_view = (TextView) findViewById(R.id.question_header_coins);
@@ -63,7 +62,7 @@ public class LevelActivity extends FragmentActivity {
 		_title_view.setText("مرحله " + _level);
 
 		_grid = (GridView) findViewById(R.id.level_grid);
-		initialize();
+//		initialize();
 	}
 
 	private void initialize() {
@@ -77,6 +76,7 @@ public class LevelActivity extends FragmentActivity {
 		HashMap<String, Integer> gameData;
 		db = new DatabasHandler(getApplicationContext());
 		gameData = db.getGameData();
+		HashMap<String, String> pData = db.getPackageInfo(_level);
 		db.close();
 
 		_points = gameData.get(getResources().getString(R.string.KEY_POINT));
@@ -84,8 +84,21 @@ public class LevelActivity extends FragmentActivity {
 
 		_points_view.setText(String.valueOf(_points));
 		_coins_view.setText(String.valueOf(_coins));
+
+		if (Integer.parseInt(pData.get(getResources().getString(
+				R.string.KEY_LEVEL_COMPLETED))) > 23) {
+			FinishPackageDialog fp = new FinishPackageDialog();
+			fp.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
+			fp.show(getSupportFragmentManager(), "Hello");
+			fp.setPackage(_level);
+			fp.setScore(Integer.parseInt(pData.get(getResources().getString(
+					R.string.KEY_POINT))));
+			fp.settotalscore(_points);
+			SendDatatoServer tmp = new SendDatatoServer(this);
+			tmp.checkUser();
+		}
 	}
-	
+
 	public void onCoinClick(View v) {
 		Intent intent = new Intent(LevelActivity.this, ShopActivity.class);
 		startActivity(intent);
@@ -95,6 +108,10 @@ public class LevelActivity extends FragmentActivity {
 	protected void onResume() {
 		super.onResume();
 		initialize();
+	}
+	
+	public void backAction() {
+		finish();
 	}
 
 }

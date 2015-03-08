@@ -8,6 +8,7 @@ import java.util.Random;
 
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -43,9 +44,7 @@ public class FinaleLevelActivity extends FragmentActivity {
 	private int _points;
 	private int _coins;
 
-	int _current_level = 1;
-
-	int current_level;
+	int current_level = 1;
 	ArrayList<HashMap<String, String>> data;
 
 	@Override
@@ -60,7 +59,7 @@ public class FinaleLevelActivity extends FragmentActivity {
 
 		Typeface face = Typeface.createFromAsset(getAssets(), "font/"
 				+ getResources().getString(R.string.font) + "");
-		
+
 		_points_view = (TextView) findViewById(R.id.question_header_points);
 		_points_view.setTypeface(face);
 		_coins_view = (TextView) findViewById(R.id.question_header_coins);
@@ -70,9 +69,10 @@ public class FinaleLevelActivity extends FragmentActivity {
 		_title_view.setText("فینال");
 
 		_grid = (GridView) findViewById(R.id.level_grid);
-		initialize();
+		// initialize();
 	}
 
+	@SuppressLint("NewApi")
 	private void initialize() {
 		DatabasHandler db = new DatabasHandler(getApplicationContext());
 		data = db.getFinaleData();
@@ -83,9 +83,23 @@ public class FinaleLevelActivity extends FragmentActivity {
 			db.setRandNum(rand);
 		}
 		db.close();
+
 		Collections.shuffle(data, new Random(rand));
+
+		int current = -1;
+		for (int i = 0; i < data.size(); i++) {
+			if (Integer.parseInt(data.get(i).get(
+					getResources().getString(R.string.KEY_STATE))) == getResources()
+					.getInteger(R.integer.STATE_NONE) && current < 0) {
+				current = i;
+				break;
+			}
+		}
 		adapter = new FinaleLevelAdapter(FinaleLevelActivity.this, data);
 		_grid.setAdapter(adapter);
+		if (current > -1) {
+			_grid.setSelection(current);
+		}
 
 		HashMap<String, Integer> gameData;
 		db = new DatabasHandler(getApplicationContext());
@@ -133,13 +147,6 @@ public class FinaleLevelActivity extends FragmentActivity {
 		startActivity(i);
 	}
 
-	public void gotoAction(int id) {
-		current_level = id;
-		// _grid.setSelection(_current_level);
-		// _grid.requestFocusFromTouch();
-		// _grid.setSelection(_current_level);
-	}
-
 	public void uploadData() {
 		DatabasHandler db = new DatabasHandler(getApplicationContext());
 		HashMap<String, String> userData = db.getUser();
@@ -164,8 +171,8 @@ public class FinaleLevelActivity extends FragmentActivity {
 			hash = new HashMap<String, String>();
 			hash = data.get(i);
 			if (Integer.parseInt(hash.get(getResources().getString(
-					R.string.KEY_IS_SENT))) == 0 && 
-					Integer.parseInt(hash.get(getResources().getString(
+					R.string.KEY_IS_SENT))) == 0
+					&& Integer.parseInt(hash.get(getResources().getString(
 							R.string.KEY_STATE))) != 1)
 				sendIt(hash, _api_key);
 		}

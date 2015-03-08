@@ -61,7 +61,7 @@ public class FinishPackageDialog extends DialogFragment {
 
 			@Override
 			public void onClick(View v) {
-				((QuestionActivity) getActivity()).backAction();
+				((LevelActivity) getActivity()).backAction();
 			}
 		});
 

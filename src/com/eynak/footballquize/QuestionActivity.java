@@ -705,27 +705,18 @@ public class QuestionActivity extends FragmentActivity {
 			checkPointsAchievement(db);
 		if (Integer.parseInt(pData.get(getResources().getString(
 				R.string.KEY_LEVEL_COMPLETED))) > 23) {
+
 			db.setPackageIsFinish(_packageId);
 
-			FinishPackageDialog fp = new FinishPackageDialog();
-			fp.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
-			fp.show(getSupportFragmentManager(), "Hello");
-			fp.setPackage(_packageId);
-			fp.setScore(Integer.parseInt(pData.get(getResources().getString(
-					R.string.KEY_POINT))));
-			fp.settotalscore(_points);
-			SendDatatoServer tmp = new SendDatatoServer(this);
-			tmp.checkUser();
-		} else {
-			SuccessDialog fr = new SuccessDialog();
-			fr.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
-			fr.setScore(score);
-			fr.setCoins(coins);
-			fr.show(getSupportFragmentManager(), "Hello");
 		}
+		SuccessDialog fr = new SuccessDialog();
+		fr.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
+		fr.setScore(score);
+		fr.setCoins(coins);
+		fr.show(getSupportFragmentManager(), "Hello");
 		db.close();
 	}
-	
+
 	public void showSuccess(int score, int coins) {
 		SuccessDialog fr = new SuccessDialog();
 		fr.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.MyDialog);
@@ -733,7 +724,6 @@ public class QuestionActivity extends FragmentActivity {
 		fr.setCoins(coins);
 		fr.show(getSupportFragmentManager(), "Hello");
 	}
-	
 
 	private void checkPointsAchievement(DatabasHandler db) {
 		HashMap<String, String> data;

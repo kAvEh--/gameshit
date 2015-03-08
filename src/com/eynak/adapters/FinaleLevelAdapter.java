@@ -188,7 +188,6 @@ public class FinaleLevelAdapter extends BaseAdapter {
 					viewHolder.levelIcon
 							.setImageResource(R.drawable.ic_q_final_current);
 					current_flag = true;
-					((FinaleLevelActivity) mActivity).gotoAction(current_level);
 				} else {
 					viewHolder.levelIcon.setTag(false);
 					viewHolder.levelIcon

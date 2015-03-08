@@ -299,6 +299,9 @@ public class MainActivity extends FragmentActivity {
 			TextView score_tv = (TextView) view
 					.findViewById(R.id.package_score);
 			score_tv.setTypeface(face);
+			
+			ImageView gameIcon = (ImageView) view
+					.findViewById(R.id.package_ic);
 
 			DatabasHandler db = new DatabasHandler(getApplicationContext());
 			HashMap<String, String> data = db.getPackageInfo(position + 1);
@@ -308,9 +311,10 @@ public class MainActivity extends FragmentActivity {
 				if (position < _last_level)
 					score_tv.setText(data.get("Point") + " امتیاز");
 
-			if (position == 30)
+			if (position == 30) {
 				tv.setVisibility(View.INVISIBLE);
-			else
+				gameIcon.setVisibility(View.INVISIBLE);
+			} else
 				tv.setText("مرحله " + (position + 1));
 
 			ImageButton stat = (ImageButton) view

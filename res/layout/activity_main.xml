@@ -5,6 +5,7 @@
     android:layout_gravity="center_horizontal"
     android:background="@drawable/main_bg"
     android:gravity="center_horizontal"
+    android:keepScreenOn="true"
     tools:context=".MainActivity" >
 
     <RelativeLayout

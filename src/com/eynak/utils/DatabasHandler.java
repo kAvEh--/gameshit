@@ -631,22 +631,18 @@ public class DatabasHandler extends SQLiteAssetHelper {
 		db.close();
 	}
 
-	public void addFinalScore(int id, int score) {
+	public void addFinalScore(int id, int score, int stat) {
 		SQLiteDatabase db = this.getWritableDatabase();
+		String sql;
 		if (score > 0) {
-			String sql = "UPDATE " + TABLE_FINALE + " SET " + KEY_POINT + " = "
-					+ score + ", " + KEY_STATE + " = 3 " + " WHERE " + KEY_ID
-					+ " = " + id + ";";
-			db.execSQL(sql);
 			sql = "UPDATE " + TABLE_GAME_DATA + " SET " + KEY_FINALE_SCORE
 					+ " = " + KEY_FINALE_SCORE + " + " + score + ";";
 			db.execSQL(sql);
-		} else {
-			String sql = "UPDATE " + TABLE_FINALE + " SET " + KEY_POINT + " = "
-					+ score + ", " + KEY_STATE + " = 2 " + " WHERE " + KEY_ID
-					+ " = " + id + ";";
-			db.execSQL(sql);
 		}
+		sql = "UPDATE " + TABLE_FINALE + " SET " + KEY_POINT + " = " + score
+				+ ", " + KEY_STATE + " = " + stat + " WHERE " + KEY_ID + " = "
+				+ id + ";";
+		db.execSQL(sql);
 		db.close();
 	}
 
